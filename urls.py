@@ -15,4 +15,6 @@ urlpatterns = patterns('',
     (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'base_dojo.html'}),
     (r'^accounts/login', 'django.views.auth.login.login'),
     (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/var/www/html/media/', 'show_indexes':True}),
+
+    (r'^async/(?P<node>.*)/(?P<app_name>.*)/(?P<model_name>.*)/list/$', 'serp2.apps.common.views.async_listform'),
 )
