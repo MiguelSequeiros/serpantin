@@ -115,7 +115,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.databrowse',
-    'serpantin.common',
+    'serpantin.apps.common',
 )
 
 
