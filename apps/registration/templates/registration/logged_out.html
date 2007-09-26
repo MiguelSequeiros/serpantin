@@ -1,0 +1,14 @@
+{% extends "registration/base.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+
+<h1>{% trans "Goodbye" %}</h1>
+
+<p>{% trans "Thanks for spending some quality time with the Web site today." %}</p>
+
+<p><a href="../login">{% trans 'Log in again' %}</a></p>
+
+{% endblock %}

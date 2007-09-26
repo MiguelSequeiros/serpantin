@@ -1,0 +1,12 @@
+{% extends "registration/base.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+
+<h1>{% trans "Welcome" %}</h1>
+<p>{% trans "Welcome to the pages setup to demo the use of a simple user registration/login/logout/password management app built with and for " %} <a href="http://www.djangoproject.com">Django</a>.</p><p>
+{% trans "The sources are " %} <a href="http://da.textdriven.com:9021/sydney/browser/trunk/dacontrib/apps/registration/">{% trans "available" %}</a></p>
+
+{% endblock %}

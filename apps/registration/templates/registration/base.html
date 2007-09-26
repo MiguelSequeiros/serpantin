@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}">
+<head>
+<title>{% block title %}{% endblock %}</title>
+{%block cssref %}
+<style type="text/css">
+/* This is default CSS to make the screens look ok -- you should override this block in your
+   templates */
+
+#container {
+    width: 750px;
+    margin: 0 auto;
+    font-family: Lucida Grande, Tahoma, Arial, Helvetica, sans-serif; /* Lucida Grande for the Macs, Tahoma for the PCs */
+    font-size: 11px;
+    line-height: 1.6em;
+    color: #666;
+    background-color: #FFF;
+}
+
+/* GENERAL MOJO AND MULA */
+
+h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: normal;
+    font-size: 32px;
+    line-height: 32px;
+    color: #CC6633;
+    margin-bottom: 30px;
+    background-color: #FFF;
+}
+
+h2 {
+    color: #666666;
+    font-size: 16px;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #FFF;
+}
+
+a {
+    color:#CC6714;
+    text-decoration: none;
+}
+
+a:hover {
+    color:#993333;
+    background-color: #F5F5F5;
+}
+
+form {
+//    float:right;
+    margin-top: 25px;
+    padding-bottom: 25px;
+    font-size: 11px;
+    border-bottom: 1px solid #DDDDDD; /* A faint grey line below the text */
+    border-top: 1px solid #DDDDDD; /* A faint grey line below the text */
+}
+
+input {
+    background-color: #FFF;
+    color: #999999;
+    border: 1px solid #CCC;
+    font-size: 11px;
+    padding: 3px;
+}
+
+input:hover {
+    color: #993333;
+}
+
+.button {
+    padding: 2px;
+}
+
+/* HEADER ELEMENTS */
+
+#header {
+    padding-top: 10px;
+    clear: both;
+    margin-bottom: 10px;
+}
+
+/* CONTENT ELEMENTS */
+
+#content {
+    width: 362px;
+    margin-left: 180px;
+    margin-right: 200px;
+}
+
+/*  ALIGNED FIELDSETS  */
+.aligned label { display:block; padding:0 1em 3px 0; float:left; text-align:left; width:8em; }
+.aligned label.inline { display:inline; float:none; }
+.colMS .aligned .vLargeTextField, .colMS .aligned .vXMLLargeTextField { width:350px; }
+form .aligned p, form .aligned ul { margin-left:7em; padding-left:30px; }
+form .aligned table p { margin-left:0; padding-left:0; }
+form .aligned p.help { padding-left:38px; }
+.aligned .vCheckboxLabel { float:none !important; display:inline; }
+.colM .aligned .vLargeTextField, colM .aligned .vXMLLargeTextField { width:610px; }
+.checkbox-row p.help { margin-left:0; padding-left:0 !important; }
+form .error p { color: red; font-size: 30px;}
+
+/*  WIDE FIELDSETS  */
+.wide label { width:15em !important; }
+form .wide p { margin-left:15em; }
+form .wide p.help { padding-left:38px; }
+.colM fieldset.wide .vLargeTextField, .colM fieldset.wide .vXMLLargeTextField { width:450px; }
+
+div.error { color: darkred; border: none; float: none display: block;}
+</style>
+{% endblock %}
+{% block extrastyle %}{% endblock %}
+{% block extrahead %}{% endblock %}
+</head>
+{% load i18n %}
+
+<body class="{% if is_popup %}popup {% endif %}{% block bodyclass %}{% endblock %}">
+
+<!-- Container -->
+<div id="container">
+
+    {% if not is_popup %}
+    <!-- Header -->
+    <div id="header">
+        <div id="branding">
+        {% block branding %}{% endblock %}
+        </div>
+<div id="user-tools">
+        {% trans 'Welcome,' %}
+    {% if not user.is_anonymous %}
+<strong>{% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}</strong>.
+    {% else %}
+    guest
+    {% endif %}
+<br />
+    {% block userlinks %}
+    {% if not user.is_anonymous %}
+    <a href="/registration/password_change/">{% trans 'Change password' %}</a> / <a href="/registration/logout/">{% trans 'Log out' %}</a>
+    {% else %}
+<a href="/registration/login/">{% trans 'Login' %}</a> / <a href="/registration/register/">{% trans 'Register' %}</a>
+    {% endif %}
+    {% endblock %}
+</div>
+        {% block nav-global %}{% endblock %}
+        <br class="clear" />
+    </div>
+    <!-- END Header -->
+    {% block breadcrumbs %}<div class="breadcrumbs"><a href="/">{% trans 'Home' %}</a>{% if title %} &rsaquo; {{ title }}{% endif %}</div>{% endblock %}
+    {% endif %}
+
+        {% if messages %}
+        <ul class="messagelist">{% for message in messages %}<li>{{ message }}</li>{% endfor %}</ul>
+        {% endif %}
+
+    <!-- Content -->
+    <div id="content" class="{% block coltype %}colM{% endblock %}">
+        {% block pretitle %}{% endblock %}
+        {% if title %}<h1>{{ title }}</h1>{% endif %}
+        {% block content %}{{ content }}{% endblock %}
+        {% block sidebar %}{% endblock %}
+        <br class="clear" />
+    </div>
+    <!-- END Content -->
+
+    <div id="footer"></div>
+</div>
+<!-- END Container -->
+
+</body>
+</html>
