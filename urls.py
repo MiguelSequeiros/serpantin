@@ -1,6 +1,9 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
+    (r'^admin/', include('django.contrib.admin.urls')),
+
+
     (r'^', 'django.views.generic.simple.direct_to_template', {'template': 'base_dojo.html'}),
     (r'^registration/login', 'django.contrib.auth.views.login'),
     (r'^registration/logout', 'django.contrib.auth.views.logout'),
