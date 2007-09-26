@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('',
+    (r'^', 'django.views.generic.simple.direct_to_template', {'template': 'base_dojo.html'}),
     (r'^registration/login', 'django.contrib.auth.views.login'),
     (r'^registration/logout', 'django.contrib.auth.views.logout'),
     #(r'^registration/register/$', 'serpantin.apps.registration.views.register'),
@@ -10,6 +11,6 @@ urlpatterns = patterns('',
     (r'^registration/password_change/done/$', 'django.views.registration.passwords.password_change_done'),
     (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'registration/index.html'}),
 
-    (r'^accounts/profile/$', 'django.views.generic.simple.direct_to_template', {'template': 'base_dojo.html'}),
+    #(r'^accounts/profile/$', 'django.views.generic.simple.direct_to_template', {'template': 'base_dojo.html'}),
     (r'^accounts/login', 'django.views.auth.login.login'),
 )

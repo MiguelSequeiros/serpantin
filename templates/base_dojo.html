@@ -1,0 +1,390 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>sERP2</title>
+
+
+<script type="text/javascript">
+	var djConfig = {isDebug: true};
+	djConfig["bindEncoding"] = "utf8";
+	djConfig.debugAtAllCosts = true;
+</script>
+
+<script type="text/javascript" src="/site_media/dojo/dojo.js"></script>
+
+<script language="JavaScript" type="text/javascript">
+	dojo.require("dojo.math");
+	dojo.require("dojo.widget.*");
+	//dojo.require("dojo.widget.FormContainer");
+	dojo.require("dojo.widget.ContentPane");
+	dojo.require("dojo.widget.LinkPane");
+	//dojo.require("dojo.widget.SplitPane");
+	dojo.require("dojo.widget.SplitContainer");
+	dojo.require("dojo.widget.ColorPalette");
+	//dojo.require("dojo.widget.TabPane");
+	dojo.require("dojo.widget.TabContainer");
+	dojo.require("dojo.widget.Tree");
+	//dojo.require("dojo.widget.LayoutPane");
+	dojo.require("dojo.widget.LayoutContainer");
+	//dojo.require("dojo.widget.Accordion");
+	dojo.require("dojo.widget.AccordionPane");
+	dojo.require("dojo.widget.html.ComboBox");
+	dojo.require("dojo.widget.ComboBox");
+	dojo.require("dojo.widget.FloatingPane");
+	dojo.require("dojo.widget.Dialog");
+	dojo.require("dojo.widget.DatePicker");
+	dojo.require("dojo.widget.Toolbar");
+	dojo.require("dojo.widget.html.DatePicker");
+	dojo.require("dojo.lfx.html");
+	dojo.require("dojo.widget.DropdownDatePicker");
+	dojo.require("dojo.widget.Button");
+	dojo.require("dojo.widget.Menu2");
+	dojo.require("dojo.widget.Manager");
+
+	dojo.require("dojo.io.*");
+	dojo.require("dojo.io.IframeIO");
+	
+	dojo.hostenv.writeIncludes();
+	
+</script>
+<script type="text/javascript" src="/jsi18n/"></script>
+<script type="text/javascript" src="/site_media/js/core.js"></script>
+<script type="text/javascript" src="/site_media/js/admin/RelatedObjectLookups.js"></script>
+<script language="JavaScript" type="text/javascript" src="/site_media/js/calendar.js">
+</script>
+<script language="JavaScript" type="text/javascript" src="/site_media/js/admin/DateTimeShortcuts.js">
+</script>
+
+<script type="text/javascript" src="/site_media/js/serp2.js">
+</script>
+<script language="JavaScript" type="text/javascript">
+    dojo.addOnLoad(
+		function(){
+	    	updateHistory(); 
+			dojo.event.connect(dojo.widget.byId("tb_incoming").domNode, "onclick", function(){loadForm("gtd","Incoming");});
+			dojo.event.connect("after", dojo.widget.byId("search"), "selectOption", function(){requestObj();});
+		}
+    ); 
+    //
+    loadListForm('common','Org','orglisttab');
+    loadListForm('common','Person','peopletab');
+</script>
+
+
+<style>
+	html, body{	
+		width: 100%;	/* make the body expand to fill the visible window */
+		height: 100%;
+		overflow: hidden;	/* erase window level scrollbars */
+		padding: 0 0 0 0;
+		margin: 0 0 0 0;
+	} 
+    div.container {
+		background-color: white;
+		border: 2px solid black;
+		width: 100%;
+		height: 100%;
+		padding: 0px;
+		margin: 0px;
+		overflow: hidden;
+    }
+							    
+    .label , .content {
+        width: 100%;
+    }
+						    
+    .label {
+        background: grey;
+        height: 20px;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+										    
+    .content {
+        background: #eeeeee;
+		width: 100%;
+		height: 100%;
+		padding: 2px;
+		margin: 2px;
+    }
+  
+   	.pane {
+   		border: 1px;
+     	width: 95%;
+     	overflow:hidden;
+   	}    
+   
+   	.dojoDialog {
+		position: relative !important;
+		background : #eee;
+		border : 1px solid #999;
+    }
+
+</style>
+
+	<link href="/site_media/css/serp.css" rel="stylesheet" type="text/css" media="screen" /> 
+   	<!--link href="/site_media/css/print.css" rel="stylesheet" type="text/css" media="print" /-->
+
+</head>
+<body>{% load i18n %}
+
+<div dojoType="LayoutContainer"
+	layoutChildPriority='top-bottom'
+	style="width: 100%; height: 100%;">
+    <div dojoType="ContentPane" layoutAlign="top"> 
+<!--	    style="position:relative; height:2.5em; background:#417690; color:#f4f379;"> -->
+        <div id="toolbar1" dojo:type="ToolbarContainer">
+        <div dojo:type="toolbar">
+            <img dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/cut.gif"/>
+            <img id="tb_incoming" dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/copy.gif" onclick="javascript:alert('hi there'); loadForm('gtd','Incoming');" />
+            <img dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/paste.gif"/>
+
+            <span dojo:type="ToolbarSeparator">&nbsp;</span>
+
+            <img dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/bold.gif" toggleItem="true"/>
+            <img dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/italic.gif" toggleItem="true"/>
+            <img dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/underline.gif" toggleItem="true"/>
+            <img dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/strikethrough.gif" toggleItem="true"/>
+
+            <span dojo:type="ToolbarSeparator">&nbsp;</span>
+
+            <span dojo:type="ToolbarButtonGroup" name="justify" defaultButton="justifyleft" preventDeselect="true">
+                <img dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/justifyleft.gif" toggleItem="true" name="justifyleft"/>
+                <img dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/justifycenter.gif" toggleItem="true" name="justifycenter"/>
+                <img dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/justifyright.gif" toggleItem="true" name="justifyright"/>
+                <img dojo:type="ToolbarButton" dojo:icon="/site_media/dojo/src/widget/templates/buttons/justifyfull.gif" toggleItem="true" name="justifyfull"/>
+            </span>
+
+            <span dojo:type="ToolbarSeparator"></span>
+
+            <img dojo:type="ToolbarButton" dojo:icon="/media/dojo/src/widget/templates/buttons/insertorderedlist.gif"/>
+            <img dojo:type="ToolbarButton" dojo:icon="/media/dojo/src/widget/templates/buttons/insertunorderedlist.gif"/>
+            <img dojo:type="ToolbarButton" dojo:icon="/media/dojo/src/widget/templates/buttons/indent.gif"/>
+            <img dojo:type="ToolbarButton" dojo:icon="/media/dojo/src/widget/templates/buttons/outdent.gif"/>
+
+            <span dojo:type="ToolbarSeparator"></span>
+
+  {% if user.is_anonymous %}
+    &nbsp;{% trans 'Hello anonymous' %}. <a id="logout" href="/registration/login/">{% trans 'Login' %}.</a>
+	{% else %}
+    &nbsp;{% trans 'Hello' %}, <a id="logout" href="/registration/logout" style="color:#417690 !important;">{{ user.username }}</a>
+	{% endif%} 
+        </div>
+      </div>
+    </div> 
+    <!--div dojoType="ContentPane" layoutAlign="bottom" 
+      style="position:auto; height:2.5em; background:#417690; color:#f4f379;">
+	bottom bar
+    </div -->
+<!--    <div dojoType="SplitPane" -->
+    <div dojoType="SplitContainer"
+	    orientation="horizontal"
+	    sizerWidth="5"
+	    sizeMin="120"
+	    layoutAlign="client"
+	    sizeShare="80"
+	    style="overflow: hidden !important; margin-left:4px;margin-right:4px;">
+	<div dojoType="ContentPane" class="container"
+		sizeMin="120"
+		sizeShare="80"
+		style="overflow: auto !important;">
+      <!--    <div class="container"> -->
+      <!-- Contacts -->
+        {% include "base_contacts.html" %}
+      <!-- AccordionPane1 Contacts -->
+
+      <!-- Refernces -->
+        {% include "base_refer.html" %}
+      <!-- AccordionPane References -->
+
+	    <!--    </div> --><!-- container -->
+	</div> <!-- ContentPane -->    	
+	
+<!--	<div dojoType="SplitPane" -->
+	<div dojoType="SplitContainer"
+		orientation="vertical"
+		sizerWidth="5"
+		sizeShare="300"
+		sizeMin="50" style="overflow: hidden !important;">
+        	<!--	activeSizing="1" -->
+      
+	    <div id="mainTabPane" dojoType="TabContainer" sizeMin="20" sizeShare="70" style="overflow: hidden !important;">
+	        <div id="orgTabPane" dojoType="TabContainer" label="Орг-ции" style="overflow: hidden !important;">
+<!--		    <div dojoType="ContentPane" id="orglisttabw" label="List" class="pane"> -->
+			<div dojoType="ContentPane" id="orglisttabw" label="List" style="overflow: hidden !important;">
+				<div id="orglisttab" style="overflow: hidden !important;"></div>
+			</div> 
+			<!-- orgPane -->
+			<div dojoType="ContentPane" id="orginfotabw" label="Info" class="pane">
+				<div id="orginfotab" ></div>
+			</div> 
+			<!-- empTab -->
+			<div id="emplTab" dojoType="ContentPane" label="Работники" class="pane"> 
+				<div id="emplcntx"></div>
+				<div id="insertpoint" style="position: absolute;left:100px;top:100px;height:300px;width:200px;"></div>
+			</div>
+
+			
+			<!-- requisiteTab -->
+			
+			<div dojoType="ContentPane" label="Реквизиты" class="pane">
+				<div id="requisitiesw"></div>
+			</div> 
+			<!-- ContentPane -->
+			<div id="docTab" dojoType="ContentPane" label="Документы" class="pane" style="overflow: visible !important"> 
+				<div id="orgdoctab"></div>
+			</div> 
+			<div id="paymTab" dojoType="ContentPane" label="Платежи" class="pane" style="overflow: visible !important"> 
+				<div id="orgpaymtab"></div>
+			</div> 
+			<div id="todoTab" dojoType="ContentPane" label="Сделать" class="pane"> 
+				<div id="orgtodotab"></div>
+			</div> 
+			<div id="doneTab" dojoType="ContentPane" label="Сделано" class="pane"> 
+				<div id="orgdonetab"></div>
+			</div> 
+		</div> <!-- orgTabPane -->
+
+		
+		<!-- People -->
+		
+		<div id="peopletabw" label="Люди" dojoType="ContentPane" href="" class="pane">
+		    <div id="peopletab" style="overflow:hidden !important;"></div>
+		</div> <!-- peopleTab -->
+
+		
+		<!-- GTD -->
+		
+        <div id="gtdTabPane" dojoType="TabContainer" label="Планирование" style="overflow: hidden !important;">
+			<div id="gtdtabw" label="GTD" dojoType="ContentPane" href="" class="pane">
+			    	<div id="gtdtab" style="overflow: auto !important;"></div>
+			</div>
+			<div id="gtdcurrenttabw" label="Текущая" dojoType="ContentPane" 
+				href="" class="pane" style="overflow: auto !important;">
+			    	<div id="gtdcurrenttab" style="overflow:hidden !important;"></div>
+			</div>
+			<div id="gtdtaskstabw" label="Задачи" dojoType="ContentPane" href="" class="pane">
+		        	<div id="gtdtaskstab" style="overflow:hidden !important;"></div>
+			</div>
+			<div id="gtddonetabw" label="Выполненные" dojoType="ContentPane" href="" class="pane">
+				<div id="gtddonetab" style="overflow:hidden !important;"></div>
+			</div>
+			<div id="gtdcaltabw" label="Календарь" dojoType="ContentPane" href="" class="pane">
+		    	    <div id="gtdcaltab" style="overflow:hidden !important;"></div>
+			</div>
+			<div id="gtdchattabw" label="Чат" dojoType="ContentPane" href="/site_media/muckl/index.html" class="pane">
+				<div id="gtdchattab" style="overflow:hidden !important;"></div>
+			</div>
+		</div> <!-- gtdTab -->		
+
+		
+		<!-- Desert -->
+		
+		<div id="deserttabpane" label="Desert" dojoType="TabContainer" class="pane" style="overflow: auto  !important;">
+		    <div dojoType="ContentPane" id="deserttabw" label="Заявки" style="overflow: visible !important;">
+				<div id="deserttab" style="overflow: hidden !important;"></div>
+		    </div> 
+			<div dojoType="ContentPane" 
+					id="desertreporttabw" 
+					label="Отчеты" 
+					style="overflow: visible !important;">
+				<div id="desertreporttab" style="overflow: hidden !important;"></div>
+		    </div> 
+		</div> <!-- desertTab -->		
+
+		
+		<!-- EOKS -->				
+		
+	    <div id="eokstabw" label="EOKS" dojoType="ContentPane" href="" class="pane" >
+		    <div dojoType="ContentPane" sizeMin="20" sizeShare="30" style="overflow: visible !important;">
+			<div id="eokstab"></div>
+		    </div> <!-- ContentPane -->
+		</div> <!-- eoksTab -->
+
+		
+		<!-- Reference -->				
+		
+	    <div id="referentabw" label="Настройки" dojoType="ContentPane" href="" class="pane" >
+		    <div dojoType="ContentPane" sizeMin="20" sizeShare="30">
+				<div id="referentab" style="overflow:hidden !important;"></div>
+			</div> <!-- ContentPane -->
+		</div> <!-- ReferenceTab -->
+
+		
+		<!-- Inventory -->	
+
+		<div id="invTabPane" dojoType="TabContainer" label="Склад" style="overflow: hidden !important;">
+			<div  dojoType="ContentPane" id="invtabw" label="Common" sizeMin="20" sizeShare="30">
+				<div id="invtab"></div>
+		    </div> <!-- ContentPane-->
+		    <div  dojoType="ContentPane" id="invreceipttabw" label="Приход"  sizeMin="20" sizeShare="30">
+				<div id="invreceipttab"></div>
+		    </div> <!-- ContentPane-->
+		    
+		    <div dojoType="ContentPane" id="invwithdrawtabw" label="Расход" style="overflow: hidden !important;">
+				<div id="invwithdrawtab" style="overflow: hidden !important;"></div>
+		    </div> 
+		    <div dojoType="ContentPane" id="invinventorytabw" label="Склад" class="pane">
+				<div id="invinventorytab" ></div>
+			</div>
+			<div dojoType="ContentPane" id="invtmptabw" label="Временный склад" class="pane">
+				<div id="invtmptab" ></div>
+			</div>
+		</div>
+
+		
+		<!-- Finance -->	
+
+		<div id="finTabPane" dojoType="TabContainer" label="Финансы" style="overflow: hidden !important;">
+<!--		<div id="fintabw" label="Финансы" dojoType="ContentPane" href="" pane="pane"> -->
+		    <div  dojoType="ContentPane" id="fintabw" label="Common" sizeMin="20" sizeShare="30">
+				<div id="fintab"></div>
+		    </div> <!-- ContentPane-->
+		    <div  dojoType="ContentPane" id="finmoneytabw" label="Money" href="/finance/showMoneyInfo/" sizeMin="20" sizeShare="30">
+			<div id="finmoneytab"></div>
+		    </div> <!-- ContentPane-->
+		    
+		    <div dojoType="ContentPane" id="fincontracttabw" label="Договора" style="overflow: hidden !important;">
+			<div id="fincontracttab" style="overflow: hidden !important;"></div>
+		    </div> 
+		    <!-- actTab -->
+		    <div dojoType="ContentPane" id="finacttabw" label="Акты" class="pane">
+			<div id="finacttab" ></div>
+		    </div> 
+		    <!-- invoiceTab -->
+		    <div id="fininvoicetabw" dojoType="ContentPane" label="Счета" class="pane"> 
+			<div id="fininvoicetab"></div>
+    		    </div> 
+		    <!-- factureTab -->
+		    <div dojoType="ContentPane" label="Сч.-фактуры" class="pane">
+			<div id="finfacturetab"></div>
+		    </div> <!-- ContentPane -->
+			
+		    <!-- paymentTab -->
+		    <div dojoType="ContentPane" label="Платежки" id="finpaymenttabw" class="pane" style="overflow:auto !important;">
+				<div id="finpaymenttab"></div>
+		    </div> <!-- ContentPane -->
+		    <!-- actionTab -->
+		    <div dojoType="ContentPane" label="Действия" id="finactiontabw" class="pane" href="/finance/actions/">
+				<div id="finactiontab"></div>
+		    </div> <!-- ContentPane -->
+			</div> <!-- financeTab -->
+		
+			<div id="tab4" label="Отчеты" dojoType="ContentPane" href="" class="pane" style="overflow: auto !important;" >
+			    <div dojoType="ContentPane" sizeMin="20" sizeShare="30" style="padding-left: 20px; overflow: auto !important;" >
+
+		    			
+			
+			    </div> <!-- ContentPane -->
+		    </div> <!-- lastTab -->	    
+	</div> <!-- mainTabPane -->
+	<div dojoType="ContentPane" id="footerpane" class="container"
+		sizeMin="30"
+		sizeShare="30"
+		style="overflow: hidden !important;">
+	</div>
+	</div> <!-- SplitPane2 -->
+    </div> <!-- SplitPane1 -->
+</div> <!-- Layout -->
+</body>
+</html>
