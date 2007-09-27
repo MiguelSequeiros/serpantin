@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Contnet-Type" content="text/html; charset=UTF-8">
+
+<title>Serpantin</title>
+
+<style type="text/css">
+  @import "/site_media/dojo09/dojo/resources/dojo.css";
+  @import "/site_media/dojo09/dijit/themes/tundra/tundra.css";
+  @import "/site_media/dojo09/dijit/themes/tundra/tundra_rtl.css";
+</style>
+
+<style>
+	html, body{	
+		width: 100%;	/* make the body expand to fill the visible window */
+		height: 100%;
+		overflow: hidden;	/* erase window level scrollbars */
+		padding: 0 0 0 0;
+		margin: 0 0 0 0;
+	} 
+    div.container {
+		background-color: white;
+		border: 2px solid black;
+		width: 100%;
+		height: 100%;
+		padding: 0px;
+		margin: 0px;
+		overflow: hidden;
+    }
+							    
+    .label , .content {
+        width: 100%;
+    }
+						    
+    .label {
+        background: grey;
+        height: 20px;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+										    
+    .content {
+        background: #eeeeee;
+		width: 100%;
+		height: 100%;
+		padding: 2px;
+		margin: 2px;
+    }
+  
+   	.pane {
+   		border: 1px;
+     	width: 95%;
+     	overflow:hidden;
+   	}    
+   
+   	.dojoDialog {
+		position: relative !important;
+		background : #eee;
+		border : 1px solid #999;
+    }
+
+</style>
+
+
+
+<script type="text/javascript" src="/site_media/dojo09/dojo/dojo.js"  djConfig = "parseOnLoad:true"></script>
+
+<script language="JavaScript" type="text/javascript">
+	dojo.require("dojo.parser");
+	//dojo.require("dijit.dijit");
+	dojo.require("dijit.layout.LayoutContainer");
+	dojo.require("dijit.layout.ContentPane");
+	dojo.require("dijit.layout.TabContainer");
+	dojo.require("dijit.layout.SplitContainer");
+	dojo.require("dijit.layout.AccordionContainer");
+	dojo.require("dijit.form.ComboBox");
+</script>
+
+
+
+
+</head>
+
+<body class="tundra">
+{% load i18n %}
+
+<div dojoType="dijit.layout.LayoutContainer"
+	layoutChildPriority='top-bottom'
+	style="width: 100%; height: 100%;">
+    <div dojoType="dijit.layout.SplitContainer"
+	    orientation="horizontal"
+	    sizerWidth="5"
+	    sizeMin="120"
+	    layoutAlign="client"
+	    sizeShare="80"
+	    style="overflow: hidden !important; margin-left:4px;margin-right:4px;">
+	    
+	<div dojoType="dijit.layout.AccordionContainer" 
+		sizeMin="120"
+		sizeShare="80"
+		style="overflow: auto !important;">
+      <!--    <div class="container"> -->
+      <!-- Contacts -->
+        {% include "base_contacts.html" %}
+      <!-- AccordionPane1 Contacts -->
+
+      <!-- Refernces -->
+        {% include "base_refer.html" %}
+      <!-- AccordionPane References -->
+
+	    <!--    </div> --><!-- container -->
+	</div> <!-- ContentPane -->    	
+	
+	<div dojoType="dijit.layout.SplitContainer"
+		orientation="vertical"
+		sizerWidth="5"
+		sizeShare="300"
+		sizeMin="50" style="overflow: hidden !important;">
+      
+	    <div id="mainTabPane" dojoType="dijit.layout.TabContainer" sizeMin="20" sizeShare="70" style="overflow: hidden !important;">
+	        <div id="orgTabPane" dojoType="dijit.layout.TabContainer" label="Org" style="">
+			<div dojoType="dijit.layout.ContentPane" id="orglisttabw" label="List" >
+				<div id="orglisttab"></div>
+			</div> 
+			<!-- orgPane -->
+			<div dojoType="dijit.layout.ContentPane" id="orginfotabw" label="Info" class="pane">
+				<div id="orginfotab" ></div>
+			</div> 
+			<!-- empTab -->
+			<div id="emplTab" dojoType="dijit.layout.ContentPane" label="Работники" class="pane"> 
+				<div id="emplcntx"></div>
+				<div id="insertpoint" style="position: absolute;left:100px;top:100px;height:300px;width:200px;"></div>
+			</div>
+
+			
+			<!-- Doc Tab -->
+			<div id="docTab" dojoType="dijit.layout.ContentPane" label="Documents"> 
+				<div id="orgdoctab"></div>
+			</div> 
+		</div> <!-- orgTabPane -->
+
+		
+		<!-- People -->
+		
+		<div id="peopletabw" label="Люди" dojoType="dijit.layout.ContentPane" href="" class="pane">
+		    <div id="peopletab" style="overflow:hidden !important;"></div>
+		</div> <!-- peopleTab -->
+
+		
+		<!-- Reference -->				
+		
+		<div id="referentabw" label="Настройки" dojoType="dijit.layout.ContentPane" href="" class="pane" >
+			<div dojoType="dijit.layout.ContentPane" sizeMin="20" sizeShare="30">
+				<div id="referentab" style="overflow:hidden !important;"></div>
+			</div> <!-- ContentPane -->
+		</div> <!-- ReferenceTab -->
+
+	    </div> <!-- mainTabPane -->
+	
+	
+	    <div dojoType="dijit.layout.ContentPane" id="footerpane" class="container"
+		sizeMin="30"
+		sizeShare="30"
+		style="overflow: hidden !important;">
+	    </div>
+
+	</div> <!-- SplitPane2 -->
+    </div> <!-- SplitPane1 -->
+</div> <!-- Layout -->
+</body>
+</html>

@@ -1,8 +1,6 @@
 {% load i18n %}
-<div id="acc_trans" dojoType="AccordionPane" containerNodeClass="content" 
-        label="{% trans 'References' %}" labelNodeClass="label" open=false>
-	<!--    <div id="transPanel"> -->
-    <div style="overflow: auto">	
+<div id="acc_trans" dojoType="dijit.layout.AccordionPane" title="{% trans 'References' %}" open=false>
+    <div style="overflow: auto">
       <a href="javascript:loadListForm('common','Country','referentab');">{% trans 'Countries' %}</a><br/>
       <a href="javascript:loadListForm('common','Region','referentab');">{% trans 'Regions' %}</a><br/>
       <a href="javascript:loadListForm('common','District','referentab');">{% trans 'Districts' %}</a><br/>

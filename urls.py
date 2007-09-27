@@ -12,7 +12,8 @@ urlpatterns = patterns('',
     #(r'^registration/password_change/done/$', 'django.views.registration.passwords.password_change_done'),
 #    (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'registration/index.html'}),
 
-    (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'base_dojo.html'}),
+    #(r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'base_dojo.html'}),
+    (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'base_dojo09.html'}),
     #(r'^accounts/login', 'django.views.auth.login.login'),
     (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/var/www/html/media/', 'show_indexes':True}),
 
