@@ -1,0 +1,48 @@
+{% load i18n %}
+<div class="paneheader">
+    <form id="changelist-search">
+	<div><!-- DIV needed for valid HTML -->
+	    <label><img src="/site_media/images/search.gif" alt="Search" /></label>
+	    <input type="text" size="40" name="q" value="" id="{{ model }}_sbar" />
+	    <!--input id="{{ model }}_sb" type="submit" value="Go" onClick="javascript:loadListForm('{{ app }}','{{ model }}','{{ node }}');"></input -->
+	    <input id="{{ model }}_sbut" type="submit" value="Go"></input>
+	</div>
+    </form>
+</div>
+
+<div class="pane2" style="width: 780px; height: 330px;">
+    <table id="fplist_{{ win_id }}" class="panelist">
+	<thead><tr><th></th><th></th>
+	    <th> Ф И О </th>
+	    <th> Телефон </th>
+	    <th> Email </th>
+	    <th> Город </th>
+	    <th> Создал </th>
+	    <th>{% trans 'Mod.' %}</th>
+	    </tr>
+	</thead>
+	<tbody>
+	{% for obj in obj_list %}
+	    <tr class="{% cycle row1,row2 %}"><td><a href="javascript:loadForm('{{ app }}','{{ model }}',{{obj.id}});"><img src="/site_media/images/edit.gif" alt="{% trans 'Edit object' %}"></a></td>
+		<td><a href="javascript:confirmDelObj('{{ app }}','{{ model }}','{{ obj.id }}');"><img src="/site_media/images/trash.gif" alt="{% trans 'Delete object' %}"></a></td>
+		<td>{{ obj.fullname }}</td>
+		<td>{{ obj.get_phones }}</td>
+		<td><a href="mailto:{{ obj.email }}">{{ obj.email }}</a></td>
+		<td>{{ obj.town }}</td>
+		<td>{{ obj.createuser }}</td>
+		<td>{{ obj.modifyuser }}</td>
+	    </tr>
+	{% endfor %}
+	</tbody>
+    </table>
+</div>
+
+<div id="toolbar" class="footer">
+<a href="javascript:loadForm('{{ app }}','{{ model }}');">{% trans 'Add' %}</a>&nbsp;&nbsp;
+ {% if has_previous %}
+     <a href="javascript:loadListForm('{{ app }}','{{ model }}','{{ node }}',{{ previous }});"><<<</a>
+ {% endif %}
+      страница {{ page }}
+ {% if has_next %}
+      <a href="javascript:loadListForm('{{ app }}','{{ model }}','{{ node }}',{{ next }});">>>></a> {% endif %}(всего страниц: {{ pages }}; записей {{obj.}}: {{ hits }})
+</div>
