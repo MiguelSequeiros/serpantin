@@ -7,8 +7,9 @@
 
 <style type="text/css">
   @import "/site_media/dojo09/dojo/resources/dojo.css";
-  @import "/site_media/dojo09/dijit/themes/tundra/tundra.css";
-  @import "/site_media/dojo09/dijit/themes/tundra/tundra_rtl.css";
+  @import "/site_media/dojo09/dijit/themes/soria/soria.css";
+  //@import "/site_media/dojo09/dijit/themes/tundra/tundra.css";
+  //@import "/site_media/dojo09/dijit/themes/tundra/tundra_rtl.css";
 </style>
 
 <style>
@@ -82,7 +83,7 @@
 
 </head>
 
-<body class="tundra">
+<body class="soria">
 {% load i18n %}
 
 <div dojoType="dijit.layout.LayoutContainer"
@@ -99,7 +100,7 @@
 	<div dojoType="dijit.layout.AccordionContainer" 
 		sizeMin="120"
 		sizeShare="80"
-		style="overflow: auto !important;">
+		style="overflow: hidden !important;">
       <!--    <div class="container"> -->
       <!-- Contacts -->
         {% include "base_contacts.html" %}
