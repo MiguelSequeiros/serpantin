@@ -534,10 +534,10 @@ class Person(models.Model):
  
  
     class Meta:
-        list_display_related = ('PersonAddress','PhoneList',)	
+        #list_display_related = ('PersonAddress','PhoneList',)	
         verbose_name = _('Person')
         verbose_name_plural = _('People')
-	lookup_options = {'field':'lastname', 'outfield':'fullname'}
+        #lookup_options = {'field':'lastname', 'outfield':'fullname'}
 
 
     class Admin:

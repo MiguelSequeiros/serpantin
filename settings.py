@@ -17,6 +17,13 @@ users = {
         'djangodir':	'/home/greg/www/django_src/django', 
         'projectdir':	'/home/greg/www/serp2', 
     },
+    'subzero': { 
+        'login':	'subzero',
+        'name':		'Artem Opanchuk',
+        'email':	'subzero@dial.com.ru', 
+        'djangodir':	'/home/subzero/svn/django-trunk/django', 
+        'projectdir':	'/home/subzero/svn/serpantin', 
+    },
 }
 
 
@@ -95,7 +102,7 @@ MIDDLEWARE_CLASSES = (
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.middleware.doc.XViewMiddleware",
 #    "django.middleware.transaction.TransactionMiddleware",
-    "diallib.middleware.threadlocals.ThreadLocals",
+#    "diallib.middleware.threadlocals.ThreadLocals",
 )
 
 #DISABLE_TRANSACTION_MANAGEMENT = True
