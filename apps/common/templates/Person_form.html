@@ -80,13 +80,6 @@
       *** {{ form.info.errors|join:", " }}
     {% endif %}
   </td></tr>
-
-  <tr><td>
-    <label for="id_phone">Места работы: </label></td><td>
-    {% for emp in obj.employment_list %}
-	<a href="javascript:loadForm('common','Org',{{emp.org.id}});">{{ emp.org }}</a>&nbsp;{{emp.position}}&nbsp;{{emp.workphone}}
-    {% endfor %}
-  </td></tr>
 <tr><td colspan="2">
 <div class="box">
 <button dojoType="Button" onclick="this.setDisabled(true); submitForm(this, 'common','Person',{{ win_id }},'{{obj.id}}','True');"><span>Сохранить и продолжить</span></button>
