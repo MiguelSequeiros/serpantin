@@ -67,16 +67,18 @@ function loadListForm(app, model, node, page) {
     }
     server_url = "/async/"+node+"/"+app+"/"+model+"/list/" + extraparam;
     
-    dojo.io.bind({
+    dojo.xhrGet({
         url:    server_url,
         //content:{format: 'ahah'},
-        load:   function(type, data){
-	    //alert("node "+node);
+        handleAs: "text",
+        timeout: 5000,
+        load: function(response, ioArgs){
+            alert("node "+node);
             var n = dojo.byId(node);
-    	    n.innerHTML = data;
+            n.innerHTML = response;
             dojo.event.connect(dojo.byId(model+"_sbut"), "onclick", function(e) { e.preventDefault(); loadListForm(app, model, node, page); });
             var tab = dojo.widget.byId(node+"w");
-    	    var tabpane = dojo.widget.byId("mainTabPane");
+            var tabpane = dojo.widget.byId("mainTabPane");
             if (node.substring(0,3)=='org') {
                 var orgsubpane = dojo.widget.byId("orgTabPane");
                 orgsubpane.selectTab(tab);
@@ -105,6 +107,7 @@ function loadListForm(app, model, node, page) {
             else {
                 tabpane.selectTab(tab);
             }
+            return response;
         }
     });
 }
