@@ -75,40 +75,22 @@ function loadListForm(app, model, node, page) {
         load: function(response, ioArgs){
             alert("node "+node);
             var n = dojo.byId(node);
+
             n.innerHTML = response;
-            dojo.event.connect(dojo.byId(model+"_sbut"), "onclick", function(e) { e.preventDefault(); loadListForm(app, model, node, page); });
-            var tab = dojo.widget.byId(node+"w");
-            var tabpane = dojo.widget.byId("mainTabPane");
-            if (node.substring(0,3)=='org') {
-                var orgsubpane = dojo.widget.byId("orgTabPane");
-                orgsubpane.selectTab(tab);
-                tabpane.selectTab(orgsubpane);
-            }
-            else if (node.substring(0,3)=='gtd') {
-                var gtdsubpane = dojo.widget.byId("gtdTabPane");
-                gtdsubpane.selectTab(tab);
-                tabpane.selectTab(gtdsubpane);
-            }
-            else if (node.substring(0,3)=='fin') {
-                var finsubpane = dojo.widget.byId("finTabPane");
-                finsubpane.selectTab(tab);
-                tabpane.selectTab(finsubpane);
-            }	
-            else if (node.substring(0,3)=='inv') {
-                var invsubpane = dojo.widget.byId("invTabPane");
-                invsubpane.selectTab(tab);
-                tabpane.selectTab(invsubpane);
-            }	
-            else if (node.substring(0,3)=='des') {
-                var desertsubpane = dojo.widget.byId("deserttabpane");
-                desertsubpane.selectTab(tab);
-                tabpane.selectTab(desertsubpane);
-            }	
-            else {
-                tabpane.selectTab(tab);
-            }
+            dojo.connect(dojo.byId(model+"_sbut"), "onclick", function(e) { e.preventDefault(); loadListForm(app, model, node, page); });
+
+            var tab = dijit.byId(node+"w");
+            var tabpane = dijit.byId("mainTabPane");
+
+            //tabpane.selectChild(tab);
+            mainTabPane.selectChild(peopletab);
+
             return response;
-        }
+        },
+	error: function(response, ioArgs) { // ?
+    	    console.error("HTTP status code: ", ioArgs.xhr.status); // ?
+	    return response; // ?
+	}
     });
 }
 
