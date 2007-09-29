@@ -73,7 +73,7 @@ function loadListForm(app, model, node, page) {
         handleAs: "text",
         timeout: 5000,
         load: function(response, ioArgs){
-            alert("node "+node);
+            //alert("node "+node);
             var n = dojo.byId(node);
 
             n.innerHTML = response;

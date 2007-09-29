@@ -1,7 +1,6 @@
 {% load i18n %}
     <div id="acc_contacts" dojoType="dijit.layout.AccordionPane" title="{% trans 'Contacts' %}">
 	        <form method="post" name="search_form" id="search_form" action="javascript:requestObj();">
-		<!--    
 		<input dojoType="dijit.form.ComboBox" 
 			    id="search" 
 			    name="search" 
@@ -9,12 +8,11 @@
 			    dataUrl="/common/search/?search=%{searchString}"
 			    autoComplete="false" style="width:190px; !important" >
 		    </input>
-		-->    
 	        </form>
 	        <div id="todayhotlinks"></div>
 
 		<HR></HR>
-	        <a href="javascript:loadListForm('common','Person','peopletab');">{% trans 'List People (eng.)' %}</a><br />
-		<a href="javascript:loadListForm('common','Org','orglisttab');">{% trans 'List Orgs' %}</a><br />
-		<a href="javascript:loadListForm('common','Client','orglisttab');">{% trans 'List Clients' %}</a><br />
+	        <a href="javascript:loadListForm('common','Person','peopletab');">{% trans 'People' %}</a><br />
+		<a href="javascript:loadListForm('common','Org','orglisttab');">{% trans 'Organizations' %}</a><br />
+		<a href="javascript:loadListForm('common','Client','orglisttab');">{% trans 'Clients' %}</a><br />
     </div>
