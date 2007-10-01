@@ -567,5 +567,137 @@ class Person(models.Model):
             middle = u"%s" % self.middlename
         return u"%s %s %s" % (last, first, middle)
 
+
+
+class Orgtype(models.Model):
+    code = models.CharField(_('Orgtype Code'), maxlength=10)
+    name = models.CharField(_('Orgtype Name'), maxlength=60)
+    
+    createuser = models.ForeignKey(User, related_name='created_orgtypes', blank=True, null=True)
+    createdate = models.DateTimeField(blank=True, auto_now_add=True)
+    modifyuser = models.ForeignKey(User, related_name='modified_orgtypes', blank=True, null=True)
+    modifydate = models.DateTimeField(blank=True, auto_now=True)
+
+
+    class Meta:
+        verbose_name = _('Org Type')
+        verbose_name_plural = _('Org Types')
+
+
+    class Admin:
+        fields = (
+            (None, {'fields': ('code','name', )}),
+        )      
+
+        
+    def __unicode__(self):
+        return u"%s" % self.code
+
+
+
+class Org(models.Model):
+    type = models.ForeignKey(Orgtype, blank=True, null=True, verbose_name=_('Org Type'))
+    code = models.CharField(_('Org Code'), maxlength=15, blank=True)
+    alias = models.CharField(_('Org Alias'), maxlength=100, blank=True)
+    name = models.CharField(_('Org Name'), maxlength=200,blank=True)
+    fullname = models.CharField(_('Org Full Name'), maxlength=200,blank=True)
+    #org_parentref = models.ForeignKey('self', null=True, blank=True)
+    town = models.ForeignKey(Town, null=True, verbose_name=_('Town'))
+    #phones = PhonesField(Phone, blank=True)
+    #email = models.EmailField(_('Email'), blank=True, validator_list=[isValidEmail], length=30)
+    email = models.EmailField(_('Email'), blank=True, validator_list=[isValidEmail])
+    http = models.CharField(_('Web Site'), maxlength=40,blank=True)
+    #info = models.TextField(_('Info'), maxlength=256, blank=True, cols=28, rows=5, help_text='Rich Text Editing.')
+    info = models.TextField(_('Info'), maxlength=256, blank=True, help_text='Rich Text Editing.')
+    
+    createuser = models.ForeignKey(User, related_name='created_orgs', blank=True, null=True)
+    createdate = models.DateTimeField(blank=True, auto_now_add=True)
+    modifyuser = models.ForeignKey(User, related_name='modified_orgs', blank=True, null=True)
+    modifydate = models.DateTimeField(blank=True, auto_now=True)
+
+    #tag = models.ManyToManyField(Tag, verbose_name=_('Tags'), blank=True)
+    clients = generic.GenericRelation(Client) #, verbose_name=_('Client'), blank=True, null=True)
+    
+    class Meta:
+        #list_display_related = ('Employee','OrgAddress','Requisite','Bankaccount')	
+        verbose_name = _('Organization')
+        verbose_name_plural = _('Organizations')
+
+
+    class Admin:
+        js = ('/site_media/js/tags.js',)
+        list_display = ('code','alias','fullname','email','town')
+        search_fields = ['code','alias','name','fullname','email','info']
+        #list_filter = ['gnue_createdate']
+
+
+    def __unicode__(self):
+        return u"%s" % self.name
+
+
+    def get_phones(self):
+        phone_list = u""
+        for phone in self.phones.all():
+            phone_list = phone_list + u" %s" % phone
+        print "RA3VAT phone list ", phone_list    
+        return phone_list
+
+
+    def _is_client(self):
+        if self.client_set.count():
+            return True
+        else:
+            return False
+    is_client = property(_is_client)
+
+
+    def getByINN(inn):
+        try:
+            org = Requisite.objects.filter(inn__exact=inn)[0].org
+        except:
+            org = None
+
+        return org 
+    getByINN = staticmethod(getByINN)
+
+
+    def getClientObj(self):
+        try:
+            client = Client.objects.filter(content_type__exact=16, object_id__exact=self.id)[0]
+        except:
+            client = None
+        return client
+
+
+    def getPostaddress(self):
+        try:
+            postaddress = self.orgaddress_set.filter(type__id=3)[0].address
+        except:
+            postaddress = None
+    
+        return postaddress
+    postaddress = property(getPostaddress)
     
     
+    def getPaymentsTotal(self, date_from=None, date_to=None):
+        total = 0
+        if date_from and date_to:
+            paym_list = self.donor_orgs.filter(date__gte=date_from, date__lte=date_to)
+        else:
+            paym_list = self.donor_orgs.all()
+        for pay in paym_list:
+            total = total + pay.total
+        return total
+
+    
+    def getPaymentList(self):
+        paym_list = self.donor_orgs.all().order_by('date')
+        return paym_list
+
+    
+    def getShortLegalName(self):
+        if self.type:
+            legal_name = u"%s %s" % (self.type, self.name)
+        else:
+            legal_name = u"%s" % self.name
+        return legal_name
