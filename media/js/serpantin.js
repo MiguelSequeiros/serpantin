@@ -96,20 +96,34 @@ function loadListForm(app, model, node, page) {
 
 
 function loadContentForm(content_id, object_id) {
-    var contentInfo = {};
-    dojo.io.bind({
+	var contentInfo = {};
+	dojo.io.bind({
 	url:   		"/async/call/getContentTypeOf/"+content_id+"/",
 	mimetype:	"text/plain",
 	load:   	function(type, data){
-			    resp = eval("("+data+")");
-			    loadForm(resp.app_label, resp.model, object_id);
+				resp = eval("("+data+")");
+				loadForm(resp.app_label, resp.model, object_id);
 
 			}
-    });
+	});
 }
 
 
+var tabCounter = 1;
 
+function loadForm(app, model, id, properties, values) {
+	server_url = '/async/'+app+'/'+model+'/'+id+'/form/1/';
+	var newTab = new dijit.layout.ContentPane({
+		title: 'Tab ' +(++tabCounter),
+		closable:true,
+		refreshOnShow: false,
+		href: server_url
+	}, dojo.doc.createElement('div'));
+	dijit.byId('peopleTabPane').addChild(newTab);
+	newTab.startup();
+}
+
+/*
 function loadForm(app,model,id,properties, values) {
     Context.win_id = Context.win_id + 1;
     var getparams = "";
@@ -172,7 +186,7 @@ function loadForm(app,model,id,properties, values) {
     tmpWidget.show();
     //fillComboBoxes();		   
 }
-
+*/
 
 findNodeById = function(inRoot, inId) {
     var i=0;

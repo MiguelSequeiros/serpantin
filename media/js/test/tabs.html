@@ -1,0 +1,43 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Tab containers</title>
+<script type="text/javascript" src="../media/dojo09/dojo/dojo.js" djConfig="parseOnLoad:true"></script>
+<script type="text/javascript">
+	dojo.require("dojo.parser");
+	dojo.require("dijit.layout.TabContainer");
+	dojo.require("dijit.layout.ContentPane");
+
+	var tabCounter = 1;
+
+	function createTab(){
+		var newTab = new dijit.layout.ContentPane({
+			title: 'Tab ' +(++tabCounter),
+			closable:true,
+			refreshOnShow: false
+		}, dojo.doc.createElement('div'));
+
+		dijit.byId('tabs').addChild(newTab);
+
+		newTab.startup(); // find parent TabContainer and subscribe to selectChild event
+	}
+</script>
+<style type="text/css">
+	/* dojo.css holds basic sizing and usage, tundra.css holds specific coloring and styling
+		for the tundra theme */
+	@import "../media/dojo09/dojo/resources/dojo.css";
+	@import "../media/dojo09/dijit/themes/soria/soria.css";
+</style>
+</head>
+
+<body class="soria">
+<div dojoType='dijit.form.Button' onClick='createTab()'>Create a Tab</div>
+<div dojoType="dijit.layout.TabContainer"  id="tabs" layoutAlign="client">
+<div dojoType="dijit.layout.ContentPane" id="tab1w" title="Tab1" >
+	<div id="tab1"></div>
+</div>
+</div>
+</body>
+</html>
