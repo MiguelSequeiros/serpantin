@@ -16,7 +16,8 @@
 		var newTab = new dijit.layout.ContentPane({
 			title: 'Tab ' +(++tabCounter),
 			closable:true,
-			refreshOnShow: false
+			refreshOnShow: false,
+			href: 'test.html'
 		}, dojo.doc.createElement('div'));
 
 		dijit.byId('tabs').addChild(newTab);
@@ -34,7 +35,7 @@
 
 <body class="soria">
 <div dojoType='dijit.form.Button' onClick='createTab()'>Create a Tab</div>
-<div dojoType="dijit.layout.TabContainer"  id="tabs" layoutAlign="client">
+<div dojoType="dijit.layout.TabContainer"  id="tabs" style="width: 100%; height: 20em;">
 <div dojoType="dijit.layout.ContentPane" id="tab1w" title="Tab1" >
 	<div id="tab1"></div>
 </div>
