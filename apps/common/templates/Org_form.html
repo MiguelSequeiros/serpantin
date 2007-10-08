@@ -1,0 +1,149 @@
+{% load i18n %}
+<script type='text/javascript'>
+</script>
+<div class="Org" style="width: 400; height: 200;">
+<div class="help"><a href="http://localhost/nwiki/serp2/common/Org">HELP</a></div>
+<form id="fpform_{{ win_id }}" app="common" model="Org" oid="{{obj.id}}" class="fpform" method="POST" action=".">
+<table>
+  <tr><td>
+    <label for="id_alias">Название:</label></td>
+    <td>
+    {{ form.alias }}
+    {% if form.alias.errors %}
+      *** {{ form.alias.errors|join:", " }}
+    {% endif %}
+    <label for="id_code">Код:</label>
+    {{ form.code }}
+    {% if form.code.errors %}
+      *** {{ form.code.errors|join:", " }}
+    {% endif %}
+  </td></tr>
+    <tr><td>    
+    <label for="id_type">Прав.форма:</label></td>
+    <td>
+    {{ form.type }}&nbsp;<a href="#" onclick="loadSubForm(this,'common','Orgtype','','id_type');"><img src="/media/img/admin/icon_addlink.gif"></a>
+    {% if form.type.errors %}
+      *** {{ form.type.errors|join:", " }}
+    {% endif %}
+    <label for="id_name">Название:</label>
+    {{ form.name }}
+    {% if form.name.errors %}
+      *** {{ form.name.errors|join:", " }}
+    {% endif %}
+  </td></tr>
+
+    <tr><td>    
+    <label for="id_fullname">Полное название:</label></td>
+    <td >
+    {{ form.fullname }}
+    
+    {% if form.fullname.errors %}
+      *** {{ form.fullname.errors|join:", " }}
+    {% endif %}
+  </td></tr>
+
+  <!--tr><td>
+    <label for="id_town">Город:</label></td><td>
+
+    {{ form.town }}&nbsp;<a href="#" onclick="loadSubForm(this,'common','Town','','id_town');"><img src="/media/img/admin/icon_addlink.gif"></a>
+    {% if form.town.errors %}
+      *** {{ form.town.errors|join:", " }}
+    {% endif %}
+  </td></tr -->
+
+    <tr><td>
+	<label for="id_info">Инфо:</label></td>
+    <td>
+    {{ form.info }}
+    {% if form.info.errors %}
+      *** {{ form.info.errors|join:", " }}
+    {% endif %}
+    </td> </tr>
+
+
+  <tr><td>
+    <label for="id_Phones">Phones:</label></td><td>
+    {{ form.phones }}
+    {% if form.phones.errors %}
+      *** {{ form.phones.errors|join:", " }}
+    {% endif %}
+  </td></tr>
+
+
+
+  <tr><td>
+    <label for="id_email">E-mail:</label></td>
+    <td>
+    {{ form.email }}
+    {% if form.email.errors %}
+      *** {{ form.email.errors|join:", " }}
+    {% endif %}
+    <label for="id_http">Веб сайт:</label>
+    {{ form.http }}
+    {% if form.http.errors %}
+      *** {{ form.http.errors|join:", " }}
+    {% endif %}
+  </td></tr>
+
+
+  
+  <!-- tr><td>
+    <label for="id_tags">Tags:</label></td><td>
+    {{ form.tags }}
+    {% if form.tags.errors %}
+      *** {{ form.tags.errors|join:", " }}
+    {% endif %}
+  </td></tr -->
+<tr><td colspan="2">
+<div class="box">
+<button dojoType="Button" onclick="this.setDisabled(true); submitForm(this, 'common','Org',{{ win_id }},'{{obj.id}}','True');"><span>Сохранить и продолжить</span></button>
+<button dojoType="Button" onclick="this.setDisabled(true); submitForm(this, 'common','Org',{{ win_id }},'{{obj.id}}');"><span>Сохранить</span></button>
+</div>
+</td></tr>
+
+<tr><td colspan="2">
+<fieldset>
+<legend>Работники</legend>
+<div id="Employee_rellist" dojoType="ContentPane" cacheContent="false" href="/async/common/Employee/relto/{{obj.id}}/" class="relatedlist">
+</div>
+<a href="#" onclick="javascript:loadBoundForm(this, '{{ app }}','Employee');">Добавить</a>&nbsp;&nbsp;
+</fieldset>
+</td></tr>
+<tr><td colspan="2">
+<fieldset>
+<legend>Org Addresses</legend>
+<div id="OrgAddress_rellist" dojoType="ContentPane" cacheContent="false" href="/async/common/OrgAddress/relto/{{obj.id}}/" class="relatedlist">
+</div>
+<a href="#" onclick="javascript:loadBoundForm(this, '{{ app }}','OrgAddress');">Добавить</a>&nbsp;&nbsp;
+</fieldset>
+</td></tr>
+<tr><td colspan="2">
+<fieldset>
+<legend>Реквизиты</legend>
+<div id="Requisite_rellist" dojoType="ContentPane" cacheContent="false" href="/async/common/Requisite/relto/{{obj.id}}/" class="relatedlist">
+</div>
+<a href="#" onclick="javascript:loadBoundForm(this, '{{ app }}','Requisite');">Добавить</a>&nbsp;&nbsp;
+</fieldset>
+</td></tr>
+<tr><td colspan="2">
+<fieldset>
+<legend>Банковские счета</legend>
+<div id="Bankaccount_rellist" dojoType="ContentPane" cacheContent="false" href="/async/common/Bankaccount/relto/{{obj.id}}/" class="relatedlist">
+</div>
+<a href="#" onclick="javascript:loadBoundForm(this, '{{ app }}','Bankaccount');">Добавить</a>&nbsp;&nbsp;
+</fieldset>
+</td></tr>
+</table> 
+</form>
+<p>{% if obj.createdate %}
+		{% trans 'Createdata:' %} {{obj.createdate|date:"F j, Y"}}
+		{{obj.createuser.username}}<br/>
+    {% endif %}
+    {% if obj.modifydate %}
+		{% trans 'Modifydata:' %} {{obj.modifydate|date:"F j, Y"}}
+		{{obj.modifyuser.username}}<br/>
+    {% endif %}
+</p>
+<p>&nbsp;</p>
+</div>
+		
