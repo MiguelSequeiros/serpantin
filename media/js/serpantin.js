@@ -109,18 +109,18 @@ function loadContentForm(content_id, object_id) {
 }
 
 
-var tabCounter = 1;
-
 function loadForm(app, model, id, properties, values) {
 	server_url = '/async/'+app+'/'+model+'/'+id+'/form/1/';
 	var newTab = new dijit.layout.ContentPane({
-		title: 'Tab ' +(++tabCounter),
+		title: tab_title,
 		closable:true,
 		refreshOnShow: false,
 		href: server_url
 	}, dojo.doc.createElement('div'));
-	dijit.byId('peopleTabPane').addChild(newTab);
+	parentTabPane = dijit.byId(model.toLowerCase() + 'TabPane');
+	parentTabPane.addChild(newTab);
 	newTab.startup();
+	parentTabPane.selectChild(newTab);
 }
 
 /*

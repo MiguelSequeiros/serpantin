@@ -106,14 +106,15 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
     print "request ", request
     boundobj = None
 
-    if request.user.is_anonymous():
-        Http404
-    else:
+    #if request.user.is_anonymous():
+    #    Http404 
+    #else:
+    if True:
         model = getattr(__import__('serpantin.apps.%s.models' % (app_name), '', '', [model_name]), model_name)
         bound_data = {}
         bound_repr = {}
         #try:
-	if 1:
+        if 1:
             if request.GET and request.GET.has_key('type') and request.GET['type']=='boundform':
                 print "RA3VAT managing bound fields "
                 bound_fields = model.bound_fields

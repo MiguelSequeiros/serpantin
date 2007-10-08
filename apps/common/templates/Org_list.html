@@ -37,7 +37,7 @@
 	<tbody>
 	{% for obj in obj_list %}
 	    <tr class="{% cycle row1,row2 %}">
-		<td><a href="javascript:loadForm('{{ app }}','{{ model }}',{{obj.id}});">
+		<td><a href="javascript:tab_title = '{{ obj.name }}'; loadForm('{{ app }}','{{ model }}',{{obj.id}});">
 		    <img src="/site_media/images/edit.gif" alt="{% trans 'Edit object' %}"></a></td>
 	    <td><a href="javascript:confirmDelObj('{{ app }}','{{ model }}','{{ obj.id }}');">
 		    <img src="/site_media/images/trash.gif" alt="{% trans 'Delete object' %}"></a></td>
