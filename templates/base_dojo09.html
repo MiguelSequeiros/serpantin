@@ -78,11 +78,7 @@
 	dojo.require("dijit.layout.SplitContainer");
 	dojo.require("dijit.layout.AccordionContainer");
 	dojo.require("dijit.form.ComboBox");
-
 	dojo.require("dijit.form.Button");
-	dojo.require("dijit.Editor");
-	dojo.require("dijit._editor.plugins.LinkDialog");
-
 </script>
 
 
@@ -128,7 +124,7 @@
 	
 		<div id="mainTabPane" jsId="mainTabPane" dojoType="dijit.layout.TabContainer" sizeMin="20" sizeShare="70" style="overflow: hidden !important;">
 			<div id="orgTabPane" dojoType="dijit.layout.TabContainer" title="Organizations" style="">
-			<div dojoType="dijit.layout.ContentPane" id="orglisttabw" title="List" >
+			<div dojoType="dijit.layout.ContentPane" id="orglisttabw" jsId="orglisttabw" title="List" >
 				<div id="orglisttab"></div>
 			</div> 
 			<!-- orgPane -->
@@ -151,8 +147,8 @@
 		
 		<!-- People -->
 			<div id="personTabPane" dojoType="dijit.layout.TabContainer" title="People" style="">
-			<div id="peopletabw" jsId="peopletab" title="List" dojoType="dijit.layout.ContentPane" href="" class="pane">
-				<div id="peopletab" style="overflow:hidden !important;"></div>
+			<div dojoType="dijit.layout.ContentPane" id="persontabw" jsId="persontabw" title="List" href="" class="pane">
+				<div id="persontab" style="overflow:hidden !important;"></div>
 			</div> <!-- peopleTab -->
 			</div> <!-- peopleTabPane -->
 

@@ -49,49 +49,53 @@ function updateHistory(value) {
 
 
 function loadListForm(app, model, node, page) {
-    Context.listform[app+"_"+model] = {"node":node, "page":page};
-    var server_url;
-    //FIXME: add unique id for search panel in different tabs
-    var q = document.getElementById(model+"_sbar");
-    var extraparam = "";
-    if (page) {
+	Context.listform[app+"_"+model] = {"node":node, "page":page};
+	var server_url;
+	//FIXME: add unique id for search panel in different tabs
+	var q = document.getElementById(model+"_sbar");
+	var extraparam = "";
+	if (page) {
 		extraparam = "?page=" + page;
-    }
-    if ( q ) {  
+	}
+	if ( q ) {  
 		if (extraparam) {
-	    	extraparam = extraparam + "&q=" + q.value;
+			extraparam = extraparam + "&q=" + q.value;
 		}
 		else {
-	    	extraparam = "?q=" + q.value;
+			extraparam = "?q=" + q.value;
 		}
-    }
-    server_url = "/async/"+node+"/"+app+"/"+model+"/list/" + extraparam;
-    
-    dojo.xhrGet({
-        url:    server_url,
-        //content:{format: 'ahah'},
-        handleAs: "text",
-        timeout: 5000,
-        load: function(response, ioArgs){
-            //alert("node "+node);
-            var n = dojo.byId(node);
-
-            n.innerHTML = response;
-            dojo.connect(dojo.byId(model+"_sbut"), "onclick", function(e) { e.preventDefault(); loadListForm(app, model, node, page); });
-
-            var tab = dijit.byId(node+"w");
-            var tabpane = dijit.byId("mainTabPane");
-
-            //tabpane.selectChild(tab);
-            mainTabPane.selectChild(peopletab);
-
-            return response;
-        },
-	error: function(response, ioArgs) { // ?
-    	    console.error("HTTP status code: ", ioArgs.xhr.status); // ?
-	    return response; // ?
 	}
-    });
+	server_url = "/async/"+node+"/"+app+"/"+model+"/list/" + extraparam;
+
+	//alert("xhrGet");
+
+	dojo.xhrGet({
+		url:    server_url,
+		//content:{format: 'ahah'},
+		handleAs: "text",
+		timeout: 5000,
+		load: function(response, ioArgs){
+			//alert("node "+node);
+			var n = dojo.byId(node);
+
+			n.innerHTML = response;
+			dojo.connect(dojo.byId(model+"_sbut"), "onclick", function(e) { e.preventDefault(); loadListForm(app, model, node, page); });
+
+			//alert("node:" + node);
+			var tabpane = dijit.byId(model.toLowerCase() + 'TabPane');
+			var tab = dijit.byId(node+"w");
+
+			//alert("tabpane:" + tabpane + "\ntab:" + tab);
+			tabpane.selectChild(tab);
+			mainTabPane.selectChild(tabpane);
+
+			return response;
+		},
+	error: function(response, ioArgs) { // ?
+			console.error("HTTP status code: ", ioArgs.xhr.status); // ?
+		return response; // ?
+	}
+	});
 }
 
 
