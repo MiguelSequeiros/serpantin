@@ -250,4 +250,123 @@ function updateList(elem, newId, newRepr) {
 
 
 
+function submitForm(elem, app, model, win_id, id, cont) {
+	defineURL = function(app, model, win_id, id, cont) {
+		if (cont) {
+			oper = "saveandgo";
+		} 
+		else {
+			oper = "save";
+		}
+		if (id) {
+			//alert("submit existent obj");
+			server_url = "/async/"+app+"/"+model+"/"+oper+"/"+id+"/form/"+win_id+"/";
+		}
+		else {
+			server_url = "/async/"+app+"/"+model+"/"+oper+"/form/"+win_id+"/";
+		}
+		return server_url;
+	}
+
+
+	server_url = defineURL(app, model, win_id, id, cont);
+	//alert("server_url "+ server_url);
+	
+	var node = document.getElementById("fpform_"+win_id);
+	//node.method = "post";
+	//node.enctype = "multipart/form-data";
+	dojo.xhrPost({
+		url: server_url,
+		form: node,
+		handleAs: "text",
+		timeout: 5000,
+		load: function(response, ioArgs)
+		{
+			return response;
+		},
+		error: function(response, ioArgs)
+		{
+			node.innerHTML = response;
+			return response;
+		}
+		/*
+		load:   function(type, data){
+			var w = dojo.widget.byId("fp_"+win_id);
+			
+			refresh = function(){
+				alert("Continue function...");			
+			}
+				
+//			} else {	
+			    resp = eval("("+data+")");
+				if (resp.oper=="UPDATE") {
+					if (cont) {
+						//refresh();
+						var cw = dojo.widget.byId("fpcontent_" + win_id);
+						cw.cacheContent = false;
+						cw.refresh();
+					} else {
+						if (Context.listform[app+"_"+model]) {
+							//alert("Updated 1. app: "+app+" model: "+model);
+							var node = Context.listform[app+"_"+model].node;
+							var page = Context.listform[app+"_"+model].page;
+							w.closeWindow();
+							loadListForm(app,model,node,page);
+						} else {
+							//alert("Updated 2. app: "+app+" model: "+model);
+							w.closeWindow();
+							//loadListForm(app,model,node,page);
+							relObj = dojo.widget.byId(""+model+"_rellist");
+							if (relObj) {
+								relObj.refresh();
+							}
+						}
+					}
+			    } else if (resp.oper=="ADDED"){
+					var id = resp.id;
+					var repr = resp.repr;
+					if (cont) {
+						//alert("Continue...");
+						//refresh();
+						server_url = defineURL(app, model, win_id, id, cont);
+						//alert("server_url 2 "+ server_url);
+						var cw = dojo.widget.byId("fpcontent_" + win_id);
+						cw.cacheContent = false;
+						cw.setUrl(server_url);
+				  		//cw.loadContents();	  
+						cw.refresh();
+					} else {
+						alert(""+resp.oper);
+						//TODO: Update listform when regular object is added (parentid is not set)  
+						if (Context.properties[win_id]) {
+							var parentid = Context.properties[win_id].parentid
+							var selectid = Context.properties[win_id].selectid
+							//alert("Parentid "+parentid+" selectid "+selectid);
+							//FIXME: find proper fp_id
+							var listnode = findFloatingPaneChildNode(parentid, selectid);
+							if (listnode) {
+								updateList(listnode, id, repr);
+							}
+						} else {
+							//TODO: Remove duplicate code
+							//alert(data);
+							var node = Context.listform[app+"_"+model].node;
+							var page = Context.listform[app+"_"+model].page;
+							loadListForm(app,model,node,page);
+						}
+						w.closeWindow();
+						relObj = dojo.widget.byId(""+model+"_rellist");
+						if (relObj) {
+							relObj.refresh();
+						}
+					}
+				} else {
+		  			w.containerNode.innerHTML = data;	  
+				}
+//			}	 
+		},
+      	error: function(type, error, data) {alert(String(type) + "\n" + String(error.message) + "\n" + String(data) ); dojo.debug("Debig: " + data);},
+	*/
+    });  
+}
 

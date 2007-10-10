@@ -105,6 +105,8 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
     print "go ", go
     print "request ", request
     boundobj = None
+    
+    #assert False;
 
     #if request.user.is_anonymous():
     #    Http404 
