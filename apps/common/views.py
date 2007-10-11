@@ -4,8 +4,18 @@ from django.core.paginator import ObjectPaginator
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.forms import FormWrapper
+from django.http import HttpResponse
 
 from serpantin.settings import user
+
+class JsonResponse(HttpResponse):
+    def __init__(self, obj):
+        self.original_obj = obj
+        HttpResponse.__init__(self, self.serialize())
+        self["Content-Type"] = "text/javascript"
+
+    def serialize(self):
+        return(simplejson.dumps(self.original_obj))
 
 def async_listform(request, app_name, model_name, node):
 #FIXME: commented checking on anonymous

@@ -17,11 +17,12 @@ urlpatterns = patterns('',
     #(r'^accounts/login', 'django.views.auth.login.login'),
     (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/var/www/html/media/', 'show_indexes':True}),
 
-    (r'^async/(?P<node>.*)/(?P<app_name>.*)/(?P<model_name>.*)/list/$', 'serpantin.apps.common.views.async_listform'),
-    (r'^async/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/(?P<object_id>.*)/form/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_form'),
-
     (r'^async/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/save/(?P<object_id>.*)/form/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_form'),
     (r'^async/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/save/form/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_form'),
     (r'^async/(?P<app_name>.*)/(?P<model_name>.*)/saveandgo/(?P<object_id>.*)/form/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_form', dict({'go':True})),
     (r'^async/(?P<app_name>.*)/(?P<model_name>.*)/saveandgo/form/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_form', dict({'go':True})),
+    (r'^async/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/form/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_form'),
+    (r'^async/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/(?P<object_id>.*)/form/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_form'),
+
+    (r'^async/(?P<node>.*)/(?P<app_name>.*)/(?P<model_name>.*)/list/$', 'serpantin.apps.common.views.async_listform'),
 )
