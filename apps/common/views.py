@@ -6,6 +6,8 @@ from django.template import RequestContext
 from django.forms import FormWrapper
 from django.http import HttpResponse
 
+from django.newforms import form_for_model
+
 from serpantin.settings import user
 
 class JsonResponse(HttpResponse):
@@ -18,8 +20,8 @@ class JsonResponse(HttpResponse):
         return(simplejson.dumps(self.original_obj))
 
 def async_listform(request, app_name, model_name, node):
-#FIXME: commented checking on anonymous
-#  if not request.user.is_anonymous():
+    #FIXME: commented checking on anonymous
+    #  if not request.user.is_anonymous():
     #model = meta.get_module(app_name, model_name)
     print "RA3VAT app_name ", app_name
     print "RA3VAT model_name ", model_name
@@ -107,6 +109,30 @@ def async_listform(request, app_name, model_name, node):
 
 
 def async_form(request, app_name, model_name, win_id=0, object_id='', async=True, go=False):
+    model = getattr(__import__('serpantin.apps.%s.models' % (app_name), '', '', [model_name]), model_name)
+
+    FormClass = form_for_model(model)
+    
+    form = FormClass()
+									          
+    params = {
+            'form': form,
+            'edit_object': False,
+            'is_owner': True,
+            'win_id': win_id,
+            'app': app_name,
+            'model': model_name,
+#            'obj': obj,
+#            'bound': bound_repr,
+#            'boundobj': boundobj
+    }
+	
+    tmpl = '%s/apps/%s/templates/%s_form.html' % (user['projectdir'], app_name, model_name) 
+    return render_to_response(tmpl, params, context_instance=RequestContext(request))
+
+
+
+def _async_form(request, app_name, model_name, win_id=0, object_id='', async=True, go=False):
     print "RA3VAT async_form"
     print "app_name ", app_name
     print "model_name", model_name
@@ -148,35 +174,13 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
             	    boundobj = getattr(obj, bf)
             	    bound_repr[bf] = boundobj.__str__()
 
-            if model_name=='OrgAddress':
-                manipulator = OrgAddressChangeManipulator(obj.id)
-            elif model_name=='Employee':
-                manipulator = EmployeeChangeManipulator(obj.id)
-            else:
-                manipulator = model.ChangeManipulator(obj.id)
+            manipulator = model.ChangeManipulator(obj.id)
         else:
             obj=''
-            if model_name=='OrgAddress':
-                manipulator = OrgAddressAddManipulator()
-            elif model_name=='PersonAddress':
-                manipulator = PersonAddressAddManipulator()
-            elif model_name=='Employee':
-                manipulator = EmployeeAddManipulator()
-            elif model_name=='Client':
-                manipulator = ClientAddManipulator()
-            elif model_name=='ItemReceipt':
-                manipulator = ItemReceiptAddManipulator()
-            elif model_name=='TaskLog':
-                manipulator = TaskLogAddManipulator()
-            else:
-                manipulator = model.AddManipulator()
+            manipulator = model.AddManipulator()
             
         if request.POST:
-            print "RA3VAT about to manage POST request..."
             new_data = request.POST.copy()
-            print "RA3VAT obj ", obj
-            #if new_data['web'] and not new_data['web'].startswith('http://'):
-            #    new_data['web']='http://' + new_data['web']
 
             #try:
             #    obj = model.objects.get(pk=object_id)
@@ -250,18 +254,6 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
             if not object_id and autonum:
                 #new_data['num'] = model.suggestNum()
                 new_data['num'] = suggestNum(model)
-#                num = 0
-#                from serp2.apps.docs.models import Doctype
-#                doctype = Doctype.objects.get(classname='%s_%s' % (app_name, model_name),isactive=True)
-#                if doctype:
-#                    print "RA3VAT doctype=", doctype
-#                    try:
-#                        doctype.serial = doctype.serial + 1
-#                        doctype.save()
-#                        #FIXME: get fieldname from preset_number param
-#                        new_data['num'] = doctype.serial
-#                    except:
-#                        pass
                 
             has_initial = model.__dict__.has_key('initial_data')
             if has_initial and not obj:
