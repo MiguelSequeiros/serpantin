@@ -7,6 +7,7 @@ from django.forms import FormWrapper
 from django.http import HttpResponse
 
 from django.newforms import form_for_model
+from django.newforms import form_for_instance
 
 from serpantin.settings import user
 
@@ -111,7 +112,11 @@ def async_listform(request, app_name, model_name, node):
 def async_form(request, app_name, model_name, win_id=0, object_id='', async=True, go=False):
     model = getattr(__import__('serpantin.apps.%s.models' % (app_name), '', '', [model_name]), model_name)
 
-    FormClass = form_for_model(model)
+    if object_id:
+        obj = model.objects.get(pk=object_id)
+	FormClass = form_for_instance(obj)
+    else:    
+        FormClass = form_for_model(model)
     
     form = FormClass()
 									          
