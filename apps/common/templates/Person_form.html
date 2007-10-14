@@ -27,7 +27,11 @@
 </td></tr>
 
 <tr><td>
-	<label for="id_town">Город:</label></td><td>
+	<label for="id_town">Город:</label>
+    </td>
+    <td>
+	{{ form.town }}
+    <!--
 	<input dojoType="dijit.form.ComboBox" id="town" name="town" 
 		mode="remote" 
 		dataUrl="/json/common/Town/?search=%{searchString}"
@@ -36,6 +40,8 @@
 		style="width:200px;" 
 		autoComplete="false">
 	</input>  
+    -->
+
  </td></tr>
 
 <tr><td>

@@ -13,6 +13,7 @@ from django.contrib.contenttypes import generic
 
 from django.contrib.auth.models import User
 
+from serpantin.forms import *
 
 class Country(models.Model):
     #addr_code = models.CharField(_('Street Code'), maxlength=6)
@@ -468,8 +469,8 @@ class Person(models.Model):
     firstname = models.CharField(_('First Name'), maxlength=35, core=True)
     middlename = models.CharField(_('Middle Name'), maxlength=35, blank=True)
     lastname = models.CharField(_('Last Name'), maxlength=35)
-    town = models.ForeignKey(Town, blank=True, null=True, verbose_name=_('Town'))
-    #town = LookupField(Town, blank=True, null=True, verbose_name=_('Town'))
+    #town = models.ForeignKey(Town, blank=True, null=True, verbose_name=_('Town'))
+    town = LookupField(Town, blank=True, null=True, verbose_name=_('Town'))
     #FIXME: define PhonesField
     #phones = PhonesField(Phone, blank=True)
 
