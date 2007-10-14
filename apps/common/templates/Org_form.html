@@ -84,8 +84,10 @@
       *** {{ form.http.errors|join:", " }}
     {% endif %}
   </td></tr>
-
-
+<tr>
+  <td><label for="id_contacted">Contacted:</label></td>
+  <td>{{ form.contacted }}</td>
+</tr>
   
   <!-- tr><td>
     <label for="id_tags">Tags:</label></td><td>
@@ -96,49 +98,18 @@
   </td></tr -->
 <tr><td colspan="2">
 <div class="box">
-<button dojoType="Button" onclick="this.setDisabled(true); submitForm(this, 'common','Org',{{ win_id }},'{{obj.id}}','True');"><span>Сохранить и продолжить</span></button>
-<button dojoType="Button" onclick="this.setDisabled(true); submitForm(this, 'common','Org',{{ win_id }},'{{obj.id}}');"><span>Сохранить</span></button>
+<button dojoType="dijit.form.Button" onclick="this.setDisabled(true); submitForm(this, 'common','Org',{{ win_id }},'{{obj.id}}','True');"><span>Сохранить и продолжить</span></button>
+<button dojoType="dijit.form.Button" onclick="this.setDisabled(true); submitForm(this, 'common','Org',{{ win_id }},'{{obj.id}}');"><span>Сохранить</span></button>
 </div>
-</td></tr>
-
-<tr><td colspan="2">
-<fieldset>
-<legend>Работники</legend>
-<div id="Employee_rellist" dojoType="ContentPane" cacheContent="false" href="/async/common/Employee/relto/{{obj.id}}/" class="relatedlist">
-</div>
-<a href="#" onclick="javascript:loadBoundForm(this, '{{ app }}','Employee');">Добавить</a>&nbsp;&nbsp;
-</fieldset>
-</td></tr>
-<tr><td colspan="2">
-<fieldset>
-<legend>Org Addresses</legend>
-<div id="OrgAddress_rellist" dojoType="ContentPane" cacheContent="false" href="/async/common/OrgAddress/relto/{{obj.id}}/" class="relatedlist">
-</div>
-<a href="#" onclick="javascript:loadBoundForm(this, '{{ app }}','OrgAddress');">Добавить</a>&nbsp;&nbsp;
-</fieldset>
-</td></tr>
-<tr><td colspan="2">
-<fieldset>
-<legend>Реквизиты</legend>
-<div id="Requisite_rellist" dojoType="ContentPane" cacheContent="false" href="/async/common/Requisite/relto/{{obj.id}}/" class="relatedlist">
-</div>
-<a href="#" onclick="javascript:loadBoundForm(this, '{{ app }}','Requisite');">Добавить</a>&nbsp;&nbsp;
-</fieldset>
-</td></tr>
-<tr><td colspan="2">
-<fieldset>
-<legend>Банковские счета</legend>
-<div id="Bankaccount_rellist" dojoType="ContentPane" cacheContent="false" href="/async/common/Bankaccount/relto/{{obj.id}}/" class="relatedlist">
-</div>
-<a href="#" onclick="javascript:loadBoundForm(this, '{{ app }}','Bankaccount');">Добавить</a>&nbsp;&nbsp;
-</fieldset>
 </td></tr>
 
 <tr><td colspan="2">
 <input type="submit">
 </td></tr>
 
+
 </table> 
+
 </form>
 <p>{% if obj.createdate %}
 		{% trans 'Createdata:' %} {{obj.createdate|date:"F j, Y"}}

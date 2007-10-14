@@ -6,10 +6,24 @@ from django.template import RequestContext
 from django.forms import FormWrapper
 from django.http import HttpResponse
 
+from django.db import models
 from django.newforms import form_for_model
 from django.newforms import form_for_instance
 
 from serpantin.settings import user
+from serpantin.forms import *
+
+
+
+def my_callback(field, **kwargs):
+    print "SERPANTIN: my_callback called"
+    print "... %s\t\t%s" % (field.name, field)
+    if isinstance(field, models.DateField):
+	print "...SERPANTIN: my_callback routes to DojoDateField..."
+	return DojoDateField(**kwargs)
+    else:
+	return field.formfield(**kwargs)
+
 
 class JsonResponse(HttpResponse):
     def __init__(self, obj):
@@ -19,6 +33,8 @@ class JsonResponse(HttpResponse):
 
     def serialize(self):
         return(simplejson.dumps(self.original_obj))
+
+
 
 def async_listform(request, app_name, model_name, node):
     #FIXME: commented checking on anonymous
@@ -114,9 +130,9 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
 
     if object_id:
         obj = model.objects.get(pk=object_id)
-	FormClass = form_for_instance(obj)
+	FormClass = form_for_instance(obj, formfield_callback=my_callback)
     else:    
-        FormClass = form_for_model(model)
+        FormClass = form_for_model(model, formfield_callback=my_callback)
     
     form = FormClass()
 									          

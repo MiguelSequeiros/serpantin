@@ -463,6 +463,7 @@ class Client(models.Model):
 	return obj_list
 
 
+
 class Person(models.Model):
     firstname = models.CharField(_('First Name'), maxlength=35, core=True)
     middlename = models.CharField(_('Middle Name'), maxlength=35, blank=True)
@@ -609,6 +610,9 @@ class Org(models.Model):
     http = models.CharField(_('Web Site'), maxlength=40,blank=True)
     #info = models.TextField(_('Info'), maxlength=256, blank=True, cols=28, rows=5, help_text='Rich Text Editing.')
     info = models.TextField(_('Info'), maxlength=256, blank=True, help_text='Rich Text Editing.')
+    contacted = models.DateField(blank=True)
+
+
     
     createuser = models.ForeignKey(User, related_name='created_orgs', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
