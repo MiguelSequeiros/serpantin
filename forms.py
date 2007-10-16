@@ -26,7 +26,6 @@ class LookupFieldWidget(forms.TextInput):
 
 
     def render(self, field_name, data, attrs=None):
-    	print "RA3VAT FormLookupField obj type - ", self
         return '<input dojoType="dijit.form.ComboBox" name="%s" value="%s"></input>' % (field_name, data)
 
 
@@ -34,39 +33,28 @@ class LookupFieldWidget(forms.TextInput):
 class LookupFormField(forms.IntegerField):
     widget = LookupFieldWidget
     def __init__(self, **kwargs):
-	#FIXME: temporary commented out
-        #if kwargs.has_key('model_class'):
-        #    self.model_class = kwargs['model_class']
-        #    print "RA3VAT FormLookupField is being initialized...", kwargs
-        #    kwargs.pop('model_class')
-        print kwargs
-        kwargs.pop('queryset')
+	kwargs.pop('queryset')
         forms.IntegerField.__init__(self, **kwargs)
-
-
+	
 
 
 class LookupField(ForeignKey):
     def __init__(self, to, to_field=None, **kwargs):
         ForeignKey.__init__(self, to, to_field, **kwargs)
-        print "RA3VAT choices ", self.choices
-        self._choices = []
-	#if kwargs.has_key('relative_to'):
-	#    print "RA3VAT relative_to is set..."
-	#    self.relative_to = kwargs['relative_to']
 
     
     def get_internal_type(self):
         return 'LookupField'
 
 
+    def value_from_object(self, obj):
+	"Returns the value of this field in the given model instance."
+	id_value = getattr(obj, self.attname)
+	return self.rel.to._default_manager.get(pk=id_value)
+
+
     def formfield(self, **kwargs):
-	print "RA3VAT formfield.."
-	#FIXME: temporary commented out
-        #defaults = {'model_class': self.rel.to}
-	defaults = {'form_class': LookupFormField}
-	#FIXME:
-        #kwargs.pop('queryset')
+	defaults = {'form_class': LookupFormField }
         defaults.update(kwargs)
         return super(LookupField, self).formfield(**defaults)
 
