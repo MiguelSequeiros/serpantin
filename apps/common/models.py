@@ -470,7 +470,7 @@ class Person(models.Model):
     middlename = models.CharField(_('Middle Name'), maxlength=35, blank=True)
     lastname = models.CharField(_('Last Name'), maxlength=35)
     #town = models.ForeignKey(Town, blank=True, null=True, verbose_name=_('Town'))
-    town = LookupField(Town, blank=True, null=True, verbose_name=_('Town'))
+    town = FilteringSelectField(Town, blank=True, null=True, verbose_name=_('Town'))
     #FIXME: define PhonesField
     #phones = PhonesField(Phone, blank=True)
 

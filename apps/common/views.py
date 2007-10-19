@@ -19,10 +19,10 @@ def my_callback(field, **kwargs):
     print "SERPANTIN: my_callback called"
     print "... %s\t\t%s" % (field.name, field)
     if isinstance(field, models.DateField):
-	print "...SERPANTIN: my_callback routes to DojoDateField..."
-	return DojoDateField(**kwargs)
+        print "...SERPANTIN: my_callback routes to DojoDateField..."
+        return DojoDateField(**kwargs)
     else:
-	return field.formfield(**kwargs)
+        return field.formfield(**kwargs)
 
 
 class JsonResponse(HttpResponse):
@@ -130,12 +130,15 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
 
     if object_id:
         obj = model.objects.get(pk=object_id)
-	FormClass = form_for_instance(obj, formfield_callback=my_callback)
-    else:    
+        FormClass = form_for_instance(obj, formfield_callback=my_callback)
+    else:
         FormClass = form_for_model(model, formfield_callback=my_callback)
     
     form = FormClass()
-									          
+    
+    #print "Subzero: obj.town.name = ", obj.town.name
+    print "Subzero post data:\n", request.POST
+    
     params = {
             'form': form,
             'edit_object': False,
@@ -147,7 +150,7 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
 #            'bound': bound_repr,
 #            'boundobj': boundobj
     }
-	
+    
     tmpl = '%s/apps/%s/templates/%s_form.html' % (user['projectdir'], app_name, model_name) 
     return render_to_response(tmpl, params, context_instance=RequestContext(request))
 
@@ -162,7 +165,7 @@ def _async_form(request, app_name, model_name, win_id=0, object_id='', async=Tru
     print "go ", go
     print "request ", request
     boundobj = None
-    
+
     #assert False;
 
     #if request.user.is_anonymous():
