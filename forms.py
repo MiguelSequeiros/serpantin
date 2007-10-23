@@ -1,22 +1,43 @@
 from django import newforms as forms
 from django.db.models.fields.related import ForeignKey
+from django.utils.encoding import force_unicode
+from django.utils.functional import allow_lazy
 
+def escape(html):
+    "Return the given HTML with ampersands, double quotes and carets encoded."
+    return force_unicode(html).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+escape = allow_lazy(escape, unicode)
 
+def flatatt(attrs):
+    """
+    Convert a dictionary of attributes to a single string.
+    The returned string will contain a leading space followed by key="value",
+    XML-style pairs.  It is assumed that the keys do not need to be XML-escaped.
+    If the passed dictionary is empty, then return an empty string.
+    """
+    return u''.join([u' %s="%s"' % (k, escape(v)) for k, v in attrs.items()])
+
+#DojoDateField classes
 class DojoDateFieldWidget(forms.TextInput):
-    def render(self, field_name, data, attrs=None):
-	#FIXME: Converted date does not shown in widget
+    def _render(self, field_name, data, attrs=None):
+        #FIXME: Converted date does not shown in widget
         try:
             date = "%s/%s/%s" % (data.day,data.month,data.year)
         except:
             date = ''
-	    
+        
         return '<input type="text" dojoType="dijit.form.DateTextBox" name="%s" lang="ru" value="%s" promptMessage="dd/mm/yy"></input>' % (field_name, date)
 
-
+    def render(self, name, value, attrs=None):
+        if value is None: value = ''
+        final_attrs = self.build_attrs(attrs, type=self.input_type, name=name,
+            dojoType='dijit.form.DateTextBox', lang='en-gb', constraints="{formatLength:'short'}")
+        if value != '': final_attrs['value'] = force_unicode(value) # Only add the 'value' attribute if a value is non-empty.
+        return u'<input%s />' % flatatt(final_attrs)
 
 class DojoDateField(forms.DateField):
     widget = DojoDateFieldWidget
-    
+
 
 
 class LookupFieldWidget(forms.TextInput):
