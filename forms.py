@@ -31,7 +31,7 @@ class DojoDateFieldWidget(forms.TextInput):
     def render(self, name, value, attrs=None):
         if value is None: value = ''
         final_attrs = self.build_attrs(attrs, type=self.input_type, name=name,
-            dojoType='dijit.form.DateTextBox', lang='en-gb', constraints="{formatLength:'short'}")
+            dojoType='dijit.form.DateTextBox', lang='en-gb', constraints="{datePattern:'dd.MM.yyyy'}", promptMessage="dd.MM.yyyy")
         if value != '': final_attrs['value'] = force_unicode(value) # Only add the 'value' attribute if a value is non-empty.
         return u'<input%s />' % flatatt(final_attrs)
 
