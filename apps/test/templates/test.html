@@ -5,7 +5,7 @@
 	@import "/site_media/dojo09/dijit/themes/soria/soria.css";
 </style>
 <script type="text/javascript" src="/site_media/dojo09/dojo/dojo.js"
-	djConfig = "parseOnLoad:true, isDebug:true, extraLocale:['zh-cn','fr-fr','ja-jp','ar-eg','ru-ru','hi-in','en-us','en-gb']" ></script>
+	djConfig = "parseOnLoad:true, isDebug:true, extraLocale:['zh-cn','fr-fr','ja-jp','ar-eg','ru-ru','hi-in','en-us','en-gb','ru-ru']" ></script>
 <script type="text/javascript" src="/site_media/js/serpantin.js"></script>
 <script language="JavaScript" type="text/javascript">
 	//dojo.require("dojo.date.locale");
@@ -32,11 +32,11 @@
 			name="state1"
 			autocomplete="true"
 		/>
+        <!--constraints="{formatLength:'short', datePattern:'dd.MM.yyyy'}"-->
 		<input type="text" name="date1" value="2005-12-30"
 			dojoType="dijit.form.DateTextBox"
-			constraints="{formatLength:'short', datePattern:'dd.MM.yyyy'}"
-			lang="en-gb" />
-		<input id="calendar3" dojoType="dijit._Calendar" lang="en-gb">
+			lang="zh-cn" />
+		<input id="calendar3" dojoType="dijit._Calendar" lang="zh-cn">
 		<input type="submit" value="Go!" />
 	</form>
 </body>

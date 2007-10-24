@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.databrowse',
     'serpantin.apps.common',
+    'serpantin.apps.test',
 )
 
 
