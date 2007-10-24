@@ -1,0 +1,31 @@
+<html>
+<head>
+<style type="text/css">
+	@import "/site_media/dojo09/dojo/resources/dojo.css";
+	@import "/site_media/dojo09/dijit/themes/soria/soria.css";
+</style>
+<script type="text/javascript" src="/site_media/dojo09/dojo/dojo.js"
+	djConfig = "parseOnLoad:true, isDebug:true" ></script>
+<script type="text/javascript" src="/site_media/dojo09/dojox/data/QueryReadStore.js"></script>
+<script type="text/javascript" src="/site_media/js/serpantin.js"></script>
+<script language="JavaScript" type="text/javascript">
+	//dojo.require("dojo.date.locale");
+	dojo.require("dojo.parser");
+		dojo.require("dijit.form.ComboBox");
+		dojo.require("dojox.data.QueryReadStore");
+
+		dojo.provide("ComboBoxReadStore");
+		dojo.declare("ComboBoxReadStore", dojox.data.QueryReadStore, {
+			fetch:function(request) {
+				request.serverQuery = {q:request.query.name};
+				return this.inherited("fetch", arguments);
+			}
+		});
+</script>
+</head>
+<body class="soria">
+	<div dojoType="ComboBoxReadStore" jsId="store" url="/json/" requestMethod="get"></div>
+	<input dojoType="dijit.form.ComboBox" store="store" pageSize="5" />
+	<br /><br /><hr />
+</body>
+</html>
