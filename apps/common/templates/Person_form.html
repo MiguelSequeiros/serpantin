@@ -1,3 +1,4 @@
+{% if debug %}
 <html>
 <head>
 <style type="text/css">
@@ -20,6 +21,7 @@
 </script>
 </head>
 <body class="soria">
+{% endif %}
 
 {% load i18n %}
 <div class="Person">
@@ -113,9 +115,11 @@
 </div>
 </td></tr>
 
+{% if debug %}
 <tr><td colspan="2">
 <input type="submit">
 </td></tr>
+{% endif %}
 
 </table> 
 </form>
@@ -132,5 +136,7 @@
 </p><p>&nbsp;</p>
 </div>
 
+{% if debug %}
 </body>
 </html>
+{% endif %}

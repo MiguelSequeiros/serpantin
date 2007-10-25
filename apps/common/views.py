@@ -140,6 +140,7 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
     print "Subzero post data:\n", request.POST
     
     params = {
+            'debug': False,
             'form': form,
             'edit_object': False,
             'is_owner': True,
