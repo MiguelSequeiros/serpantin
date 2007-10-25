@@ -11,11 +11,11 @@
 <script language="JavaScript" type="text/javascript">
 	//dojo.require("dojo.date.locale");
 	dojo.require("dojo.parser");
-		dojo.require("dijit.form.ComboBox");
+		dojo.require("dijit.form.FilteringSelect");
 		dojo.require("dojox.data.QueryReadStore");
 
-		dojo.provide("ComboBoxReadStore");
-		dojo.declare("ComboBoxReadStore", dojox.data.QueryReadStore, {
+		dojo.provide("MyQueryReadStore");
+		dojo.declare("MyQueryReadStore", dojox.data.QueryReadStore, {
 			fetch:function(request) {
 				request.serverQuery = {q:request.query.name};
 				return this.inherited("fetch", arguments);
@@ -24,8 +24,8 @@
 </script>
 </head>
 <body class="soria">
-	<div dojoType="ComboBoxReadStore" jsId="store" url="/json/" requestMethod="get"></div>
-	<input dojoType="dijit.form.ComboBox" store="store" pageSize="5" />
+	<div dojoType="MyQueryReadStore" jsId="store" url="/json/" requestMethod="get"></div>
+	<input dojoType="dijit.form.FilteringSelect" store="store" pageSize="5" />
 	<br /><br /><hr />
 </body>
 </html>
