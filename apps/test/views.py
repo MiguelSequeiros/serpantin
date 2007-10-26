@@ -14,6 +14,7 @@ class JsonResponse(HttpResponse):
         return('/*' + simplejson.dumps(self.original_obj) + '*/')
 
 def test(request):
+    print "Subzero POST data:", request.POST
     return render_to_response('query.html', {})
 
 def model_store(app_name, model_name, query = ""):
@@ -21,7 +22,7 @@ def model_store(app_name, model_name, query = ""):
     model = getattr(__import__('serpantin.apps.%s.models' % (app_name), '', '', [model_name]), model_name)
     if len(query) and query[-1] == '*': query = query[:-1]
     objects_filtered = model.objects.filter(name__istartswith=query)
-    return [{'name':i.name, 'label':i.name} for i in objects_filtered]
+    return [{'name':i.name, 'id':i.id} for i in objects_filtered]
     
 def json(request):
     content = [

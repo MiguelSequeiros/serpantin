@@ -24,8 +24,11 @@
 </script>
 </head>
 <body class="tundra">
-	<div dojoType="MyQueryReadStore" jsId="store" url="/json/" requestMethod="get"></div>
-	<input dojoType="dijit.form.FilteringSelect" store="store" pageSize="5" />
-	<br /><br /><hr />
+	<form method="post">
+		<div dojoType="MyQueryReadStore" jsId="store" url="/json/" requestMethod="get"></div>
+		<input dojoType="dijit.form.FilteringSelect" name="town" store="store" pageSize="5" />
+		<br /><br /><hr />
+		<input type="submit" value="Go!" />
+	</form>
 </body>
 </html>

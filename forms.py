@@ -2,7 +2,27 @@ from django import newforms as forms
 from django.db.models.fields.related import ForeignKey
 from django.utils.encoding import force_unicode
 from django.utils.functional import allow_lazy
+from django.http import HttpResponse
 
+# JSON srore classes
+class JsonResponse(HttpResponse):
+    def __init__(self, obj):
+        self.original_obj = obj
+        HttpResponse.__init__(self, self.serialize())
+        self["Content-Type"] = "text/javascript"
+
+    def serialize(self):
+        return('/*' + simplejson.dumps(self.original_obj) + '*/')
+
+def test(request):
+    return render_to_response('query.html', {})
+
+def model_store(model, query = ""):
+    if len(query) and query[-1] == '*': query = query[:-1]
+    objects_filtered = model.objects.filter(name__istartswith=query)
+    return [{'name':i.name, 'label':i.id} for i in objects_filtered]
+
+# Misc functions
 def escape(html):
     "Return the given HTML with ampersands, double quotes and carets encoded."
     return force_unicode(html).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
