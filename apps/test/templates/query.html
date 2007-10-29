@@ -2,7 +2,7 @@
 <head>
 <style type="text/css">
 	@import "/site_media/dojo09/dojo/resources/dojo.css";
-	@import "/site_media/dojo09/dijit/themes/tundra/tundra.css";
+	@import "/site_media/dojo09/dijit/themes/soria/soria.css";
 </style>
 <script type="text/javascript" src="/site_media/dojo09/dojo/dojo.js"
 	djConfig = "parseOnLoad:true, isDebug:true" ></script>
@@ -11,22 +11,29 @@
 <script language="JavaScript" type="text/javascript">
 	//dojo.require("dojo.date.locale");
 	dojo.require("dojo.parser");
-		dojo.require("dijit.form.FilteringSelect");
-		dojo.require("dojox.data.QueryReadStore");
+	dojo.require("dijit.form.FilteringSelect");
+	dojo.require("dojox.data.QueryReadStore");
 
-		dojo.provide("MyQueryReadStore");
-		dojo.declare("MyQueryReadStore", dojox.data.QueryReadStore, {
-			fetch:function(request) {
-				request.serverQuery = {q:request.query.name};
-				return this.inherited("fetch", arguments);
-			}
-		});
+	dojo.provide("MyQueryReadStore");
+	dojo.declare("MyQueryReadStore", dojox.data.QueryReadStore, {
+		fetch:function(request) {
+			request.serverQuery = {q:request.query.name};
+			return this.inherited("fetch", arguments);
+		}
+	});
+
+	function UpdateStore(js_id, server_url) {
+		/* reinitialisation of the ComboBox Store */
+		//alert("UpdateStore" + js_id + server_url);
+		js_id.store = new dojo.data.ItemFileReadStore({url:server_url});
+	}
 </script>
 </head>
-<body class="tundra">
-	<form method="post">
-		<div dojoType="MyQueryReadStore" jsId="store" url="/json/" requestMethod="get"></div>
-		<input dojoType="dijit.form.FilteringSelect" name="town" store="store" pageSize="5" />
+<body class="soria">
+	<form method="post" action="/test/">
+		<div dojoType="dojo.data.ItemFileReadStore" jsId="store" url="/json/" requestMethod="get"></div>
+		<input dojoType="dijit.form.FilteringSelect" name="town" jsId="town" store="store" pageSize="5"
+			onChange="UpdateStore('town', '/json/?q=' + arguments[0])"/>
 		<br /><br /><hr />
 		<input type="submit" value="Go!" />
 	</form>

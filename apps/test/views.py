@@ -49,4 +49,7 @@ def json(request):
     #result = [i for i in content if not (query and i['name'].lower().find(query.lower()))]
     result = model_store('common', 'Town', query)
     
-    return JsonResponse({'items':result})
+    return JsonResponse({'identifier':'id', 'label':'name', 'items':result})
+
+def _json(request):
+    return render_to_response('test.json', {})
