@@ -14,13 +14,11 @@ class JsonResponse(HttpResponse):
     def serialize(self):
         return('/*' + simplejson.dumps(self.original_obj) + '*/')
 
-def test(request):
-    return render_to_response('query.html', {})
-
 def model_store(model, query = ""):
     if len(query) and query[-1] == '*': query = query[:-1]
     objects_filtered = model.objects.filter(name__istartswith=query)
-    return [{'name':i.name, 'label':i.id} for i in objects_filtered]
+    items = [{'name':i.name, 'id':i.id} for i in objects_filtered]
+    return {'identifier':'id', 'label':'name', 'items':items}
 
 # Misc functions
 def escape(html):
@@ -58,27 +56,20 @@ class DojoDateFieldWidget(forms.TextInput):
 class DojoDateField(forms.DateField):
     widget = DojoDateFieldWidget
 
-
-
 class LookupFieldWidget(forms.TextInput):
     def __init__(self, *args, **kwargs):
         kwargs.setdefault('attrs',{})
         super(LookupFieldWidget, self).__init__(*args, **kwargs)
 
-
     def render(self, field_name, data, attrs=None):
         print "Subzero data:", type(data)
         return '<input dojoType="dijit.form.ComboBox" name="%s" value="%s"></input>' % (field_name, data)
-
-
 
 class LookupFormField(forms.IntegerField):
     widget = LookupFieldWidget
     def __init__(self, **kwargs):
         kwargs.pop('queryset')
         forms.IntegerField.__init__(self, **kwargs)
-
-
 
 class LookupField(ForeignKey):
     def __init__(self, to, to_field=None, **kwargs):
@@ -87,17 +78,33 @@ class LookupField(ForeignKey):
     def get_internal_type(self):
         return 'LookupField'
 
-
     def value_from_object(self, obj):
         "Returns the value of this field in the given model instance."
         id_value = getattr(obj, self.attname)
         return self.rel.to._default_manager.get(pk=id_value)
 
-
     def formfield(self, **kwargs):
         defaults = {'form_class': LookupFormField }
         defaults.update(kwargs)
         return super(LookupField, self).formfield(**defaults)
+
+# FilteringSelectSlore classes
+class FilteringSelectStoreWidget(forms.Select):
+    def __init__(self, attrs=None, url=""):
+        self.url = url
+        super(FilteringSelectStoreWidget, self).__init__(attrs)
+
+    def render(self, name, value, attrs=None):
+        attrs.setdefault('dojoType', 'dijit.form.FilteringSelect')
+        attrs.setdefault('store', 'store_%s' % name)
+        store = '<div dojoType="dojo.data.ItemFileReadStore" jsId="store_%s" url="/json/%s" requestMethod="get"></div>\n' % (name, self.url,)
+        return store + super(FilteringSelectStoreWidget, self).render(name, value, attrs)
+
+class FilteringSelectStoreFormField(forms.Field):
+    def __init__(self, url="", required=True, widget=FilteringSelectStoreWidget, label=None, initial=None,
+                 help_text=None, error_messages=None):
+        super(FilteringSelectStoreFormField, self).__init__(required, widget, label, initial, help_text, error_messages)
+        self.widget.url = url
 
 # FilteringSelect classes
 class FilteringSelectWidget(forms.Select):
@@ -110,7 +117,7 @@ class FilteringSelectWidget(forms.Select):
 
 class FilteringSelectFormField(forms.ModelChoiceField):
     def __init__(self, queryset, empty_label=u"---------", cache_choices=False,
-            required=True, widget=FilteringSelectWidget, label=None, initial=None, help_text=None):
+                 required=True, widget=FilteringSelectWidget, label=None, initial=None, help_text=None):
         super(FilteringSelectFormField, self).__init__(queryset, empty_label, cache_choices, required, widget, label, initial, help_text)
 
 class FilteringSelectField(ForeignKey):

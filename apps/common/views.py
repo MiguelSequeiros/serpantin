@@ -13,17 +13,17 @@ from django.newforms import form_for_instance
 from serpantin.settings import user
 from serpantin.forms import *
 
+import simplejson
 
-
-def my_callback(field, **kwargs):
-    print "SERPANTIN: my_callback called"
-    print "... %s\t\t%s" % (field.name, field)
+def form_callback(field, **kwargs):
     if isinstance(field, models.DateField):
-        print "...SERPANTIN: my_callback routes to DojoDateField..."
         return DojoDateField(**kwargs)
+    elif isinstance(field, models.ForeignKey):
+        meta = field.rel.to._meta
+        kwargs.setdefault('url', '%s/%s/' % (meta.app_label, meta.object_name,))
+        return FilteringSelectStoreFormField(**kwargs)
     else:
         return field.formfield(**kwargs)
-
 
 class JsonResponse(HttpResponse):
     def __init__(self, obj):
@@ -32,9 +32,16 @@ class JsonResponse(HttpResponse):
         self["Content-Type"] = "text/javascript"
 
     def serialize(self):
-        return(simplejson.dumps(self.original_obj))
+        return("/*" + simplejson.dumps(self.original_obj) + "*/")
 
-
+def json(request, app_name, model_name):
+    print "Subzero GET data:", request.GET
+    query = ""
+    if 'q' in request.GET: query = request.GET['q']
+    model = getattr(__import__('serpantin.apps.%s.models' % app_name, '', '', [model_name]), model_name)
+    result = model_store(model, query)
+    
+    return JsonResponse(result)
 
 def async_listform(request, app_name, model_name, node):
     #FIXME: commented checking on anonymous
@@ -123,16 +130,14 @@ def async_listform(request, app_name, model_name, node):
 	
         return render_to_response(tmpl, params, context_instance=RequestContext(request))
 
-
-
 def async_form(request, app_name, model_name, win_id=0, object_id='', async=True, go=False):
-    model = getattr(__import__('serpantin.apps.%s.models' % (app_name), '', '', [model_name]), model_name)
+    model = getattr(__import__('serpantin.apps.%s.models' % (app_name,), '', '', [model_name]), model_name)
 
     if object_id:
         obj = model.objects.get(pk=object_id)
-        FormClass = form_for_instance(obj, formfield_callback=my_callback)
+        FormClass = form_for_instance(obj, formfield_callback=form_callback)
     else:
-        FormClass = form_for_model(model, formfield_callback=my_callback)
+        FormClass = form_for_model(model, formfield_callback=form_callback)
     
     form = FormClass()
     
@@ -140,7 +145,7 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
     print "Subzero post data:\n", request.POST
     
     params = {
-            'debug': False,
+            'debug': True,
             'form': form,
             'edit_object': False,
             'is_owner': True,
@@ -154,8 +159,6 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
     
     tmpl = '%s/apps/%s/templates/%s_form.html' % (user['projectdir'], app_name, model_name) 
     return render_to_response(tmpl, params, context_instance=RequestContext(request))
-
-
 
 def _async_form(request, app_name, model_name, win_id=0, object_id='', async=True, go=False):
     print "RA3VAT async_form"
@@ -322,4 +325,3 @@ def _async_form(request, app_name, model_name, win_id=0, object_id='', async=Tru
         #except:
         #    tmpl = '%s/apps/%s/templates/%s_form.gen.html' % (user['projectdir'], app_name, model_name) 
         #    return render_to_response(tmpl, params, context_instance=RequestContext(request))
-

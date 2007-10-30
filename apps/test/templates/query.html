@@ -32,8 +32,9 @@
 <body class="soria">
 	<form method="post" action="/test/">
 		<div dojoType="dojo.data.ItemFileReadStore" jsId="store" url="/json/" requestMethod="get"></div>
-		<input dojoType="dijit.form.FilteringSelect" name="town" jsId="town" store="store" pageSize="5"
-			onChange="UpdateStore('town', '/json/?q=' + arguments[0])"/>
+		<!-- <input dojoType="dijit.form.FilteringSelect" name="town" jsId="town" store="store" pageSize="5"
+			onChange="UpdateStore('town', '/json/?q=' + arguments[0])"/> -->
+		<input dojoType="dijit.form.FilteringSelect" name="town" jsId="town" store="store" pageSize="5"/>
 		<br /><br /><hr />
 		<input type="submit" value="Go!" />
 	</form>

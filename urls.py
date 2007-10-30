@@ -26,7 +26,8 @@ urlpatterns = patterns('',
 
     (r'^async/(?P<node>.*)/(?P<app_name>.*)/(?P<model_name>.*)/list/$', 'serpantin.apps.common.views.async_listform'),
 
+    (r'^json/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/$', 'serpantin.apps.common.views.json'),
     # Test urls
     (r'^test/$', 'serpantin.apps.test.views.test'),
-    (r'^json/$', 'serpantin.apps.test.views.json'),
+    #(r'^json/$', 'serpantin.apps.test.views.json'),
 )

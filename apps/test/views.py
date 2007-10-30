@@ -11,7 +11,7 @@ class JsonResponse(HttpResponse):
         self["Content-Type"] = "text/javascript"
 
     def serialize(self):
-        return('/*' + simplejson.dumps(self.original_obj) + '*/')
+        return("/*" + simplejson.dumps(self.original_obj) + "*/")
 
 def test(request):
     print "Subzero POST data:", request.POST
@@ -19,7 +19,7 @@ def test(request):
 
 def model_store(app_name, model_name, query = ""):
     #FIXME: get rid of serpantin.apps in getattr
-    model = getattr(__import__('serpantin.apps.%s.models' % (app_name), '', '', [model_name]), model_name)
+    model = getattr(__import__('serpantin.apps.%s.models' % app_name, '', '', [model_name]), model_name)
     if len(query) and query[-1] == '*': query = query[:-1]
     objects_filtered = model.objects.filter(name__istartswith=query)
     return [{'name':i.name, 'id':i.id} for i in objects_filtered]
