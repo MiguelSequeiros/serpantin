@@ -36,11 +36,16 @@ class JsonResponse(HttpResponse):
         return("/*" + simplejson.dumps(self.original_obj) + "*/")
 
 def json(request, app_name, model_name):
-    print "Subzero GET data:", request.GET
+    print "json GET data:", request.GET
     query = ""
     if 'q' in request.GET: query = request.GET['q']
+    id = ""
+    if 'id' in request.GET: 
+        try: id = int(request.GET['id'])
+        except ValueError: id = ""
+
     model = getattr(__import__('serpantin.apps.%s.models' % app_name, '', '', [model_name]), model_name)
-    result = model_store(model, query)
+    result = id != "" and model_id(model, id) or model_query(model, query)
     
     return JsonResponse(result)
 
@@ -143,7 +148,7 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
     form = FormClass()
     
     #print "Subzero: obj.town.name = ", obj.town.name
-    print "Subzero post data:\n", request.POST
+    print "async_form post data:\n", request.POST
     
     params = {
             'debug': True,

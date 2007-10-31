@@ -5,11 +5,16 @@ from django.utils.functional import allow_lazy
 from django.http import HttpResponse
 
 # JSON srore classes
-def model_store(model, query = ""):
+def model_query(model, query = ""):
     if len(query) and query[-1] == '*': query = query[:-1]
     objects_filtered = model.objects.filter(name__istartswith=query)
     items = [{'name':i.name, 'id':i.id} for i in objects_filtered]
     return {'identifier':'id', 'items':items}
+
+def model_id(model, id):
+    object = model.objects.get(pk=id)
+    #return {'identifier':'id', 'items':{'name':object.name, 'id':object.id}}
+    return {'name':object.name, 'id':object.id}
 
 # Misc functions
 def escape(html):
@@ -88,8 +93,8 @@ class FilteringSelectStoreWidget(forms.TextInput):
     def render(self, name, value, attrs=None):
         attrs.setdefault('dojoType', 'dijit.form.FilteringSelect')
         attrs.setdefault('store', 'store_%s' % name)
-        store = '<div dojoType="dojo.data.ItemFileReadStore" jsId="store_%s" url="/json/%s" requestMethod="get"></div>\n' % (name, self.url,)
-        #store = '<div dojoType="CustomQueryReadStore" jsId="store_%s" url="/json/%s" requestMethod="get"></div>\n' % (name, self.url,)
+        #store = '<div dojoType="dojo.data.ItemFileReadStore" jsId="store_%s" url="/json/%s" requestMethod="get"></div>\n' % (name, self.url,)
+        store = '<div dojoType="CustomQueryReadStore" jsId="store_%s" url="/json/%s" requestMethod="get"></div>\n' % (name, self.url,)
         return store + super(FilteringSelectStoreWidget, self).render(name, value, attrs)
 
 class FilteringSelectStoreFormField(forms.Field):
