@@ -24,7 +24,7 @@ def model_store(app_name, model_name, query = ""):
     objects_filtered = model.objects.filter(name__istartswith=query)
     return [{'name':i.name, 'id':i.id} for i in objects_filtered]
     
-def json(request):
+def _json(request):
     content = [
         {
             'name':'Alabama',
@@ -51,5 +51,5 @@ def json(request):
     
     return JsonResponse({'identifier':'id', 'label':'name', 'items':result})
 
-def _json(request):
+def json(request):
     return render_to_response('test.json', {})

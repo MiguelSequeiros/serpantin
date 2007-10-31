@@ -5,20 +5,11 @@ from django.utils.functional import allow_lazy
 from django.http import HttpResponse
 
 # JSON srore classes
-class JsonResponse(HttpResponse):
-    def __init__(self, obj):
-        self.original_obj = obj
-        HttpResponse.__init__(self, self.serialize())
-        self["Content-Type"] = "text/javascript"
-
-    def serialize(self):
-        return('/*' + simplejson.dumps(self.original_obj) + '*/')
-
 def model_store(model, query = ""):
     if len(query) and query[-1] == '*': query = query[:-1]
     objects_filtered = model.objects.filter(name__istartswith=query)
     items = [{'name':i.name, 'id':i.id} for i in objects_filtered]
-    return {'identifier':'id', 'label':'name', 'items':items}
+    return {'identifier':'id', 'items':items}
 
 # Misc functions
 def escape(html):
@@ -89,7 +80,7 @@ class LookupField(ForeignKey):
         return super(LookupField, self).formfield(**defaults)
 
 # FilteringSelectSlore classes
-class FilteringSelectStoreWidget(forms.Select):
+class FilteringSelectStoreWidget(forms.TextInput):
     def __init__(self, attrs=None, url=""):
         self.url = url
         super(FilteringSelectStoreWidget, self).__init__(attrs)
@@ -98,11 +89,13 @@ class FilteringSelectStoreWidget(forms.Select):
         attrs.setdefault('dojoType', 'dijit.form.FilteringSelect')
         attrs.setdefault('store', 'store_%s' % name)
         store = '<div dojoType="dojo.data.ItemFileReadStore" jsId="store_%s" url="/json/%s" requestMethod="get"></div>\n' % (name, self.url,)
+        #store = '<div dojoType="CustomQueryReadStore" jsId="store_%s" url="/json/%s" requestMethod="get"></div>\n' % (name, self.url,)
         return store + super(FilteringSelectStoreWidget, self).render(name, value, attrs)
 
 class FilteringSelectStoreFormField(forms.Field):
     def __init__(self, url="", required=True, widget=FilteringSelectStoreWidget, label=None, initial=None,
                  help_text=None, error_messages=None):
+        print "initial", initial
         super(FilteringSelectStoreFormField, self).__init__(required, widget, label, initial, help_text, error_messages)
         self.widget.url = url
 

@@ -19,6 +19,7 @@ def form_callback(field, **kwargs):
     if isinstance(field, models.DateField):
         return DojoDateField(**kwargs)
     elif isinstance(field, models.ForeignKey):
+        #print kwargs['initial']
         meta = field.rel.to._meta
         kwargs.setdefault('url', '%s/%s/' % (meta.app_label, meta.object_name,))
         return FilteringSelectStoreFormField(**kwargs)
