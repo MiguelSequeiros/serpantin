@@ -97,11 +97,24 @@ class FilteringSelectStoreWidget(forms.TextInput):
         return store + super(FilteringSelectStoreWidget, self).render(name, value, attrs)
 
 class FilteringSelectStoreFormField(forms.Field):
-    def __init__(self, url="", required=True, widget=FilteringSelectStoreWidget, label=None, initial=None,
+    def __init__(self, queryset, url="", required=True, widget=FilteringSelectStoreWidget, label=None, initial=None,
                  help_text=None, error_messages=None):
-        print "initial", initial
+        #print "initial", initial
+        self.queryset = queryset
         super(FilteringSelectStoreFormField, self).__init__(required, widget, label, initial, help_text, error_messages)
         self.widget.url = url
+        
+    def clean(self, value):
+        forms.Field.clean(self, value)
+        if value in ('', None):
+            return None
+        try:
+            value = self.queryset.model._default_manager.get(pk=value)
+        except self.queryset.model.DoesNotExist:
+            raise ValidationError(ugettext(u'Select a valid choice. That'
+                                           u' choice is not one of the'
+                                           u' available choices.'))
+        return value
 
 # FilteringSelect classes
 class FilteringSelectWidget(forms.Select):

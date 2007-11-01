@@ -24,8 +24,9 @@ def form_callback(field, **kwargs):
     elif isinstance(field, models.ForeignKey):
         #print kwargs['initial']
         meta = field.rel.to._meta
-        kwargs.setdefault('url', '%s/%s/' % (meta.app_label, meta.object_name,))
-        return FilteringSelectStoreFormField(**kwargs)
+        defaults = {'queryset': field.rel.to._default_manager.all(), 'url': '%s/%s/' % (meta.app_label, meta.object_name,)}
+        defaults.update(kwargs)
+        return FilteringSelectStoreFormField(**defaults)
     else:
         return field.formfield(**kwargs)
 
