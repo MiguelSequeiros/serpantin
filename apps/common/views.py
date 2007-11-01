@@ -1,10 +1,10 @@
 from django.db.models.query import QOr
 
 from django.core.paginator import ObjectPaginator
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from django.forms import FormWrapper
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 
 from django.db import models
 from django.newforms import form_for_model
@@ -14,6 +14,9 @@ from serpantin.settings import user
 from serpantin.forms import *
 
 import simplejson
+
+def get_model(app_name, model_name):
+    return getattr(__import__('serpantin.apps.%s.models' % app_name, '', '', [model_name]), model_name)
 
 def form_callback(field, **kwargs):
     if isinstance(field, models.DateField):
@@ -136,9 +139,35 @@ def async_listform(request, app_name, model_name, node):
 	
         return render_to_response(tmpl, params, context_instance=RequestContext(request))
 
-def async_form(request, app_name, model_name, win_id=0, object_id='', async=True, go=False):
-    model = getattr(__import__('serpantin.apps.%s.models' % (app_name,), '', '', [model_name]), model_name)
+def async_form(request, app_name, model_name, object_id):
+    print "async_form post data:\n", request.POST
+    model = get_model(app_name, model_name)
+    object = get_object_or_404(model, pk=object_id)
+    Form = form_for_instance(object, formfield_callback=form_callback)
+    if request.method == 'POST':
+        form = Form(request.POST)
+        if form.is_valid(): form.save()
+        else:
+            errors = form.errors
+            return render_to_response('errors.html', {'errors': errors})
+        return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/%(object_id)s' % vars())
+    else:
+        form = Form()
+        params = {
+            'debug': True,
+            'form': form,
+            'edit_object': False,
+            'is_owner': True,
+            'win_id': 1,
+            'app': app_name,
+            'model': model_name,
+        }
+        template = "%s/apps/%s/templates/%s_form.html" % (user['projectdir'], app_name, model_name)
+        return render_to_response(template, params, context_instance=RequestContext(request))
 
+def _async_form(request, app_name, model_name, win_id=0, object_id='', async=True, go=False):
+    model = getattr(__import__('serpantin.apps.%s.models' % app_name, '', '', [model_name]), model_name)
+    
     if object_id:
         obj = model.objects.get(pk=object_id)
         FormClass = form_for_instance(obj, formfield_callback=form_callback)
@@ -148,8 +177,7 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
     form = FormClass()
     
     #print "Subzero: obj.town.name = ", obj.town.name
-    print "async_form post data:\n", request.POST
-    
+        
     params = {
             'debug': True,
             'form': form,
@@ -166,7 +194,7 @@ def async_form(request, app_name, model_name, win_id=0, object_id='', async=True
     tmpl = '%s/apps/%s/templates/%s_form.html' % (user['projectdir'], app_name, model_name) 
     return render_to_response(tmpl, params, context_instance=RequestContext(request))
 
-def _async_form(request, app_name, model_name, win_id=0, object_id='', async=True, go=False):
+def __async_form(request, app_name, model_name, win_id=0, object_id='', async=True, go=False):
     print "RA3VAT async_form"
     print "app_name ", app_name
     print "model_name", model_name

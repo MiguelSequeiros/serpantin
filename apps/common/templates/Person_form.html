@@ -35,7 +35,7 @@
 
 {% load i18n %}
 <div class="Person">
-<form id="fpform_{{ win_id }}" app="common" model="Person" oid="{{obj.id}}" class="fpform" method="POST" action="/async/common/Person/save/{{obj.id}}/form/{{ win_id }}/">
+<form id="fpform_{{ win_id }}" app="common" model="Person" oid="{{obj.id}}" class="fpform" method="POST">
 <table>
 <tr><td>
 	<label for="id_lastname">Фамилия:</label></td><td>
@@ -127,6 +127,8 @@
 
 {% if debug %}
 <tr><td colspan="2">
+<input type="hidden" name="createuser" value="1">
+<input type="hidden" name="modifyuser" value="1">
 <input type="submit">
 </td></tr>
 {% endif %}

@@ -22,7 +22,7 @@
 			return this.inherited("fetch", arguments);
 		}
 	});
-
+	// TODO: try setDisplayedValue with FilteringSelect
 	function UpdateStore(js_id, server_url) {
 		/* reinitialisation of the ComboBox Store */
 		//alert("UpdateStore" + js_id + server_url);
@@ -35,7 +35,10 @@
 		<div dojoType="MyQueryReadStore" jsId="store" url="/json/common/Town" requestMethod="get"></div>
 		<!-- <input dojoType="dijit.form.FilteringSelect" name="town" jsId="town" store="store" pageSize="5"
 			onChange="UpdateStore('town', '/json/?q=' + arguments[0])"/> -->
-		<input dojoType="dijit.form.FilteringSelect" name="town" value="3" jsId="town" store="store" pageSize="5"/>
+		<!--<input dojoType="dijit.form.FilteringSelect" name="town" value="3" jsId="town" store="store" pageSize="5"/>-->
+		<select dojoType="dijit.form.FilteringSelect" name="town" jsId="town" store="store" pageSize="5">
+			<option value="3" selected="selected">Isengard</option>
+		</select>
 		<br /><br /><hr />
 		<input type="submit" value="Go!" />
 	</form>
