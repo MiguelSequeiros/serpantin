@@ -13,8 +13,7 @@ def model_query(model, query = ""):
 
 def model_id(model, id):
     object = model.objects.get(pk=id)
-    #return {'identifier':'id', 'items':{'name':object.name, 'id':object.id}}
-    return {'name':object.name, 'id':object.id}
+    return {'identifier':'id', 'items':[{'name':object.name, 'id':object.id}]}
 
 # Misc functions
 def escape(html):
