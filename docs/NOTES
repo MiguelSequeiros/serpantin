@@ -7,3 +7,10 @@
 - http://www.djangosnippets.org/snippets/391/
 = Dojo porting to 0.9 =
 - http://wolfram.kriesing.de/blog/index.php/2007/dojo-migration-04-to-09
+
+2007-11-02
+= The following must be added before the first release: =
+1. Adding, deleting and editing objects from the dojo layout
+2. Scaffolding
+3. SVN repository-independent settings file
+4* Administrative functions to manage the dojo layout

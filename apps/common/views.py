@@ -14,9 +14,26 @@ from serpantin.settings import user
 from serpantin.forms import *
 
 import simplejson
+import os
 
+# Helpers
 def get_model(app_name, model_name):
+    # FIXME make use of django.db.models.loading.get_model, like in the admin interface
     return getattr(__import__('serpantin.apps.%s.models' % app_name, '', '', [model_name]), model_name)
+
+def get_template_dir(app_name):
+    # FIXME do it like in django.db.models.loading.get_app
+    app = 'serpantin.apps.' + str(app_name)
+    i = app.rfind('.')
+    if i == -1:
+        m, a = app, None
+    else:
+        m, a = app[:i], app[i+1:]
+    if a is None:
+        mod = __import__(m, {}, {}, [])
+    else:
+        mod = getattr(__import__(m, {}, {}, [a]), a)
+    return os.path.join(os.path.dirname(mod.__file__), 'templates')
 
 def form_callback(field, **kwargs):
     if isinstance(field, models.DateField):
@@ -137,11 +154,41 @@ def async_listform(request, app_name, model_name, node):
     except:
         tmpl = '%s/apps/%s/templates/%s_list.gen.html' % (user['projectdir'], app_name, model_name) 
         print "before render_to_response final"
-	
+
         return render_to_response(tmpl, params, context_instance=RequestContext(request))
 
-def async_form(request, app_name, model_name, object_id):
-    print "async_form post data:\n", request.POST
+def async_new(request, app_name, model_name):
+    model = get_model(app_name, model_name)
+    Form = form_for_model(model, formfield_callback=form_callback)
+    if request.method == 'POST':
+        form = Form(request.POST)
+        if form.is_valid(): form.save()
+        else:
+            errors = form.errors
+            return render_to_response('%s/errors.html' % get_template_dir(app_name), {'errors': errors})
+        return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/new/' % vars())
+    else:
+        form = Form()
+        params = {
+            'debug': True,
+            'form': form,
+            'edit_object': False,
+            'is_owner': True,
+            'win_id': 1,
+            'app': app_name,
+            'model': model_name,
+        }
+        template = '%s/%s_form.html' % (get_template_dir(app_name), model_name)
+        return render_to_response(template, params, context_instance=RequestContext(request))
+
+def async_delete(request, app_name, model_name, object_id):
+    model = get_model(app_name, model_name)
+    object = get_object_or_404(model, pk=object_id)
+    object.delete()
+    return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/new/' % vars())
+
+def async_change(request, app_name, model_name, object_id):
+    print "async_change POST data:\n", request.POST
     model = get_model(app_name, model_name)
     object = get_object_or_404(model, pk=object_id)
     Form = form_for_instance(object, formfield_callback=form_callback)
@@ -150,7 +197,7 @@ def async_form(request, app_name, model_name, object_id):
         if form.is_valid(): form.save()
         else:
             errors = form.errors
-            return render_to_response('errors.html', {'errors': errors})
+            return render_to_response('%s/errors.html' % get_template_dir(app_name), {'errors': errors})
         return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/%(object_id)s' % vars())
     else:
         form = Form()
@@ -163,7 +210,7 @@ def async_form(request, app_name, model_name, object_id):
             'app': app_name,
             'model': model_name,
         }
-        template = "%s/apps/%s/templates/%s_form.html" % (user['projectdir'], app_name, model_name)
+        template = '%s/%s_form.html' % (get_template_dir(app_name), model_name)
         return render_to_response(template, params, context_instance=RequestContext(request))
 
 def _async_form(request, app_name, model_name, win_id=0, object_id='', async=True, go=False):
