@@ -44,7 +44,7 @@ class DojoDateFieldWidget(forms.TextInput):
     def render(self, name, value, attrs=None):
         if value is None: value = ''
         final_attrs = self.build_attrs(attrs, type=self.input_type, name=name,
-            dojoType='dijit.form.DateTextBox', lang='en-gb', constraints="{datePattern:'dd.MM.yyyy'}", promptMessage="dd.MM.yyyy")
+            dojoType='dijit.form.DateTextBox', lang='ru-ru', constraints="{datePattern:'dd.MM.yyyy'}", promptMessage="dd.MM.yyyy")
         if value != '': final_attrs['value'] = force_unicode(value) # Only add the 'value' attribute if a value is non-empty.
         return u'<input%s />' % flatatt(final_attrs)
 
@@ -123,7 +123,11 @@ class FilteringSelectWidget(forms.Select):
 
     def render(self, name, value, attrs=None, choices=()):
         attrs.setdefault('dojoType', 'dijit.form.FilteringSelect')
+        attrs.setdefault('store', "itemStore")
+        attrs.setdefault('searchAttr', "name")
+        #attrs.setdefault('query', "{name:'*'}")
         return super(FilteringSelectWidget, self).render(name, value, attrs, choices)
+
 
 class FilteringSelectFormField(forms.ModelChoiceField):
     def __init__(self, queryset, empty_label=u"---------", cache_choices=False,

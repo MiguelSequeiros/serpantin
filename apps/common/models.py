@@ -11,6 +11,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 
+from django.contrib import admin
+
 from django.contrib.auth.models import User
 
 from serpantin.forms import *
@@ -706,3 +708,7 @@ class Org(models.Model):
         else:
             legal_name = u"%s" % self.name
         return legal_name
+
+
+
+admin.site.register(Person)
