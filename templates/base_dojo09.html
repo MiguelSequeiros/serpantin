@@ -65,7 +65,7 @@
 
 
 
-<script type="text/javascript" src="/site_media/dojo09/dojo/dojo.js" djConfig = "parseOnLoad:true, extraLocale:['ru-ru']"></script>
+<script type="text/javascript" src="/site_media/dojo09/dojo/dojo.js" djConfig = "isDebug:true, parseOnLoad:true, extraLocale:['ru-ru']"></script>
 <script type="text/javascript" src="/site_media/js/serpantin.js"></script>
 
 <script language="JavaScript" type="text/javascript">
@@ -80,6 +80,15 @@
 	dojo.require("dijit.form.Button");
 	dojo.require("dijit.form.DateTextBox");
 	dojo.require("dijit.form.FilteringSelect");
+	dojo.require("dojox.data.QueryReadStore");
+
+	dojo.provide("CustomQueryReadStore");
+	dojo.declare("CustomQueryReadStore", dojox.data.QueryReadStore, {
+		fetch:function(request) {
+			request.serverQuery = {q:request.query.name};
+			return this.inherited("fetch", arguments);
+		}
+	});
 </script>
 
 

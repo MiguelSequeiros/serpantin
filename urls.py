@@ -29,11 +29,12 @@ urlpatterns = patterns('',
     #(r'^async/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/(?P<object_id>.*)/form/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_form'),
     
     # async
+    (r'^async/(?P<node>.*)/(?P<app_name>.*)/(?P<model_name>.*)/list/$', 'serpantin.apps.common.views.async_listform'),
+    
     (r'^async/([^/]+)/([^/]+)/new/$', 'serpantin.apps.common.views.async_new'),
     (r'^async/([^/]+)/([^/]+)/(.+)/delete/$', 'serpantin.apps.common.views.async_delete'),
     (r'^async/([^/]+)/([^/]+)/(.+)/$', 'serpantin.apps.common.views.async_change'),
     
-    (r'^async/(?P<node>.*)/(?P<app_name>.*)/(?P<model_name>.*)/list/$', 'serpantin.apps.common.views.async_listform'),
 
     (r'^json/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/$', 'serpantin.apps.common.views.json'),
     # Test urls

@@ -114,10 +114,17 @@ function loadContentForm(content_id, object_id) {
 
 
 function loadForm(app, model, id, properties, values) {
-	server_url = '/async/'+app+'/'+model+'/'+id+'/form/1/';
+	//server_url = '/async/'+app+'/'+model+'/'+id+'/form/1/';
+	if (id) {
+	    server_url = '/async/'+app+'/'+model+'/'+id+'/';
+	}
+	else {
+	    server_url = '/async/'+app+'/'+model+'/new/';
+	}
 	var newTab = new dijit.layout.ContentPane({
 		title: tab_title,
 		closable:true,
+		parseOnLoad:true,
 		refreshOnShow: false,
 		href: server_url
 	}, dojo.doc.createElement('div'));
@@ -260,10 +267,11 @@ function submitForm(elem, app, model, win_id, id, cont) {
 		}
 		if (id) {
 			//alert("submit existent obj");
-			server_url = "/async/"+app+"/"+model+"/"+oper+"/"+id+"/form/"+win_id+"/";
+			//server_url = "/async/"+app+"/"+model+"/"+oper+"/"+id+"/form/"+win_id+"/";
+			server_url = "/async/"+app+"/"+model+"/"+id+"/";
 		}
 		else {
-			server_url = "/async/"+app+"/"+model+"/"+oper+"/form/"+win_id+"/";
+			server_url = "/async/"+app+"/"+model+"/new/";
 		}
 		return server_url;
 	}

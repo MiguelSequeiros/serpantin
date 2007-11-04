@@ -101,7 +101,9 @@ class FilteringSelectStoreFormField(forms.Field):
                  help_text=None, error_messages=None):
         #print "initial", initial
         self.queryset = queryset
-        super(FilteringSelectStoreFormField, self).__init__(required, widget, label, initial, help_text, error_messages)
+	#FIXME: commented out to make it works
+        #super(FilteringSelectStoreFormField, self).__init__(required, widget, label, initial, help_text, error_messages)
+        super(FilteringSelectStoreFormField, self).__init__(required, widget, label, initial, help_text)
         self.widget.url = url
         
     def clean(self, value):

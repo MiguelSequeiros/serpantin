@@ -170,7 +170,7 @@ def async_new(request, app_name, model_name):
     else:
         form = Form()
         params = {
-            'debug': True,
+            'debug': False,
             'form': form,
             'edit_object': False,
             'is_owner': True,
@@ -202,7 +202,7 @@ def async_change(request, app_name, model_name, object_id):
     else:
         form = Form()
         params = {
-            'debug': True,
+            'debug': False,
             'form': form,
             'edit_object': False,
             'is_owner': True,
