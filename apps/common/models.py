@@ -711,4 +711,4 @@ class Org(models.Model):
 
 
 
-admin.site.register(Person)
+#admin.site.register(Person)

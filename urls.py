@@ -5,7 +5,7 @@ from django.contrib import admin
 urlpatterns = patterns('',
     #(r'^admin/', include('django.contrib.admin.urls')),
     #newforms-admin
-    (r'^admin/(.*)', admin.site.root),
+    #(r'^admin/(.*)', admin.site.root),
 
     (r'^registration/login', 'django.contrib.auth.views.login'),
     (r'^registration/logout', 'django.contrib.auth.views.logout'),

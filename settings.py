@@ -15,7 +15,7 @@ users = {
         'name':		'Grigory Fateev',
         'email':	'greg@dial.com.ru', 
         'djangodir':	'/home/greg/www/django_src/django', 
-        'projectdir':	'/home/greg/www/serp2', 
+        'projectdir':	'/home/greg/www/serpantin', 
     },
     'subzero': { 
         'login':	'subzero',
