@@ -101,9 +101,7 @@ class FilteringSelectStoreFormField(forms.Field):
                  help_text=None, error_messages=None):
         #print "initial", initial
         self.queryset = queryset
-	#FIXME: commented out to make it works
-        #super(FilteringSelectStoreFormField, self).__init__(required, widget, label, initial, help_text, error_messages)
-        super(FilteringSelectStoreFormField, self).__init__(required, widget, label, initial, help_text)
+        super(FilteringSelectStoreFormField, self).__init__(required, widget, label, initial, help_text, error_messages)
         self.widget.url = url
         
     def clean(self, value):
@@ -129,7 +127,6 @@ class FilteringSelectWidget(forms.Select):
         attrs.setdefault('searchAttr', "name")
         #attrs.setdefault('query', "{name:'*'}")
         return super(FilteringSelectWidget, self).render(name, value, attrs, choices)
-
 
 class FilteringSelectFormField(forms.ModelChoiceField):
     def __init__(self, queryset, empty_label=u"---------", cache_choices=False,

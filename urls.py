@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import *
 #for newforms-admin
 from django.contrib import admin
+from serpantin.settings import user
 
 urlpatterns = patterns('',
     #(r'^admin/', include('django.contrib.admin.urls')),
@@ -19,7 +20,9 @@ urlpatterns = patterns('',
     #(r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'base_dojo.html'}),
     (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'base_dojo09.html'}),
     #(r'^accounts/login', 'django.views.auth.login.login'),
-    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/var/www/html/media/', 'show_indexes':True}),
+    #(r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/var/www/html/media/', 'show_indexes':True}),
+    (r'^site_media/dojo09/(?P<path>.*)$', 'django.views.static.serve', {'document_root': '/var/www/html/media/dojo09', 'show_indexes':True}),
+    (r'^site_media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': user['projectdir'] + '/media', 'show_indexes':True}),
 
     #(r'^async/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/save/(?P<object_id>.*)/form/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_form'),
     #(r'^async/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/save/form/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_form'),
