@@ -39,7 +39,7 @@ def form_callback(field, **kwargs):
     if isinstance(field, models.DateField):
         return DojoDateField(**kwargs)
     elif isinstance(field, models.ForeignKey):
-        #print kwargs['initial']
+        print "form_callback", kwargs
         meta = field.rel.to._meta
         defaults = {'queryset': field.rel.to._default_manager.all(), 'url': '%s/%s/' % (meta.app_label, meta.object_name,)}
         defaults.update(kwargs)
@@ -187,7 +187,7 @@ def async_delete(request, app_name, model_name, object_id):
     object.delete()
     return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/new/' % vars())
 
-def async_change(request, app_name, model_name, object_id):
+def async_change(request, app_name, model_name, object_id, win_id):
     print "async_change POST data:\n", request.POST
     model = get_model(app_name, model_name)
     object = get_object_or_404(model, pk=object_id)
@@ -200,13 +200,13 @@ def async_change(request, app_name, model_name, object_id):
             return render_to_response('%s/errors.html' % get_template_dir(app_name), {'errors': errors})
         return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/%(object_id)s' % vars())
     else:
-        form = Form()
+        form = Form(auto_id = "id_%s_" + win_id)
         params = {
-            'debug': False,
+            'debug': True,
             'form': form,
             'edit_object': False,
             'is_owner': True,
-            'win_id': 1,
+            'win_id': win_id,
             'app': app_name,
             'model': model_name,
         }
