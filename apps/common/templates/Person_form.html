@@ -121,10 +121,10 @@
 <tr><td colspan="2">
 <div class="box">
 <button dojoType="dijit.form.Button"
-	onclick="/*this.setDisabled(true);*/ submitForm('common', 'Person', {{ object_id }}, {{ win_id }}, 'save');">
+	onclick="/*this.setDisabled(true);*/ submitForm('common', 'Person', '{{ object_id }}', '{{ win_id }}', 'save');">
 	<span>Сохранить и продолжить</span></button>
 <button dojoType="dijit.form.Button"
-	onclick="/*this.setDisabled(true);*/ submitForm('common', 'Person', {{ object_id }}, {{ win_id }}, 'save_and_close');">
+	onclick="/*this.setDisabled(true);*/ submitForm('common', 'Person', '{{ object_id }}', '{{ win_id }}', 'save_and_close');">
 	<span>Сохранить</span>
 </button>
 </div>
@@ -134,7 +134,9 @@
 <tr><td colspan="2">
 <input type="hidden" name="createuser" value="1">
 <input type="hidden" name="modifyuser" value="1">
+{% if debug %}
 <input type="submit">
+{% endif %}
 </td></tr>
 
 </table> 

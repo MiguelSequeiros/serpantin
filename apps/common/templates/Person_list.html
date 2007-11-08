@@ -23,7 +23,9 @@
 	</thead>
 	<tbody>
 	{% for obj in obj_list %}
-		<tr class="{% cycle row1,row2 %}"><td><a href="javascript:tab_title = '{{ obj.lastname }}'; loadForm('{{ app }}','{{ model }}',{{obj.id}});"><img src="/site_media/images/edit.gif" alt="{% trans 'Edit object' %}"></a></td>
+		<tr class="{% cycle row1,row2 %}">
+			<td><a href="javascript:loadForm('{{ app }}', '{{ model }}', '{{ obj.id }}', '{{ obj.lastname }}');">
+			<img src="/site_media/images/edit.gif" alt="{% trans 'Edit object' %}"></a></td>
 		<td><a href="javascript:confirmDelObj('{{ app }}','{{ model }}','{{ obj.id }}');"><img src="/site_media/images/trash.gif" alt="{% trans 'Delete object' %}"></a></td>
 		<td>{{ obj.fullname }}</td>
 		<td>{{ obj.get_phones }}</td>

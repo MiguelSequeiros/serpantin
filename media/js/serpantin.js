@@ -112,12 +112,13 @@ function loadContentForm(content_id, object_id) {
 	});
 }
 
-function loadForm(app_name, model_name, object_id) {
+function loadForm(app_name, model_name, object_id, tab_title) {
 	var server_url = '/async/' + app_name + '/' + model_name + '/';
 	if (object_id) server_url += object_id + '/'; else server_url += 'new/';
 	tab_id = dijit.getUniqueId("tab");
 	win_id = tab_id.substring(4, tab_id.length);
-	server_url += win_id + '/'
+	server_url += win_id + '/';
+	if (arguments.length < 4) tab_title = 'New ' + model_name;
 	var newTab = new dijit.layout.ContentPane({
 		id: tab_id,
 		title: tab_title,
@@ -255,7 +256,9 @@ function updateList(elem, newId, newRepr) {
 
 function submitForm(app_name, model_name, object_id, win_id, action)
 {
-	var server_url = '/async/' + app_name + '/' + model_name + '/' + object_id + '/' + win_id + '/';
+	var server_url = '/async/' + app_name + '/' + model_name + '/';
+	if (object_id) server_url += object_id + '/'; else server_url += 'new/';
+	server_url += win_id + '/'
 	var node = dojo.byId("fpform_" + win_id);
 	dojo.xhrPost({
 		url: server_url,
@@ -273,7 +276,8 @@ function submitForm(app_name, model_name, object_id, win_id, action)
 					//tabpane.selectChild(listtab);
 					loadListForm(app_name, model_name, model_name.toLowerCase() + 'listtab');
 					tabpane.removeChild(tab);
-					delete tab;
+					//FIXME: delete tab somehow from the memory
+					//delete tab;
 					break;
 			}
 			return response;
