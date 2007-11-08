@@ -112,15 +112,10 @@ function loadContentForm(content_id, object_id) {
 	});
 }
 
-
-function loadForm(app, model, id, properties, values) {
-	//server_url = '/async/'+app+'/'+model+'/'+id+'/form/1/';
-	if (id) {
-	    server_url = '/async/'+app+'/'+model+'/'+id+'/';
-	}
-	else {
-	    server_url = '/async/'+app+'/'+model+'/new/';
-	}
+function loadForm(app_name, model_name, object_id) {
+	server_url = '/async/' + app_name + '/' + model_name + '/'
+	if (object_id) server_url += object_id + '/'; else server_url += 'new/';
+	server_url += dijit.getUniqueId("tab") + '/'
 	var newTab = new dijit.layout.ContentPane({
 		title: tab_title,
 		closable:true,
@@ -128,7 +123,7 @@ function loadForm(app, model, id, properties, values) {
 		refreshOnShow: false,
 		href: server_url
 	}, dojo.doc.createElement('div'));
-	parentTabPane = dijit.byId(model.toLowerCase() + 'TabPane');
+	parentTabPane = dijit.byId(model_name.toLowerCase() + 'TabPane');
 	parentTabPane.addChild(newTab);
 	newTab.startup();
 	parentTabPane.selectChild(newTab);

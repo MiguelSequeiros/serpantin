@@ -157,50 +157,30 @@ def async_listform(request, app_name, model_name, node):
 
         return render_to_response(tmpl, params, context_instance=RequestContext(request))
 
-def async_new(request, app_name, model_name):
-    model = get_model(app_name, model_name)
-    Form = form_for_model(model, formfield_callback=form_callback)
-    if request.method == 'POST':
-        form = Form(request.POST)
-        if form.is_valid(): form.save()
-        else:
-            errors = form.errors
-            return render_to_response('%s/errors.html' % get_template_dir(app_name), {'errors': errors})
-        return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/new/' % vars())
-    else:
-        form = Form()
-        params = {
-            'debug': False,
-            'form': form,
-            'edit_object': False,
-            'is_owner': True,
-            'win_id': 1,
-            'app': app_name,
-            'model': model_name,
-        }
-        template = '%s/%s_form.html' % (get_template_dir(app_name), model_name)
-        return render_to_response(template, params, context_instance=RequestContext(request))
-
 def async_delete(request, app_name, model_name, object_id):
     model = get_model(app_name, model_name)
     object = get_object_or_404(model, pk=object_id)
     object.delete()
     return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/new/' % vars())
 
-def async_change(request, app_name, model_name, object_id, win_id):
-    print "async_change POST data:\n", request.POST
+def async_form(request, app_name, model_name, object_id='', win_id=''):
+    print "async_form POST data:\n", request.POST
     model = get_model(app_name, model_name)
-    object = get_object_or_404(model, pk=object_id)
-    Form = form_for_instance(object, formfield_callback=form_callback)
+    if object_id:
+        object = get_object_or_404(model, pk=object_id)
+        Form = form_for_instance(object, formfield_callback=form_callback)
+    else: Form = form_for_model(model, formfield_callback=form_callback)
+    auto_id = "id_%s"
+    if win_id: auto_id += "_" + win_id
     if request.method == 'POST':
-        form = Form(request.POST)
+        form = Form(request.POST, auto_id=auto_id)
         if form.is_valid(): form.save()
         else:
             errors = form.errors
             return render_to_response('%s/errors.html' % get_template_dir(app_name), {'errors': errors})
         return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/%(object_id)s' % vars())
     else:
-        form = Form(auto_id = "id_%s_" + win_id)
+        form = Form(auto_id=auto_id)
         params = {
             'debug': True,
             'form': form,

@@ -34,11 +34,10 @@ urlpatterns = patterns('',
     # async
     (r'^async/(?P<node>.*)/(?P<app_name>.*)/(?P<model_name>.*)/list/$', 'serpantin.apps.common.views.async_listform'),
     
-    (r'^async/(?P<app_name>[^/]+)/(?P<model_name>[^/]+)/new/$', 'serpantin.apps.common.views.async_new'),
+    (r'^async/(?P<app_name>[^/]+)/(?P<model_name>[^/]+)/new/$', 'serpantin.apps.common.views.async_form'),
     (r'^async/(?P<app_name>[^/]+)/(?P<model_name>[^/]+)/(?P<object_id>.+)/delete/$', 'serpantin.apps.common.views.async_delete'),
-    (r'^async/(?P<app_name>[^/]+)/(?P<model_name>[^/]+)/(?P<object_id>.+)/(?P<win_id>.*)/$', 'serpantin.apps.common.views.async_change'),
+    (r'^async/(?P<app_name>[^/]+)/(?P<model_name>[^/]+)/(?P<object_id>.+)/(?P<win_id>.+)/$', 'serpantin.apps.common.views.async_form'),
     
-
     (r'^json/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/$', 'serpantin.apps.common.views.json'),
     # Test urls
     (r'^test/$', 'serpantin.apps.test.views.test'),
