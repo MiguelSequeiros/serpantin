@@ -265,6 +265,17 @@ function submitForm(app_name, model_name, object_id, win_id, action)
 		load: function(response, ioArgs)
 		{
 			console.dir(response);
+			switch (action) {
+				case 'save_and_close':
+					var tabpane = dijit.byId(model_name.toLowerCase() + "TabPane");
+					//var listtab = dijit.byId(model_name.toLowerCase() + "listtabw");
+					var tab = dijit.byId("tab_" + win_id);
+					//tabpane.selectChild(listtab);
+					loadListForm(app_name, model_name, model_name.toLowerCase() + 'listtab');
+					tabpane.removeChild(tab);
+					delete tab;
+					break;
+			}
 			return response;
 		},
 		error: function(response, ioArgs)
@@ -273,16 +284,6 @@ function submitForm(app_name, model_name, object_id, win_id, action)
 			return response;
 		}
 	});
-	switch (action) {
-		case 'save_and_close':
-			var tabpane = dijit.byId(model_name.toLowerCase() + "TabPane");
-			var listtab = dijit.byId(model_name.toLowerCase() + "listtabw");
-			var tab = dijit.byId("tab_" + win_id);
-			tabpane.selectChild(listtab);
-			tabpane.removeChild(tab);
-			delete tab;
-			break;
-	}
 }
 
 function _submitForm(elem, app, model, win_id, id, cont) {
