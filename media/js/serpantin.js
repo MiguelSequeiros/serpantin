@@ -113,17 +113,20 @@ function loadContentForm(content_id, object_id) {
 }
 
 function loadForm(app_name, model_name, object_id) {
-	server_url = '/async/' + app_name + '/' + model_name + '/'
+	var server_url = '/async/' + app_name + '/' + model_name + '/';
 	if (object_id) server_url += object_id + '/'; else server_url += 'new/';
-	server_url += dijit.getUniqueId("tab") + '/'
+	tab_id = dijit.getUniqueId("tab");
+	win_id = tab_id.substring(4, tab_id.length);
+	server_url += win_id + '/'
 	var newTab = new dijit.layout.ContentPane({
+		id: tab_id,
 		title: tab_title,
 		closable:true,
 		parseOnLoad:true,
 		refreshOnShow: false,
 		href: server_url
 	}, dojo.doc.createElement('div'));
-	parentTabPane = dijit.byId(model_name.toLowerCase() + 'TabPane');
+	var parentTabPane = dijit.byId(model_name.toLowerCase() + 'TabPane');
 	parentTabPane.addChild(newTab);
 	newTab.startup();
 	parentTabPane.selectChild(newTab);
@@ -250,9 +253,39 @@ function updateList(elem, newId, newRepr) {
     } 
 }
 
+function submitForm(app_name, model_name, object_id, win_id, action)
+{
+	var server_url = '/async/' + app_name + '/' + model_name + '/' + object_id + '/' + win_id + '/';
+	var node = dojo.byId("fpform_" + win_id);
+	dojo.xhrPost({
+		url: server_url,
+		form: node,
+		handleAs: "json-comment-filtered",
+		timeout: 5000,
+		load: function(response, ioArgs)
+		{
+			console.dir(response);
+			return response;
+		},
+		error: function(response, ioArgs)
+		{
+			node.innerHTML = response;
+			return response;
+		}
+	});
+	switch (action) {
+		case 'save_and_close':
+			var tabpane = dijit.byId(model_name.toLowerCase() + "TabPane");
+			var listtab = dijit.byId(model_name.toLowerCase() + "listtabw");
+			var tab = dijit.byId("tab_" + win_id);
+			tabpane.selectChild(listtab);
+			tabpane.removeChild(tab);
+			delete tab;
+			break;
+	}
+}
 
-
-function submitForm(elem, app, model, win_id, id, cont) {
+function _submitForm(elem, app, model, win_id, id, cont) {
 	defineURL = function(app, model, win_id, id, cont) {
 		if (cont) {
 			oper = "saveandgo";

@@ -1,0 +1,37 @@
+<html>
+<head>
+<title>Hello, Ajax world!</title>
+<script type="text/javascript" src="/site_media/dojo09/dojo/dojo.js"
+	djConfig="isDebug: true"></script>
+<script type="text/javascript">
+	function hello()
+	{
+		dojo.xhrGet( {
+			// The following URL must match that used to test the server.
+			url: "/site_media/test/ajax.txt",
+			handleAs: "text",
+	
+			timeout: 5000, // Time in milliseconds
+	
+			// The LOAD function will be called on a successful response.
+			load: function(response, ioArgs) {
+				dojo.byId("cargo").innerHTML = response;
+				return response;
+			},
+	
+			// The ERROR function will be called in an error case.
+			error: function(response, ioArgs) {
+				console.error("HTTP status code: ", ioArgs.xhr.status);
+				return response;
+			}
+		});
+	}
+</script>
+<script type="text/javascript">
+	dojo.addOnLoad(hello);
+</script>
+</head>
+<body>
+	<div id="cargo" style="font-size: big"></div>
+</body>
+</html>

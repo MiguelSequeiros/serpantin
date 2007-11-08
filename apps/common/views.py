@@ -178,17 +178,19 @@ def async_form(request, app_name, model_name, object_id='', win_id=''):
         else:
             errors = form.errors
             return render_to_response('%s/errors.html' % get_template_dir(app_name), {'errors': errors})
-        return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/%(object_id)s' % vars())
+        #return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/%(object_id)s/%(win_id)s/' % vars())
+        return JsonResponse({'result': 'OK'})
     else:
         form = Form(auto_id=auto_id)
         params = {
-            'debug': True,
+            'debug': False,
             'form': form,
             'edit_object': False,
             'is_owner': True,
-            'win_id': win_id,
             'app': app_name,
             'model': model_name,
+            'win_id': win_id,
+            'object_id': object_id,
         }
         template = '%s/%s_form.html' % (get_template_dir(app_name), model_name)
         return render_to_response(template, params, context_instance=RequestContext(request))
@@ -207,7 +209,7 @@ def _async_form(request, app_name, model_name, win_id=0, object_id='', async=Tru
     #print "Subzero: obj.town.name = ", obj.town.name
         
     params = {
-            'debug': True,
+            'debug': False,
             'form': form,
             'edit_object': False,
             'is_owner': True,

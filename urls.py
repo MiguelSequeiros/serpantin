@@ -4,7 +4,7 @@ from django.contrib import admin
 from serpantin.settings import user
 
 urlpatterns = patterns('',
-    #(r'^admin/', include('django.contrib.admin.urls')),
+    (r'^admin/', include('django.contrib.admin.urls')),
     #newforms-admin
     #(r'^admin/(.*)', admin.site.root),
 

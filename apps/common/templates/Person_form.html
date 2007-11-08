@@ -5,7 +5,7 @@
 	@import "/site_media/dojo09/dojo/resources/dojo.css";
 	@import "/site_media/dojo09/dijit/themes/tundra/tundra.css";
 </style>
-<script type="text/javascript" src="/site_media/dojo09/dojo/dojo.js"  djConfig = "parseOnLoad:true"></script>
+<script type="text/javascript" src="/site_media/dojo09/dojo/dojo.js"  djConfig = "parseOnLoad:true, isDebug:true"></script>
 <script type="text/javascript" src="/site_media/js/serpantin.js"></script>
 <script language="JavaScript" type="text/javascript">
 	dojo.require("dojo.parser");
@@ -120,18 +120,22 @@
 </td></tr>
 <tr><td colspan="2">
 <div class="box">
-<button dojoType="dijit.form.Button" onclick="/*this.setDisabled(true);*/ submitForm(this, 'common','Person',{{ win_id }},'{{obj.id}}','true');"><span>Сохранить и продолжить</span></button>
-<button dojoType="dijit.form.Button" onclick="/*this.setDisabled(true);*/ submitForm(this, 'common','Person',{{ win_id }},'{{obj.id}}');"><span>Сохранить</span></button>
+<button dojoType="dijit.form.Button"
+	onclick="/*this.setDisabled(true);*/ submitForm('common', 'Person', {{ object_id }}, {{ win_id }}, 'save');">
+	<span>Сохранить и продолжить</span></button>
+<button dojoType="dijit.form.Button"
+	onclick="/*this.setDisabled(true);*/ submitForm('common', 'Person', {{ object_id }}, {{ win_id }}, 'save_and_close');">
+	<span>Сохранить</span>
+</button>
 </div>
 </td></tr>
 
-{% if debug %}
+<!-- FIXME: get rid of those -->
 <tr><td colspan="2">
 <input type="hidden" name="createuser" value="1">
 <input type="hidden" name="modifyuser" value="1">
 <input type="submit">
 </td></tr>
-{% endif %}
 
 </table> 
 </form>
