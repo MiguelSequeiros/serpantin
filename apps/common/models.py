@@ -292,7 +292,6 @@ class Location(models.Model):
     town_aux = models.ForeignKey(Town, related_name='town_aux', blank=True, null=True, verbose_name=_('Town (Aux.)'))
     street = models.ForeignKey(Street, blank=True, null=True, verbose_name=_('Street'))
     building = models.CharField(_('Building'), maxlength=35, blank=True)
-    #extention = models.TextField(_('Extention'), cols=28, rows=5, blank=True)
     extention = models.TextField(_('Extention'), blank=True)
 
     createuser = models.ForeignKey(User, related_name='created_locations', blank=True, null=True)
@@ -315,12 +314,6 @@ class Location(models.Model):
         if self.zipcode:
             loc_str = loc_str + u"%s" % self.zipcode
         if self.town:
-#            for elem in (self.zipcode, self.town.country, self.town.region, self.town.district, self.town, self.street, self.building):
-#                if elem:
-#                    if loc_str:
-#                        loc_str = loc_str + ", " + str(elem) 
-#                    else:
-#                        loc_str = str(elem)
 			if not self.town.is_region_centre and self.town.district:
 				loc_str = loc_str + u", %s" % self.town.region
 				if not self.town.is_district_centre and self.town.district:
@@ -362,8 +355,6 @@ class Address(models.Model):
 
 
 class Client(models.Model):
-    #org = models.ForeignKey(Org, verbose_name=_('Org'))	
-    #org_id = models.IntegerField()
     content_type = models.ForeignKey(ContentType, verbose_name=_('Content'))
     object_id = models.PositiveIntegerField()
     is_facture_required = models.BooleanField(_('Is Facture Required?'), blank=True, null=True)
@@ -393,59 +384,12 @@ class Client(models.Model):
         return u"%s" % self.content_object 
 
 
-    def _get_primary_contract(self):
-        try:
-            contract = self.contract_set.all()[0]
-        except:
-            contract = None
-
-        return contract
-    primary_contract = property(_get_primary_contract)
-
-
-    def _get_accountants(self):
-        try:
-            empl_list = self.content_object.employee_set
-            accountants = empl_list.select_related().filter(position__sort__exact=880)
-            if not accountants:
-                accountants = empl_list.select_related().filter(position__sort__exact=800)
-            if accountants:
-                accountants = accountants[0]
-            else:
-                accountants = None
-        except:
-            print "RA3VAT except in _get_accountants..."
-            empl_list = {}
-            accountants = None 
-        return accountants
-    accountants = property(_get_accountants)
-
-
-    def _lookup(searchString='', filter_by=None):
-        from django.db import connection
-        cursor = connection.cursor()
-        cursor.execute('''select common_org.name as name, common_client.id from common_client, common_org 
-                where content_type_id=16 and object_id =common_org.id and common_org.name LIKE '%%%%%(search)s%%%%'  
-                ''' % {'search':searchString})
-        res1 = cursor.fetchall()
-        ret1 = [[elem[0].decode('utf8'), elem[1]] for elem in res1]
-        cursor.execute('''select (common_person.lastname ||' '|| common_person.firstname ||' '|| common_person.middlename) as name, 
-                common_client.id from common_client, common_person 
-                where content_type_id=10 and object_id =common_person.id and common_person.lastname LIKE '%%%%%(search2)s%%%%' 
-                    ''' % {'search2':searchString})
-        res2 = cursor.fetchall()
-        ret2 = [[elem[0].decode('utf8'), elem[1]] for elem in res2]
-        return ret1+ret2    			       
-    lookup = staticmethod(_lookup)	
-
-
     def setContentData(self, obj):
 	if obj:
 	    #from django.contrib.contenttypes.models import ContentType
 	    ct = ContentType.objects.filter(model__exact=obj._meta.module_name)
 	    self.content_type = ct[0]
 	    self.object_id = obj.id
-
 
 
     def _getStaffList(client, as_choices=True):
@@ -472,24 +416,16 @@ class Person(models.Model):
     middlename = models.CharField(_('Middle Name'), maxlength=35, blank=True)
     lastname = models.CharField(_('Last Name'), maxlength=35)
     town = models.ForeignKey(Town, blank=True, null=True, verbose_name=_('Town'))
-    #town = FilteringSelectField(Town, blank=True, null=True, verbose_name=_('Town'))
-    #FIXME: define PhonesField
-    #phones = PhonesField(Phone, blank=True)
-
-    #email = models.EmailField(_('Email'), blank=True, validator_list=[isValidEmail], length=30)
     email = models.EmailField(_('Email'), blank=True, validator_list=[isValidEmail])
     web = models.CharField(_('Web Site'), maxlength=40, blank=True, null=True)
     im = models.CharField(_('Instant Messenger'), maxlength=40, blank=True, null=True)
-    #info = models.TextField(_('Info'), blank=True, cols=28, rows=5)
     info = models.TextField(_('Info'), blank=True)
-    #user = models.OneToOneField(User, verbose_name=_('User'))
     
     createuser = models.ForeignKey(User, related_name='created_people', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
     modifyuser = models.ForeignKey(User, related_name='modified_people', blank=True, null=True)
     modifydate = models.DateTimeField(blank=True, auto_now=True)
 
-    #context_list = ('PhoneList',)
     clients = generic.GenericRelation(Client) #, verbose_name=_('Client'), blank=True, null=True)
 
 
@@ -502,15 +438,15 @@ class Person(models.Model):
 
 
     def _get_phone_list(self):
-		ct = ContentType.objects.get_for_model(self)
-		phones = PhoneList.objects.filter(content_type__id__exact=ct.id, object_id__exact=self.id)
-		return phones
+	ct = ContentType.objects.get_for_model(self)
+	phones = PhoneList.objects.filter(content_type__id__exact=ct.id, object_id__exact=self.id)
+	return phones
     phone_list = property(_get_phone_list)
 		
 
     def _get_employment_list(self):
-		employment = Employee.objects.filter(person__id__exact=self.id)
-		return employment
+	employment = Employee.objects.filter(person__id__exact=self.id)
+	return employment
     employment_list = property(_get_employment_list)
 
 
@@ -538,10 +474,8 @@ class Person(models.Model):
  
  
     class Meta:
-        #list_display_related = ('PersonAddress','PhoneList',)	
         verbose_name = _('Person')
         verbose_name_plural = _('People')
-        #lookup_options = {'field':'lastname', 'outfield':'fullname'}
 
 
     class Admin:
@@ -608,25 +542,19 @@ class Org(models.Model):
     #org_parentref = models.ForeignKey('self', null=True, blank=True)
     town = models.ForeignKey(Town, null=True, verbose_name=_('Town'))
     #phones = PhonesField(Phone, blank=True)
-    #email = models.EmailField(_('Email'), blank=True, validator_list=[isValidEmail], length=30)
     email = models.EmailField(_('Email'), blank=True, validator_list=[isValidEmail])
     http = models.CharField(_('Web Site'), maxlength=40,blank=True)
-    #info = models.TextField(_('Info'), maxlength=256, blank=True, cols=28, rows=5, help_text='Rich Text Editing.')
     info = models.TextField(_('Info'), maxlength=256, blank=True, help_text='Rich Text Editing.')
     contacted = models.DateField(blank=True)
-
-
     
     createuser = models.ForeignKey(User, related_name='created_orgs', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
     modifyuser = models.ForeignKey(User, related_name='modified_orgs', blank=True, null=True)
     modifydate = models.DateTimeField(blank=True, auto_now=True)
 
-    #tag = models.ManyToManyField(Tag, verbose_name=_('Tags'), blank=True)
     clients = generic.GenericRelation(Client) #, verbose_name=_('Client'), blank=True, null=True)
     
     class Meta:
-        #list_display_related = ('Employee','OrgAddress','Requisite','Bankaccount')	
         verbose_name = _('Organization')
         verbose_name_plural = _('Organizations')
 
@@ -635,7 +563,6 @@ class Org(models.Model):
         js = ('/site_media/js/tags.js',)
         list_display = ('code','alias','fullname','email','town')
         search_fields = ['code','alias','name','fullname','email','info']
-        #list_filter = ['gnue_createdate']
 
 
     def __unicode__(self):
@@ -646,7 +573,6 @@ class Org(models.Model):
         phone_list = u""
         for phone in self.phones.all():
             phone_list = phone_list + u" %s" % phone
-        print "RA3VAT phone list ", phone_list    
         return phone_list
 
 
@@ -657,49 +583,6 @@ class Org(models.Model):
             return False
     is_client = property(_is_client)
 
-
-    def getByINN(inn):
-        try:
-            org = Requisite.objects.filter(inn__exact=inn)[0].org
-        except:
-            org = None
-
-        return org 
-    getByINN = staticmethod(getByINN)
-
-
-    def getClientObj(self):
-        try:
-            client = Client.objects.filter(content_type__exact=16, object_id__exact=self.id)[0]
-        except:
-            client = None
-        return client
-
-
-    def getPostaddress(self):
-        try:
-            postaddress = self.orgaddress_set.filter(type__id=3)[0].address
-        except:
-            postaddress = None
-    
-        return postaddress
-    postaddress = property(getPostaddress)
-    
-    
-    def getPaymentsTotal(self, date_from=None, date_to=None):
-        total = 0
-        if date_from and date_to:
-            paym_list = self.donor_orgs.filter(date__gte=date_from, date__lte=date_to)
-        else:
-            paym_list = self.donor_orgs.all()
-        for pay in paym_list:
-            total = total + pay.total
-        return total
-
-    
-    def getPaymentList(self):
-        paym_list = self.donor_orgs.all().order_by('date')
-        return paym_list
 
     
     def getShortLegalName(self):
