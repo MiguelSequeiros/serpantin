@@ -15,7 +15,7 @@ from django.contrib import admin
 
 from django.contrib.auth.models import User
 
-from serpantin.forms import *
+from serpantin.dojoforms import *
 
 class Country(models.Model):
     #addr_code = models.CharField(_('Street Code'), maxlength=6)
