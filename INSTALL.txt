@@ -1,0 +1,12 @@
+1. Install django
+2. Download and install simplejson
+2. Download dojo
+3. Install serpantin as regular django application
+ - put serpantin into python's path
+ - create database
+ - load initial data
+ 
+4. Run server
+
+5. Go to http://localhost:8000/
+
