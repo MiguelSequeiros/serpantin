@@ -10,7 +10,7 @@ from django.db import models
 from django.newforms import form_for_model
 from django.newforms import form_for_instance
 
-from serpantin.settings import user
+from serpantin.settings import PROJECT_DIR
 from serpantin.dojoforms import *
 
 import simplejson
@@ -137,10 +137,10 @@ def async_listform(request, app_name, model_name, node):
    
     #if 1:
     try:
-        tmpl = '%s/apps/%s/templates/%s_list.html' % (user['projectdir'], app_name, model_name) 
+        tmpl = '%s/apps/%s/templates/%s_list.html' % (PROJECT_DIR, app_name, model_name) 
         return render_to_response(tmpl, params, context_instance=RequestContext(request))
     except:
-        tmpl = '%s/apps/%s/templates/%s_list.gen.html' % (user['projectdir'], app_name, model_name) 
+        tmpl = '%s/apps/%s/templates/%s_list.gen.html' % (PROJECT_DIR, app_name, model_name) 
         print "before render_to_response final"
 
         return render_to_response(tmpl, params, context_instance=RequestContext(request))
@@ -171,7 +171,7 @@ def async_form(request, app_name, model_name, object_id='', win_id=''):
     else:
         form = Form(auto_id=auto_id)
         params = {
-            'debug': True,
+            'debug': False,
             'form': form,
             'edit_object': False,
             'is_owner': True,

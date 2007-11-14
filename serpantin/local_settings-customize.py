@@ -1,30 +1,17 @@
 import os
 
-users = {
-    'ds': {
-        'login':	'ds',
-        'name':		'Dmitry Sorokin',
-        'email':	'dimas@dial.com.ru', 
-        'djangodir':	'/home/ds/svn/django/django', 
-        'projectdir':	'/home/ds/svn/serpantin', 
-    },
-    'greg': { 
-        'login':	'greg',
-        'name':		'Grigory Fateev',
-        'email':	'greg@dial.com.ru', 
-        'djangodir':	'/home/greg/www/django_src/django', 
-        'projectdir':	'/home/greg/www/serpantin', 
-    },
-    'subzero': { 
-        'login':	'subzero',
-        'name':		'Artem Opanchuk',
-        'email':	'subzero@dial.com.ru', 
-        'djangodir':	'/home/subzero/svn/django-trunk/django', 
-        'projectdir':	'/home/subzero/svn/serpantin', 
-    },
-}
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+LOCAL_DEV = True
 
-user = users[os.environ['USER']]
+PROJECT_DIR = os.path.dirname(__file__)
+DOJO_DIR = '/var/www/html/media/dojo09'
+
+ADMINS = (
+    # ('Your Name', 'your_email@domain.com'),
+)
+
+MANAGERS = ADMINS
 
 DATABASE_ENGINE = 'postgresql' # 'postgresql', 'mysql', 'sqlite3' or 'ado_mssql'.
 DATABASE_NAME = 'serpantin'             # Or path to database file if using sqlite3.
@@ -50,11 +37,11 @@ SITE_ID = 1
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = '/var/www/html/media/'
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media/')
 
 # URL that handles the media served from MEDIA_ROOT.
 # Example: "http://media.lawrence.com"
-MEDIA_URL = 'http://localhost/media'
+MEDIA_URL = '/site_media/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.

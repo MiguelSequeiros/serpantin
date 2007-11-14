@@ -1,9 +1,6 @@
 # Django settings for serpantin project.
 from local_settings import *
 
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
-
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.load_template_source',
@@ -38,7 +35,7 @@ ROOT_URLCONF = 'serpantin.urls'
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates".
     # Always use forward slashes, even on Windows.
-    user['projectdir'] + '/templates',
+    os.path.join(PROJECT_DIR, 'templates/'),
 )
 
 INSTALLED_APPS = (
@@ -52,6 +49,4 @@ INSTALLED_APPS = (
     'serpantin.apps.test',
 )
 
-JS_URL = '/site_media/js/'
-
-AUTH_PROFILE_MODULE = 'common.UserProfile'
+#AUTH_PROFILE_MODULE = 'common.UserProfile'
