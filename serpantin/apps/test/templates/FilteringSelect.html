@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+	"http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<title>Data-Enabled FilteringSelect</title>
+	<style type="text/css">
+		@import "/site_media/dojo09/dijit/themes/tundra/tundra.css";
+		@import "/site_media/dojo09/dojo/dojo.css";
+	</style>
+		<script type="text/javascript" src="/site_media/dojo09/dojo/dojo.js"
+			djConfig="parseOnLoad: true"></script>
+		<script type="text/javascript">
+	dojo.require("dojo.parser");
+	dojo.require("dijit.form.FilteringSelect");
+	dojo.require("dojo.data.ItemFileReadStore");
+</script>
+</head>
+<body class="tundra">
+		<div dojoType="dojo.data.ItemFileReadStore" jsId="stateStore"
+			url="/json/"></div>
+		<form method="post">
+			<input dojoType="dijit.form.FilteringSelect"
+				store="stateStore"
+				searchAttr="name"
+				name="state1"
+				autocomplete="true"
+			/>
+			<select dojoType="dijit.form.FilteringSelect"
+				name="state3"
+				autocomplete="false"
+				value="CA">
+				<option value="CA" selected="selected">California</option>
+				<option value="IL" >Illinois</option>
+				<option value="NY" >New York</option>
+				<option value="TX" >Texas</option>
+			</select>
+			<input type="submit" value="Go!" />
+		</form>
+</body></html>
