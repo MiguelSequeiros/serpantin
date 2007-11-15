@@ -48,8 +48,7 @@ function updateHistory(value) {
   }
 
 
-function loadListForm(app, model, node, page) {
-	Context.listform[app+"_"+model] = {"node":node, "page":page};
+function loadListForm(app, model, page) {
 	var server_url;
 	//FIXME: add unique id for search panel in different tabs
 	var q = document.getElementById(model+"_sbar");
@@ -65,27 +64,22 @@ function loadListForm(app, model, node, page) {
 			extraparam = "?q=" + q.value;
 		}
 	}
-	server_url = "/async/"+node+"/"+app+"/"+model+"/list/" + extraparam;
-
-	//alert("xhrGet");
-
+	server_url = "/async/" + app + "/" + model + "/" + extraparam;
+	
 	dojo.xhrGet({
 		url:    server_url,
 		//content:{format: 'ahah'},
 		handleAs: "text",
 		timeout: 5000,
 		load: function(response, ioArgs){
-			//alert("node "+node);
-			var n = dojo.byId(node);
+			var node = dojo.byId(model.toLowerCase() + 'listtab');
+			
+			node.innerHTML = response;
+			dojo.connect(dojo.byId(model+"_sbut"), "onclick", function(e) { e.preventDefault(); loadListForm(app, model, page); });
 
-			n.innerHTML = response;
-			dojo.connect(dojo.byId(model+"_sbut"), "onclick", function(e) { e.preventDefault(); loadListForm(app, model, node, page); });
-
-			//alert("node:" + node);
 			var tabpane = dijit.byId(model.toLowerCase() + 'TabPane');
-			var tab = dijit.byId(node+"w");
-
-			//alert("tabpane:" + tabpane + "\ntab:" + tab);
+			var tab = dijit.byId(model.toLowerCase() + 'listtabw');
+			
 			tabpane.selectChild(tab);
 			mainTabPane.selectChild(tabpane);
 

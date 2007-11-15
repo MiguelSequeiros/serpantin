@@ -4,7 +4,7 @@
 	<div><!-- DIV needed for valid HTML -->
 	    <label><img src="/site_media/images/search.gif" alt="Search" /></label>
 	    <input type="text" size="40" name="q" value="" id="{{ model }}_sbar" />
-	    <!--input id="{{ model }}_sb" type="submit" value="Go" onClick="javascript:loadListForm('{{ app }}','{{ model }}','{{ node }}');"></input -->
+	    <!--input id="{{ model }}_sb" type="submit" value="Go" onClick="javascript:loadListForm('{{ app }}', '{{ model }}');"></input -->
 	    <input id="{{ model }}_sbut" type="submit" value="Go"></input>
 	</div>
     </form>
@@ -42,9 +42,9 @@
 <div id="toolbar" class="footer">
 <a href="javascript:loadForm('{{ app }}','{{ model }}');">{% trans 'Add' %}</a>&nbsp;&nbsp;
  {% if has_previous %}
-     <a href="javascript:loadListForm('{{ app }}','{{ model }}','{{ node }}',{{ previous }});"><<<</a>
+     <a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ previous }});"><<<</a>
  {% endif %}
       страница {{ page }}
  {% if has_next %}
-      <a href="javascript:loadListForm('{{ app }}','{{ model }}','{{ node }}',{{ next }});">>>></a> {% endif %}(всего страниц: {{ pages }}; записей {{obj.}}: {{ hits }})
+      <a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ next }});">>>></a> {% endif %}(всего страниц: {{ pages }}; записей {{obj.}}: {{ hits }})
 </div>

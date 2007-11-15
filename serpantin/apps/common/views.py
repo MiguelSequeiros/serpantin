@@ -1,4 +1,4 @@
-from django.db.models.query import QOr
+from django.db.models.query import Q,QOr
 
 from django.core.paginator import ObjectPaginator
 from django.shortcuts import render_to_response, get_object_or_404
@@ -58,10 +58,10 @@ def json(request, app_name, model_name):
     
     return JsonResponse(result)
 
-def async_listform(request, app_name, model_name, node):
-    #FIXME: commented checking on anonymous
-    #  if not request.user.is_anonymous():
-    #model = meta.get_module(app_name, model_name)
+def async_list(request, app_name, model_name):
+    # FIXME: commented checking on anonymous
+    # if not request.user.is_anonymous():
+    # model = meta.get_module(app_name, model_name)
     print "RA3VAT app_name ", app_name
     print "RA3VAT model_name ", model_name
     model = getattr(__import__('serpantin.apps.%s.models' % (app_name), '', '', [model_name]), model_name)
@@ -130,7 +130,6 @@ def async_listform(request, app_name, model_name, node):
         'obj_list': obj_list,
         'app': app_name,
         'model': model_name,
-        'node': node,
     }
    
     print "before render_to_response"
@@ -170,6 +169,7 @@ def async_form(request, app_name, model_name, object_id='', win_id=''):
         return JsonResponse({'result': 'OK'})
     else:
         form = Form(auto_id=auto_id)
+        print form['town']
         params = {
             'debug': False,
             'form': form,

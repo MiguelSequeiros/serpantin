@@ -40,7 +40,6 @@ def formfield_callback(field, **kwargs):
     if isinstance(field, models.DateField):
         return DateField(**kwargs)
     elif isinstance(field, models.ForeignKey):
-        print "form_callback", kwargs
         meta = field.rel.to._meta
         defaults = {'queryset': field.rel.to._default_manager.all(), 'url': '%s/%s/' % (meta.app_label, meta.object_name,)}
         defaults.update(kwargs)
