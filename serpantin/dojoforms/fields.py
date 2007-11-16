@@ -42,7 +42,9 @@ def formfield_callback(field, **kwargs):
     elif isinstance(field, models.ForeignKey):
         meta = field.rel.to._meta
         defaults = {'queryset': field.rel.to._default_manager.all(), 'url': '%s/%s/' % (meta.app_label, meta.object_name,)}
+        #defaults = {'queryset': field.rel.to._default_manager.all()}
         defaults.update(kwargs)
         return FilteringSelectStoreField(**defaults)
+        #return FilteringSelectField(**defaults)
     else:
         return field.formfield(**kwargs)

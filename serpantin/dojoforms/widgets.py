@@ -1,4 +1,5 @@
 from django import newforms as forms
+from django.utils.safestring import mark_safe
 
 class DateTextBox(forms.TextInput):
     def render(self, name, value, attrs=None):
@@ -27,7 +28,7 @@ class FilteringSelectStore(forms.TextInput):
         attrs.setdefault('store', 'store_%s' % name)
         #store = '<div dojoType="dojo.data.ItemFileReadStore" jsId="store_%s" url="/json/%s" requestMethod="get"></div>\n' % (name, self.url,)
         store = '<div dojoType="CustomQueryReadStore" jsId="store_%s" url="/json/%s" requestMethod="get"></div>\n' % (name, self.url,)
-        return store + super(FilteringSelectStore, self).render(name, value, attrs)
+        return mark_safe(store + super(FilteringSelectStore, self).render(name, value, attrs))
 
 class FilteringSelect(forms.Select):
     def __init__(self, attrs=None, choices=()):

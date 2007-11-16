@@ -169,7 +169,7 @@ def async_form(request, app_name, model_name, object_id='', win_id=''):
         return JsonResponse({'result': 'OK'})
     else:
         form = Form(auto_id=auto_id)
-        print form['town']
+        #print form['town']
         params = {
             'debug': False,
             'form': form,
