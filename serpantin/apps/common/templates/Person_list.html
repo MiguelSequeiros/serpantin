@@ -44,7 +44,7 @@
  {% if has_previous %}
      <a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ previous }});"><<<</a>
  {% endif %}
-      страница {{ page }}
+      page {{ page }}
  {% if has_next %}
-      <a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ next }});">>>></a> {% endif %}(всего страниц: {{ pages }}; записей {{obj.}}: {{ hits }})
+      <a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ next }});">>>></a> {% endif %}(total pages: {{ pages }}; records: {{ hits }})
 </div>
