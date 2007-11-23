@@ -1,12 +1,42 @@
-1. Install django
-2. Download and install simplejson
-2. Download dojo
-3. Install serpantin as regular django application
- - put serpantin into python's path
- - create database
- - load initial data
- 
-4. Run server
+============
+Installation
+============
 
-5. Go to http://localhost:8000/
+1. The following prerequisites must be installed in order to run Serpantin::
+	- Django Web framework (http://www.djangoproject.com/)
+	- simplejson (http://www.undefined.org/python/)
+	- The Dojo Toolkit (http://dojotoolkit.org/)
 
+2. Download Serpantin from the official site::
+	get the latest source release from 
+	http://code.google.com/p/serpantin/downloads/list
+	or checkout the development version from svn
+	svn checkout http://serpantin.googlecode.com/svn/trunk/ serpantin
+
+3. Create your customized local_settings.py file::
+	cp local_settings-customize.py local_settings.py
+
+4.  Edit this local_settings.py file for your setup. The following values need to be changed::
+	DATABASE_ENGINE = 'Your DB Engine Here'
+	DATABASE_NAME = 'Your DB Name Here'
+	DATABASE_PASSWORD = 'Your DB Password Here'
+	DATABASE_USER = 'Your DB User Here'
+	SECRET_KEY = 'Your secret key here'
+
+	DOJO_DIR = 'The directory where you installed Dojo here'
+
+5. Populate the database with Serpantin tables and load fixtures::
+	python manage.py syncdb
+
+6. Start up the sample webserver::
+	python manage.py runserver
+
+7. Point your browser to::
+	http://localhost:8000/
+
+8. If you want to see the admin interface, point your browser to::
+	http://localhost/admin
+
+.. note::
+    The above urls will be dependent on your Django setup. If you're running the webserver on the
+    same machine you're developing on, the above urls should work. If not, use the appropriate url.
