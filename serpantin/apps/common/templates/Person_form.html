@@ -38,7 +38,7 @@
 <form id="fpform_{{ win_id }}" app="common" model="Person" oid="{{obj.id}}" class="fpform" method="POST">
 <table>
 <tr><td>
-	<label for="id_lastname">Фамилия:</label></td><td>
+	<label for="id_lastname">Last name:</label></td><td>
 	{{ form.lastname }}
 	{% if form.lastname.errors %}
 	*** {{ form.lastname.errors|join:", " }}
@@ -46,7 +46,7 @@
 </td></tr>
 
 <tr><td>
-	<label for="id_firstname">Имя:</label></td><td>
+	<label for="id_firstname">First name:</label></td><td>
 	{{ form.firstname }}
 	{% if form.firstname.errors %}
 	*** {{ form.firstname.errors|join:", " }}
@@ -54,7 +54,7 @@
 </td></tr>
 
 <tr><td>
-	<label for="id_middlename">Отчество:</label></td><td>
+	<label for="id_middlename">Middle name:</label></td><td>
 	{{ form.middlename }}
 	{% if form.middlename.errors %}
 	*** {{ form.middlename.errors|join:", " }}
@@ -62,7 +62,7 @@
 </td></tr>
 
 <tr><td>
-	<label for="id_town">Город:</label>
+	<label for="id_town">City:</label>
     </td>
     <td>
 	{{ form.town }}
@@ -80,7 +80,7 @@
  </td></tr>
 
 <tr><td>
-	<label for="id_phone2">Телефоны:</label></td><td>
+	<label for="id_phone2">Phones:</label></td><td>
 	{{ form.phones }}
 	{% if form.phones.errors %}
 	*** {{ form.phones.errors|join:", " }}
@@ -96,7 +96,7 @@
 </td></tr>
 
 <tr><td>
-	<label for="id_web">Веб сайт:</label></td><td>
+	<label for="id_web">Web site:</label></td><td>
 	{{ form.web }}
 	{% if form.web.errors %}
 	*** {{ form.web.errors|join:", " }}
@@ -104,7 +104,7 @@
 </td></tr>
 
 <tr><td>
-	<label for="id_im">Коммуникатор:</label></td><td>
+	<label for="id_im">Communicator:</label></td><td>
 	{{ form.im }}
 	{% if form.im.errors %}
 	*** {{ form.im.errors|join:", " }}
@@ -112,7 +112,7 @@
 </td></tr>
 
 <tr><td>
-	<label for="id_info">Инфо:</label></td><td>
+	<label for="id_info">Info:</label></td><td>
 	{{ form.info }}
 	{% if form.info.errors %}
 	*** {{ form.info.errors|join:", " }}
@@ -121,11 +121,11 @@
 <tr><td colspan="2">
 <div class="box">
 <button dojoType="dijit.form.Button"
-	onclick="/*this.setDisabled(true);*/ submitForm('common', 'Person', '{{ object_id }}', '{{ win_id }}', 'save');">
-	<span>Сохранить и продолжить</span></button>
+	onclick="submitForm('common', 'Person', '{{ object_id }}', '{{ win_id }}', 'save');">
+	<span>Save and continue</span></button>
 <button dojoType="dijit.form.Button"
-	onclick="/*this.setDisabled(true);*/ submitForm('common', 'Person', '{{ object_id }}', '{{ win_id }}', 'save_and_close');">
-	<span>Сохранить</span>
+	onclick="this.setDisabled(true); submitForm('common', 'Person', '{{ object_id }}', '{{ win_id }}', 'save_and_close');">
+	<span>Save</span>
 </button>
 </div>
 </td></tr>

@@ -1,5 +1,7 @@
 from django import newforms as forms
 from django.utils.safestring import mark_safe
+from django.utils.encoding import force_unicode
+from util import flatatt
 
 class DateTextBox(forms.TextInput):
     def render(self, name, value, attrs=None):
@@ -7,7 +9,7 @@ class DateTextBox(forms.TextInput):
         final_attrs = self.build_attrs(attrs, type=self.input_type, name=name,
             dojoType='dijit.form.DateTextBox', lang='ru-ru', constraints="{datePattern:'dd.MM.yyyy'}", promptMessage="dd.MM.yyyy")
         if value != '': final_attrs['value'] = force_unicode(value) # Only add the 'value' attribute if a value is non-empty.
-        return u'<input%s />' % flatatt(final_attrs)
+        return mark_safe(u'<input%s />' % flatatt(final_attrs))
 
 class ComboBox(forms.TextInput):
     def __init__(self, *args, **kwargs):

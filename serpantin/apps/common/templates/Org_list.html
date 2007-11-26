@@ -10,11 +10,11 @@
 
 <a href="javascript:loadForm('{{ app }}','{{ model }}');">{% trans 'Add' %}</a>&nbsp;&nbsp;
  {% if has_previous %}
-     <a href="javascript:loadListForm('{{ app }}','{{ model }}','{{ node }}',{{ previous }});"><<<</a>
+     <a href="javascript:loadListForm('{{ app }}', '{{ model }}', {{ previous }});"><<<</a>
  {% endif %}
-      стр {{ page }}
+      page {{ page }}
  {% if has_next %}
-      <a href="javascript:loadListForm('{{ app }}','{{ model }}','{{ node }}',{{ next }});">>>></a> {% endif %}(всего страниц: {{ pages }}; записей {{obj.}}: {{ hits }})
+      <a href="javascript:loadListForm('{{ app }}', '{{ model }}', {{ next }});">>>></a> {% endif %}(total pages: {{ pages }}; records: {{ hits }})
 	</div>
     </form>
 
@@ -24,10 +24,10 @@
     <table id="fplist_{{ win_id }}" class="panelist">
 	<thead>
 	    <tr><th></th><th></th>
-		<th> Код </th>
-		<th> Название </th>
-		<th> Телефон </th>
-		<th> E-mail </th>
+		<th> {% trans 'Code' %}</th>
+		<th> {% trans 'Name' %}</th>
+		<th> {% trans 'Phone' %}</th>
+		<th> {% trans 'E-mail' %}</th>
 <!--		<th> Город </th>
 <th> address </th> -->
 		<th>{% trans 'Create' %}</th>
@@ -37,7 +37,7 @@
 	<tbody>
 	{% for obj in obj_list %}
 	    <tr class="{% cycle row1,row2 %}">
-		<td><a href="javascript:tab_title = '{{ obj.name }}'; loadForm('{{ app }}','{{ model }}',{{obj.id}});">
+		<td><a href="javascript:loadForm('{{ app }}', '{{ model }}', '{{ obj.id }}', '{{ obj.name }}');">
 		    <img src="/site_media/images/edit.gif" alt="{% trans 'Edit object' %}"></a></td>
 	    <td><a href="javascript:confirmDelObj('{{ app }}','{{ model }}','{{ obj.id }}');">
 		    <img src="/site_media/images/trash.gif" alt="{% trans 'Delete object' %}"></a></td>
@@ -57,10 +57,10 @@
 <div id="toolbar" class="footer">
 <a href="javascript:loadForm('{{ app }}','{{ model }}');">{% trans 'Add' %}</a>&nbsp;&nbsp;
  {% if has_previous %}
-     <a href="javascript:loadListForm('{{ app }}','{{ model }}','{{ node }}',{{ previous }});"><<<</a>
+     <a href="javascript:loadListForm('{{ app }}', '{{ model }}', {{ previous }});"><<<</a>
  {% endif %}
-      страница {{ page }}
+      page {{ page }}
  {% if has_next %}
-      <a href="javascript:loadListForm('{{ app }}','{{ model }}','{{ node }}',{{ next }});">>>></a> {% endif %}(всего страниц: {{ pages }}; записей {{obj.}}: {{ hits }})
+      <a href="javascript:loadListForm('{{ app }}', '{{ model }}', {{ next }});">>>></a> {% endif %}(total pages: {{ pages }}; records: {{ hits }})
 </div>
 </div>

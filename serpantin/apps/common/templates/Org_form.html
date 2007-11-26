@@ -19,6 +19,16 @@
 	dojo.require("dijit.form.Button");
 	dojo.require("dijit.form.DateTextBox");
 	dojo.require("dijit.form.FilteringSelect");
+
+	dojo.require("dojox.data.QueryReadStore");
+
+	dojo.provide("CustomQueryReadStore");
+	dojo.declare("CustomQueryReadStore", dojox.data.QueryReadStore, {
+		fetch:function(request) {
+			request.serverQuery = {q:request.query.name};
+			return this.inherited("fetch", arguments);
+		}
+	});
 </script>
 </head>
 <body class="tundra">
@@ -29,29 +39,29 @@
 </script>
 <div class="Org" style="width: 400; height: 200;">
 <div class="help"><a href="http://localhost/nwiki/serp2/common/Org">HELP</a></div>
-<form id="fpform_{{ win_id }}" app="common" model="Org" oid="{{obj.id}}" class="fpform" method="POST" action="/async/common/Org/save/{{obj.id}}/form/{{ win_id }}/">
+<form id="fpform_{{ win_id }}" app="common" model="Org" oid="{{obj.id}}" class="fpform" method="POST">
 <table>
   <tr><td>
-    <label for="id_alias">Название:</label></td>
+    <label for="id_alias">Name:</label></td>
     <td>
     {{ form.alias }}
     {% if form.alias.errors %}
       *** {{ form.alias.errors|join:", " }}
     {% endif %}
-    <label for="id_code">Код:</label>
+    <label for="id_code">Code:</label>
     {{ form.code }}
     {% if form.code.errors %}
       *** {{ form.code.errors|join:", " }}
     {% endif %}
   </td></tr>
     <tr><td>    
-    <label for="id_type">Прав.форма:</label></td>
+    <label for="id_type">Legal form:</label></td>
     <td>
     {{ form.type }}&nbsp;<a href="#" onclick="loadSubForm(this,'common','Orgtype','','id_type');"><img src="/media/img/admin/icon_addlink.gif"></a>
     {% if form.type.errors %}
       *** {{ form.type.errors|join:", " }}
     {% endif %}
-    <label for="id_name">Название:</label>
+    <label for="id_name">Name:</label>
     {{ form.name }}
     {% if form.name.errors %}
       *** {{ form.name.errors|join:", " }}
@@ -59,7 +69,7 @@
   </td></tr>
 
     <tr><td>    
-    <label for="id_fullname">Полное название:</label></td>
+    <label for="id_fullname">Full name:</label></td>
     <td >
     {{ form.fullname }}
     
@@ -69,7 +79,7 @@
   </td></tr>
 
   <!--tr><td>
-    <label for="id_town">Город:</label></td><td>
+    <label for="id_town">City:</label></td><td>
 
     {{ form.town }}&nbsp;<a href="#" onclick="loadSubForm(this,'common','Town','','id_town');"><img src="/media/img/admin/icon_addlink.gif"></a>
     {% if form.town.errors %}
@@ -78,7 +88,7 @@
   </td></tr -->
 
     <tr><td>
-	<label for="id_info">Инфо:</label></td>
+	<label for="id_info">Info:</label></td>
     <td>
     {{ form.info }}
     {% if form.info.errors %}
@@ -104,7 +114,7 @@
     {% if form.email.errors %}
       *** {{ form.email.errors|join:", " }}
     {% endif %}
-    <label for="id_http">Веб сайт:</label>
+    <label for="id_http">Web site:</label>
     {{ form.http }}
     {% if form.http.errors %}
       *** {{ form.http.errors|join:", " }}
@@ -124,19 +134,21 @@
   </td></tr -->
 <tr><td colspan="2">
 <div class="box">
-<button dojoType="dijit.form.Button" onclick="this.setDisabled(true); submitForm(this, 'common','Org',{{ win_id }},'{{obj.id}}','True');"><span>Сохранить и продолжить</span></button>
-<button dojoType="dijit.form.Button" onclick="this.setDisabled(true); submitForm(this, 'common','Org',{{ win_id }},'{{obj.id}}');"><span>Сохранить</span></button>
+<button dojoType="dijit.form.Button" onclick="submitForm('common', 'Org', '{{ object_id }}', {{ win_id }}, 'save');"><span>Save and continue</span></button>
+<button dojoType="dijit.form.Button" onclick="this.setDisabled(true); submitForm('common', 'Org', '{{ object_id }}', {{ win_id }}, 'save_and_close');"><span>Save</span></button>
 </div>
 </td></tr>
 
-{% if debug %}
+<!-- FIXME: get rid of those -->
 <tr><td colspan="2">
+<input type="hidden" name="createuser" value="1">
+<input type="hidden" name="modifyuser" value="1">
+{% if debug %}
 <input type="submit">
-</td></tr>
 {% endif %}
+</td></tr>
 
 </table> 
-
 </form>
 <p>{% if obj.createdate %}
 		{% trans 'Createdata:' %} {{obj.createdate|date:"F j, Y"}}

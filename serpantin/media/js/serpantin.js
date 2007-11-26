@@ -76,7 +76,7 @@ function submitForm(app_name, model_name, object_id, win_id, action)
 					//var listtab = dijit.byId(model_name.toLowerCase() + "listtabw");
 					var tab = dijit.byId("tab_" + win_id);
 					//tabpane.selectChild(listtab);
-					loadListForm(app_name, model_name, model_name.toLowerCase() + 'listtab');
+					loadListForm(app_name, model_name);
 					tabpane.removeChild(tab);
 					//FIXME: delete tab somehow from the memory
 					//delete tab;
