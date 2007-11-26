@@ -38,14 +38,14 @@ class FilteringSelectField(forms.ModelChoiceField):
 
 def formfield_callback(field, **kwargs):
     if isinstance(field, models.DateField):
-        defaults = {'required': False}
+        defaults = {'required': not field.blank}
         defaults.update(kwargs)
         return DateField(**defaults)
     elif isinstance(field, models.ForeignKey):
         meta = field.rel.to._meta
         defaults = {'queryset': field.rel.to._default_manager.all(),
                     'url': '%s/%s/' % (meta.app_label, meta.object_name,),
-                    'required': False}
+                    'required': not field.blank}
         #defaults = {'queryset': field.rel.to._default_manager.all()}
         defaults.update(kwargs)
         return FilteringSelectStoreField(**defaults)
