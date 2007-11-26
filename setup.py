@@ -1,15 +1,23 @@
+#!/usr/bin/env python
+
 from setuptools import setup, find_packages
+import os
+
+root_dir = os.path.dirname(__file__)
+if root_dir:
+    os.chdir(root_dir)
+
 setup(
     name = "Serpantin",
-    version = "0.0.1",
+    version = __import__('serpantin').VERSION,
     packages = find_packages(),
     include_package_data = True,
 
     # metadata for upload to PyPI
     author = "Dmitry Sorokin",
     author_email = "ds@dial.com.ru",
-    description = "Small ERP application build with django and dojo",
-    license = "GNU GPL v2",
+    description = "Small ERP application built with django and dojo",
+    license = "BSD",
     keywords = "python django dojo ERP application",
     url = "http://code.google.com/p/serpantin/", # project home page, if any
 )
