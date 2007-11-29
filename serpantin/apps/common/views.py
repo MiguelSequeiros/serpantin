@@ -131,7 +131,7 @@ def async_form(request, app_name, model_name, object_id='', win_id=''):
         form = Form(auto_id=auto_id)
         #print form['town']
         params = {
-            'debug': False,
+            'debug': True,
             'form': form,
             'edit_object': False,
             'is_owner': True,

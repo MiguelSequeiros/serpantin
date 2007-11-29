@@ -1,7 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from serpantin.apps.common.models import Town
-
+from serpantin.apps.common.models import Town, Person
+from serpantin.scaffold import template_for_model
+    
 import simplejson
 
 class JsonResponse(HttpResponse):
@@ -14,8 +15,9 @@ class JsonResponse(HttpResponse):
         return("/*" + simplejson.dumps(self.original_obj) + "*/")
 
 def test(request):
-    print "Subzero POST data:", request.POST
-    return render_to_response('query.html', {})
+    #print "Subzero POST data:", request.POST
+    #return render_to_response('query.html', {})
+    return HttpResponse(template_for_model(Person), mimetype="text/plain")
 
 def model_store(app_name, model_name, query = ""):
     #FIXME: get rid of serpantin.apps in getattr
