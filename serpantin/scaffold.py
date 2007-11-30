@@ -63,16 +63,49 @@ $form_body
     
     meta = model._meta
     field_list = []
+    
+    # FIXME: think of a better construction
+    if fields is None:
+        try:
+            fields = [f for f in meta.admin.fields if f[0] is None][0][1]['fields']
+        except (AttributeError, TypeError, LookupError): fields = []
+    
     for f in meta.fields + meta.many_to_many:
-        if not f.editable: continue
-        if fields and not f.name in fields: continue
-        formfield = formfield_callback(f)
-        if formfield: field_list.append(f.name)
+        if f.editable and (not fields or f.name in fields):
+            formfield = formfield_callback(f)
+            if formfield: field_list.append(f.name)
     
     model_name = meta.object_name
-    form_body = ''.join([string.Template(field_template).substitute({'f': f}) for f in field_list])
+    form_body = '\n'.join([string.Template(field_template).substitute({'f': f}) for f in field_list])
     
     return string.Template(form_template).substitute(vars())
+
+def template_list_for_model(model):
+    form_template = \
+"""{% load i18n %}
+<div class="paneheader">
+    <form id="changelist-search">
+	<div><!-- DIV needed for valid HTML -->
+	    <label><img src="/site_media/images/search.gif" alt="Search" /></label>
+	    <input type="text" size="40" name="q" value="" id="{{ model }}_sbar" />
+	    <!--input id="{{ model }}_sb" type="submit" value="Go" onClick="javascript:loadListForm('{{ app }}', '{{ model }}');"></input -->
+	    <input id="{{ model }}_sbut" type="submit" value="Go"></input>
+	</div>
+    </form>
+</div>
+
+$form_body
+
+<div id="toolbar" class="footer">
+<a href="javascript:loadForm('{{ app }}','{{ model }}');">{% trans 'Add' %}</a>&nbsp;&nbsp;
+ {% if has_previous %}
+     <a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ previous }});"><<<</a>
+ {% endif %}
+      page {{ page }}
+ {% if has_next %}
+      <a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ next }});">>>></a> {% endif %}(total pages: {{ pages }}; records: {{ hits }})
+</div>
+"""
 
 def main():
     try:
@@ -99,8 +132,14 @@ def main():
         parser.print_help()
         sys.exit()
     
-    model = getattr(__import__("%s.%s.models" % (project_name, options.app), '', '', [options.model]), options.model)
-    print template_for_model(model)
+    models = getattr(__import__("%s.%s" % (project_name, options.app), {}, {}, ['models']), 'models')
+    model = getattr(models, options.model)
+    template = template_for_model(model)
+    template_filename = os.path.join(os.path.dirname(models.__file__), 'templates', options.model + '_form.gen.html')
+    print "Saving template file:\n", template_filename
+    template_file = file(template_filename, "w")
+    template_file.write(template)
+    template_file.close()
 
 if __name__ == '__main__':
     main()

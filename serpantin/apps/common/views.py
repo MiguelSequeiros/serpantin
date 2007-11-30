@@ -2,7 +2,7 @@ from django.db.models.query import Q,QOr
 
 from django.core.paginator import ObjectPaginator
 from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext
+from django.template import RequestContext, Context, Template
 from django.forms import FormWrapper
 from django.http import HttpResponse, HttpResponseRedirect
 
@@ -11,6 +11,7 @@ from django.newforms import form_for_model
 from django.newforms import form_for_instance
 
 from serpantin.dojoforms import *
+from serpantin.scaffold import template_for_model
 
 import simplejson
 import os
@@ -18,7 +19,7 @@ import os
 # Helpers
 def get_model(app_name, model_name):
     # FIXME make use of django.db.models.loading.get_model, like in the admin interface
-    return getattr(__import__('serpantin.apps.%s.models' % app_name, '', '', [model_name]), model_name)
+    return getattr(__import__('serpantin.apps.%s.models' % app_name, {}, {}, [model_name]), model_name)
 
 def get_template_dir(app_name):
     # FIXME do it like in django.db.models.loading.get_app
@@ -131,7 +132,7 @@ def async_form(request, app_name, model_name, object_id='', win_id=''):
         form = Form(auto_id=auto_id)
         #print form['town']
         params = {
-            'debug': True,
+            'debug': False,
             'form': form,
             'edit_object': False,
             'is_owner': True,
@@ -140,5 +141,9 @@ def async_form(request, app_name, model_name, object_id='', win_id=''):
             'win_id': win_id,
             'object_id': object_id,
         }
-        template = '%s/%s_form.html' % (get_template_dir(app_name), model_name)
-        return render_to_response(template, params, context_instance=RequestContext(request))
+        #template = '%s/%s_form.html' % (get_template_dir(app_name), model_name)
+        template = Template(template_for_model(model))
+        context = RequestContext(request, params)
+        return HttpResponse(template.render(context))
+        #return render_to_response(template, params, context_instance=RequestContext(request))
+        

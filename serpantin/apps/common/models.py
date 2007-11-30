@@ -561,6 +561,10 @@ class Org(models.Model):
 
     class Admin:
         js = ('/site_media/js/tags.js',)
+        fields = (
+            (None, {'fields': ('type', 'code', 'alias', 'name', 'fullname', 'town', 'email', 'http', 'info', 'contacted')}),
+            ('Date information', {'classes': 'collapse', 'fields': ('createuser', 'modifyuser', 'createdate', 'modifydate')}),
+        )
         list_display = ('code','alias','fullname','email','town')
         search_fields = ['code','alias','name','fullname','email','info']
 
