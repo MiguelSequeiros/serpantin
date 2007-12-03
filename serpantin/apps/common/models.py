@@ -18,8 +18,8 @@ from django.contrib.auth.models import User
 from serpantin.dojoforms import *
 
 class Country(models.Model):
-    #addr_code = models.CharField(_('Street Code'), maxlength=6)
-    name = models.CharField(_('Country Name'), maxlength=100)
+    #addr_code = models.CharField(_('Street Code'), max_length=6)
+    name = models.CharField(_('Country Name'), max_length=100)
     
     createuser = models.ForeignKey(User, related_name='created_countries', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
@@ -47,8 +47,8 @@ class Country(models.Model):
 class Region(models.Model):
     country = models.ForeignKey(Country, blank=True, null=True, verbose_name=_('Country'))
     #FIXME: shortname is too short
-    #shortname = models.CharField(_('Region Code'), maxlength=6, unique=True, blank=True)
-    name = models.CharField(_('Region Name'), maxlength=100, unique=True)
+    #shortname = models.CharField(_('Region Code'), max_length=6, unique=True, blank=True)
+    name = models.CharField(_('Region Name'), max_length=100, unique=True)
     
     createuser = models.ForeignKey(User, related_name='created_regions', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
@@ -73,7 +73,7 @@ class Region(models.Model):
 
 
 class District(models.Model):
-    name = models.CharField(_('District Name'), maxlength=60, blank=True)
+    name = models.CharField(_('District Name'), max_length=60, blank=True)
     region = models.ForeignKey(Region, verbose_name=_('Region Name'), blank=True, null=True)
 
     createuser = models.ForeignKey(User, related_name='created_districts', blank=True, null=True)
@@ -97,8 +97,8 @@ class District(models.Model):
 
 
 class TownType(models.Model):
-    shortname = models.CharField(maxlength=5, blank=True, null=True)
-    name = models.CharField(maxlength=60, blank=True, null=True)
+    shortname = models.CharField(max_length=5, blank=True, null=True)
+    name = models.CharField(max_length=60, blank=True, null=True)
 
     createuser = models.ForeignKey(User, related_name='created_towntypes', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
@@ -120,12 +120,12 @@ class TownType(models.Model):
 
 
 class Town(models.Model):
-    #code = models.CharField(_('Town Code'), maxlength=6)
+    #code = models.CharField(_('Town Code'), max_length=6)
     country = models.ForeignKey(Country, blank=True, null=True, verbose_name=_('Country'))
     region = models.ForeignKey(Region, blank=True, null=True, verbose_name=_('Region'))
     district = models.ForeignKey(District, blank=True, null=True, verbose_name=_('District'))
     type = models.ForeignKey(TownType, verbose_name=_('Type'), blank=True, null=True)
-    name = models.CharField(_('Town Name'), maxlength=35)
+    name = models.CharField(_('Town Name'), max_length=35)
     is_region_centre = models.BooleanField(_('IRC?')) #Is Region Centre?
     is_district_centre = models.BooleanField(_('IDC?')) #Is District Centre?
 
@@ -154,8 +154,8 @@ class Town(models.Model):
 
 
 class StreetType(models.Model):
-    shortname = models.CharField(maxlength=5, blank=True, null=True)
-    name = models.CharField(maxlength=60, blank=True, null=True)
+    shortname = models.CharField(max_length=5, blank=True, null=True)
+    name = models.CharField(max_length=60, blank=True, null=True)
 
     createuser = models.ForeignKey(User, related_name='created_streettypes', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
@@ -178,8 +178,8 @@ class StreetType(models.Model):
 
 
 class Street(models.Model):
-    #addr_code = models.CharField(_('Street Code'), maxlength=6)
-    name = models.CharField(_('Street Name'), maxlength=100)
+    #addr_code = models.CharField(_('Street Code'), max_length=6)
+    name = models.CharField(_('Street Name'), max_length=100)
     #type = models.ForeignKey(StreetType, null=True)
 	
     createuser = models.ForeignKey(User, related_name='created_streets', blank=True, null=True)
@@ -211,8 +211,8 @@ PHONE_CHOICES = (
 
 
 class Phone(models.Model):
-    type = models.CharField(_('Phone Type'), maxlength=1, choices=PHONE_CHOICES)
-    number = models.CharField(_('Phone Number'), unique=True, maxlength=30)
+    type = models.CharField(_('Phone Type'), max_length=1, choices=PHONE_CHOICES)
+    number = models.CharField(_('Phone Number'), unique=True, max_length=30)
     
     createuser = models.ForeignKey(User, related_name='created_phones', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
@@ -263,8 +263,8 @@ class PhoneList(models.Model):
 
 
 class Addresstype(models.Model):
-    shortname = models.CharField(_('Addresstype Short Name'), maxlength=20, unique=True)
-    name = models.CharField(_('Addresstype Name'), maxlength=40)
+    shortname = models.CharField(_('Addresstype Short Name'), max_length=20, unique=True)
+    name = models.CharField(_('Addresstype Name'), max_length=40)
 
     createuser = models.ForeignKey(User, related_name='created_addresstype', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
@@ -287,11 +287,11 @@ class Addresstype(models.Model):
 
 
 class Location(models.Model):
-    zipcode = models.CharField(_('Zipcode'), maxlength=10, blank=True)
+    zipcode = models.CharField(_('Zipcode'), max_length=10, blank=True)
     town = models.ForeignKey(Town, blank=True, null=True, verbose_name=_('Town'))
     town_aux = models.ForeignKey(Town, related_name='town_aux', blank=True, null=True, verbose_name=_('Town (Aux.)'))
     street = models.ForeignKey(Street, blank=True, null=True, verbose_name=_('Street'))
-    building = models.CharField(_('Building'), maxlength=35, blank=True)
+    building = models.CharField(_('Building'), max_length=35, blank=True)
     extention = models.TextField(_('Extention'), blank=True)
 
     createuser = models.ForeignKey(User, related_name='created_locations', blank=True, null=True)
@@ -329,7 +329,7 @@ class Location(models.Model):
 
 class Address(models.Model):
     location = models.ForeignKey(Location, verbose_name=_('Location'), blank=True, null=True)
-    place = models.CharField(maxlength=15, blank=True)
+    place = models.CharField(max_length=15, blank=True)
 
     createuser = models.ForeignKey(User, related_name='created_addresses', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
@@ -412,13 +412,13 @@ class Client(models.Model):
 
 
 class Person(models.Model):
-    firstname = models.CharField(_('First Name'), maxlength=35, core=True)
-    middlename = models.CharField(_('Middle Name'), maxlength=35, blank=True)
-    lastname = models.CharField(_('Last Name'), maxlength=35)
+    firstname = models.CharField(_('First Name'), max_length=35, core=True)
+    middlename = models.CharField(_('Middle Name'), max_length=35, blank=True)
+    lastname = models.CharField(_('Last Name'), max_length=35)
     town = models.ForeignKey(Town, blank=True, null=True, verbose_name=_('Town'))
     email = models.EmailField(_('Email'), blank=True, validator_list=[isValidEmail])
-    web = models.CharField(_('Web Site'), maxlength=40, blank=True, null=True)
-    im = models.CharField(_('Instant Messenger'), maxlength=40, blank=True, null=True)
+    web = models.CharField(_('Web Site'), max_length=40, blank=True, null=True)
+    im = models.CharField(_('Instant Messenger'), max_length=40, blank=True, null=True)
     info = models.TextField(_('Info'), blank=True)
     
     createuser = models.ForeignKey(User, related_name='created_people', blank=True, null=True)
@@ -508,8 +508,8 @@ class Person(models.Model):
 
 
 class Orgtype(models.Model):
-    code = models.CharField(_('Orgtype Code'), maxlength=10)
-    name = models.CharField(_('Orgtype Name'), maxlength=60)
+    code = models.CharField(_('Orgtype Code'), max_length=10)
+    name = models.CharField(_('Orgtype Name'), max_length=60)
     
     createuser = models.ForeignKey(User, related_name='created_orgtypes', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
@@ -535,16 +535,16 @@ class Orgtype(models.Model):
 
 class Org(models.Model):
     type = models.ForeignKey(Orgtype, blank=True, null=True, verbose_name=_('Org Type'))
-    code = models.CharField(_('Org Code'), maxlength=15, blank=True)
-    alias = models.CharField(_('Org Alias'), maxlength=100, blank=True)
-    name = models.CharField(_('Org Name'), maxlength=200,blank=True)
-    fullname = models.CharField(_('Org Full Name'), maxlength=200,blank=True)
+    code = models.CharField(_('Org Code'), max_length=15, blank=True)
+    alias = models.CharField(_('Org Alias'), max_length=100, blank=True)
+    name = models.CharField(_('Org Name'), max_length=200,blank=True)
+    fullname = models.CharField(_('Org Full Name'), max_length=200,blank=True)
     #org_parentref = models.ForeignKey('self', null=True, blank=True)
     town = models.ForeignKey(Town, blank=True, null=True, verbose_name=_('Town'))
     #phones = PhonesField(Phone, blank=True)
     email = models.EmailField(_('Email'), blank=True, validator_list=[isValidEmail])
-    http = models.CharField(_('Web Site'), maxlength=40,blank=True)
-    info = models.TextField(_('Info'), maxlength=256, blank=True, help_text='Rich Text Editing.')
+    http = models.CharField(_('Web Site'), max_length=40,blank=True)
+    info = models.TextField(_('Info'), max_length=256, blank=True, help_text='Rich Text Editing.')
     contacted = models.DateField(blank=True, null=True)
     
     createuser = models.ForeignKey(User, related_name='created_orgs', blank=True, null=True)

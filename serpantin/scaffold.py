@@ -5,6 +5,8 @@ import sys
 import os
 import string
 
+from django.db.models import FieldDoesNotExist
+ 
 __all__ = ('template_for_model',)
 
 def template_for_model(model, fields=None, formfield_callback=lambda f: f.formfield()):
@@ -80,21 +82,40 @@ $form_body
     
     return string.Template(form_template).substitute(vars())
 
-def template_list_for_model(model):
+def list_template_for_model(model, fields=None):
     form_template = \
 """{% load i18n %}
 <div class="paneheader">
     <form id="changelist-search">
-	<div><!-- DIV needed for valid HTML -->
-	    <label><img src="/site_media/images/search.gif" alt="Search" /></label>
-	    <input type="text" size="40" name="q" value="" id="{{ model }}_sbar" />
-	    <!--input id="{{ model }}_sb" type="submit" value="Go" onClick="javascript:loadListForm('{{ app }}', '{{ model }}');"></input -->
-	    <input id="{{ model }}_sbut" type="submit" value="Go"></input>
-	</div>
+    <div><!-- DIV needed for valid HTML -->
+        <label><img src="/site_media/images/search.gif" alt="Search" /></label>
+        <input type="text" size="40" name="q" value="" id="{{ model }}_sbar" />
+        <!--input id="{{ model }}_sb" type="submit" value="Go" onClick="javascript:loadListForm('{{ app }}', '{{ model }}');"></input -->
+        <input id="{{ model }}_sbut" type="submit" value="Go"></input>
+    </div>
     </form>
 </div>
 
-$form_body
+<div class="pane2" style="width: 780px; height: 330px;">
+    <table id="fplist_{{ win_id }}" class="panelist">
+    <thead>
+    <tr>
+        <th></th><th></th>
+$table_head
+    </tr>
+    </thead>
+    <tbody>
+    {% for obj in obj_list %}
+        <tr class="{% cycle row1,row2 %}">
+            <td><a href="javascript:loadForm('{{ app }}', '{{ model }}', '{{ obj.id }}', '{{ obj.lastname }}');">
+            <img src="/site_media/images/edit.gif" alt="{% trans 'Edit object' %}"></a></td>
+        <td><a href="javascript:confirmDelObj('{{ app }}','{{ model }}','{{ obj.id }}');"><img src="/site_media/images/trash.gif" alt="{% trans 'Delete object' %}"></a></td>
+$table_body
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>
 
 <div id="toolbar" class="footer">
 <a href="javascript:loadForm('{{ app }}','{{ model }}');">{% trans 'Add' %}</a>&nbsp;&nbsp;
@@ -104,8 +125,58 @@ $form_body
       page {{ page }}
  {% if has_next %}
       <a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ next }});">>>></a> {% endif %}(total pages: {{ pages }}; records: {{ hits }})
-</div>
-"""
+</div>"""
+    
+    head_field_templates = {
+        'ForeignKey': lambda f: '<th> %s </th>\n' % f.rel.to._meta.verbose_name,
+        '__default__': lambda f: '<th> %s </th>\n' % f.verbose_name,
+        '__non_field__': lambda f: '<th> %s </th>\n' % f
+    }
+    
+    body_field_templates = {
+        'EmailField': lambda f: '<td><a href="mailto:{{ obj.%(name)s }}">{{ obj.%(name)s }}</a></td>\n' % {'name': f.name},
+        '__default__': lambda f: '<td>{{ obj.%s }}</td>\n' % f.name,
+        '__non_field__': lambda f: '<td>{{ obj.%s }}</td>\n' % f
+    }
+    
+    exclude_fields = {}
+    
+    meta = model._meta
+    
+    # FIXME: think of a better construction
+    if fields is None:
+        try:
+            field_list = meta.admin.list_display
+        except (AttributeError, TypeError): field_list = [] # FIXME: maybe should be meta.fields + meta.many_to_many
+    else: field_list = fields
+    
+    table_head = ''
+    for field_name in field_list:
+        try:
+            f = meta.get_field(field_name)
+            field_class = f.get_internal_type()
+            if not field_class in head_field_templates: field_class = '__default__'
+            field_template = head_field_templates[field_class](f)
+        except FieldDoesNotExist:
+            f = getattr(model, field_name, '')
+            field_template = head_field_templates['__non_field__'](field_name)
+        
+        table_head += field_template
+    
+    table_body = ''
+    for field_name in field_list:
+        try:
+            f = meta.get_field(field_name)
+            field_class = f.get_internal_type()
+            if not field_class in body_field_templates: field_class = '__default__'
+            field_template = body_field_templates[field_class](f)
+        except FieldDoesNotExist:
+            f = getattr(model, field_name, '')
+            field_template = body_field_templates['__non_field__'](field_name)
+         
+        table_body += field_template
+    
+    return string.Template(form_template).substitute(vars())
 
 def main():
     try:
