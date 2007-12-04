@@ -5,9 +5,7 @@ import sys
 import os
 import string
 
-from django.db.models import FieldDoesNotExist
- 
-__all__ = ('template_for_model',)
+__all__ = ('template_for_model', 'list_template_for_model')
 
 def template_for_model(model, fields=None, formfield_callback=lambda f: f.formfield()):
     # TODO: try to generate a template from a form class, using form.base_fields
@@ -86,62 +84,81 @@ def list_template_for_model(model, fields=None):
     form_template = \
 """{% load i18n %}
 <div class="paneheader">
-    <form id="changelist-search">
-    <div><!-- DIV needed for valid HTML -->
-        <label><img src="/site_media/images/search.gif" alt="Search" /></label>
-        <input type="text" size="40" name="q" value="" id="{{ model }}_sbar" />
-        <!--input id="{{ model }}_sb" type="submit" value="Go" onClick="javascript:loadListForm('{{ app }}', '{{ model }}');"></input -->
-        <input id="{{ model }}_sbut" type="submit" value="Go"></input>
-    </div>
-    </form>
+	<form id="changelist-search">
+	<div><!-- DIV needed for valid HTML -->
+		<label><img src="/site_media/images/search.gif" alt="Search" /></label>
+		<input type="text" size="40" name="q" value="" id="{{ model }}_sbar" />
+		<!--input id="{{ model }}_sb" type="submit" value="Go" onClick="javascript:loadListForm('{{ app }}', '{{ model }}');"></input -->
+		<input id="{{ model }}_sbut" type="submit" value="Go"></input>
+	</div>
+	</form>
 </div>
 
 <div class="pane2" style="width: 780px; height: 330px;">
-    <table id="fplist_{{ win_id }}" class="panelist">
-    <thead>
-    <tr>
-        <th></th><th></th>
+	<table id="fplist_{{ win_id }}" class="panelist">
+	<thead>
+	<tr>
+		<th>&nbsp;</th>
+		<th>&nbsp;</th>
 $table_head
-    </tr>
-    </thead>
-    <tbody>
-    {% for obj in obj_list %}
-        <tr class="{% cycle row1,row2 %}">
-            <td><a href="javascript:loadForm('{{ app }}', '{{ model }}', '{{ obj.id }}', '{{ obj.lastname }}');">
-            <img src="/site_media/images/edit.gif" alt="{% trans 'Edit object' %}"></a></td>
-        <td><a href="javascript:confirmDelObj('{{ app }}','{{ model }}','{{ obj.id }}');"><img src="/site_media/images/trash.gif" alt="{% trans 'Delete object' %}"></a></td>
+	</tr>
+	</thead>
+	<tbody>
+	{% for obj in obj_list %}
+	<tr class="{% cycle row1,row2 %}">
+		<td><a href="javascript:loadForm('{{ app }}', '{{ model }}', '{{ obj.id }}', '{{ obj.$title_field }}');">
+		<img src="/site_media/images/edit.gif" alt="{% trans 'Edit object' %}"></a></td>
+		<td><a href="javascript:confirmDelObj('{{ app }}','{{ model }}','{{ obj.id }}');"><img src="/site_media/images/trash.gif" alt="{% trans 'Delete object' %}"></a></td>
 $table_body
-        </tr>
-    {% endfor %}
-    </tbody>
-    </table>
+	</tr>
+	{% endfor %}
+	</tbody>
+	</table>
 </div>
 
 <div id="toolbar" class="footer">
 <a href="javascript:loadForm('{{ app }}','{{ model }}');">{% trans 'Add' %}</a>&nbsp;&nbsp;
- {% if has_previous %}
-     <a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ previous }});"><<<</a>
- {% endif %}
-      page {{ page }}
- {% if has_next %}
-      <a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ next }});">>>></a> {% endif %}(total pages: {{ pages }}; records: {{ hits }})
+{% if has_previous %}
+	<a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ previous }});"><<<</a>
+{% endif %}
+	page {{ page }}
+{% if has_next %}
+	<a href="javascript:loadListForm('{{ app }}','{{ model }}',{{ next }});">>>></a> {% endif %}(total pages: {{ pages }}; records: {{ hits }})
 </div>"""
     
     head_field_templates = {
-        'ForeignKey': lambda f: '<th> %s </th>\n' % f.rel.to._meta.verbose_name,
-        '__default__': lambda f: '<th> %s </th>\n' % f.verbose_name,
-        '__non_field__': lambda f: '<th> %s </th>\n' % f
+        'ForeignKey': lambda f: "\t\t<th> {%% trans '%s' %%} </th>" % f.rel.to._meta.verbose_name,
+        '__default__': lambda f: "\t\t<th> {%% trans '%s' %%} </th>" % f.verbose_name,
+        '__non_field__': lambda field_name: "\t\t<th> {%% trans '%s' %%} </th>" % field_name.capitalize()
+    }
+    
+    head_field_specials = {
+        'createuser': lambda f: "\t\t<th> {% trans 'Create' %} </th>",
+        'modifyuser': lambda f: "\t\t<th> {% trans 'Mod.' %} </th>"
     }
     
     body_field_templates = {
-        'EmailField': lambda f: '<td><a href="mailto:{{ obj.%(name)s }}">{{ obj.%(name)s }}</a></td>\n' % {'name': f.name},
-        '__default__': lambda f: '<td>{{ obj.%s }}</td>\n' % f.name,
-        '__non_field__': lambda f: '<td>{{ obj.%s }}</td>\n' % f
+        'EmailField': lambda f: '\t\t<td><a href="mailto:{{ obj.%(name)s }}">{{ obj.%(name)s }}</a></td>' % {'name': f.name},
+        '__default__': lambda f: '\t\t<td>{{ obj.%s }}</td>' % f.name,
+        '__non_field__': lambda field_name: '\t\t<td>{{ obj.%s }}</td>' % field_name
     }
     
-    exclude_fields = {}
-    
+    body_field_specials = {}
+        
     meta = model._meta
+    
+    from django.db.models import FieldDoesNotExist
+    def field_template(field_name, field_templates, field_specials = {}):
+        try:
+            f = meta.get_field(field_name)
+            field_class = f.get_internal_type()
+            if field_name in field_specials: return field_specials[field_name](f)
+            if not field_class in field_templates: field_class = '__default__'
+            return field_templates[field_class](f)
+        except FieldDoesNotExist:
+            # TODO: probably field existence should be tested here:
+            # f = getattr(model, field_name, '')
+            return field_templates['__non_field__'](field_name)
     
     # FIXME: think of a better construction
     if fields is None:
@@ -150,33 +167,19 @@ $table_body
         except (AttributeError, TypeError): field_list = [] # FIXME: maybe should be meta.fields + meta.many_to_many
     else: field_list = fields
     
-    table_head = ''
-    for field_name in field_list:
-        try:
-            f = meta.get_field(field_name)
-            field_class = f.get_internal_type()
-            if not field_class in head_field_templates: field_class = '__default__'
-            field_template = head_field_templates[field_class](f)
-        except FieldDoesNotExist:
-            f = getattr(model, field_name, '')
-            field_template = head_field_templates['__non_field__'](field_name)
-        
-        table_head += field_template
+    # TODO: perhaps should use field_list[0] entirely for displaying titles and field_list[1:] as main columns
+    title_field = ''
+    if field_list: title_field = field_list[0]
     
-    table_body = ''
-    for field_name in field_list:
-        try:
-            f = meta.get_field(field_name)
-            field_class = f.get_internal_type()
-            if not field_class in body_field_templates: field_class = '__default__'
-            field_template = body_field_templates[field_class](f)
-        except FieldDoesNotExist:
-            f = getattr(model, field_name, '')
-            field_template = body_field_templates['__non_field__'](field_name)
-         
-        table_body += field_template
+    table_head = '\n'.join([field_template(field_name, head_field_templates, head_field_specials) for field_name in field_list])
+    table_body = '\n'.join([field_template(field_name, body_field_templates, body_field_specials) for field_name in field_list])
     
     return string.Template(form_template).substitute(vars())
+
+def save_template(template, filename):
+    template_file = file(filename, "w")
+    template_file.write(template)
+    template_file.close()
 
 def main():
     try:
@@ -205,13 +208,18 @@ def main():
     
     models = getattr(__import__("%s.%s" % (project_name, options.app), {}, {}, ['models']), 'models')
     model = getattr(models, options.model)
+    base_filename = os.path.join(os.path.dirname(models.__file__), 'templates', options.model)
+    
     template = template_for_model(model)
-    template_filename = os.path.join(os.path.dirname(models.__file__), 'templates', options.model + '_form.gen.html')
+    template_filename = base_filename + '_form.gen.html'
     print "Saving template file:\n", template_filename
-    template_file = file(template_filename, "w")
-    template_file.write(template)
-    template_file.close()
-
+    save_template(template, template_filename)
+    
+    list_template = list_template_for_model(model)
+    list_template_filename = base_filename + '_list.gen.html'
+    print "Saving list_template file:\n", list_template_filename
+    save_template(list_template, list_template_filename)
+    
 if __name__ == '__main__':
     main()
     

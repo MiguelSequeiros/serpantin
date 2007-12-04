@@ -484,8 +484,8 @@ class Person(models.Model):
             (None, {'fields': ('lastname','firstname','middlename','town','info', 'web','email','im')}),
             ('Date information',{'classes':'collapse','fields':('createuser','modifyuser','createdate','modifydate')}),	
         )     
-        list_display = ('fullname','town','modifyuser')
-        search_fields = ('lastname','firstname','middlename','info')
+        list_display = ('fullname', 'get_phones', 'email', 'town', 'createuser', 'modifyuser')
+        search_fields = ('lastname', 'firstname', 'middlename', 'info')
 
 
     def colored_name(self):
@@ -565,8 +565,8 @@ class Org(models.Model):
             (None, {'fields': ('type', 'code', 'alias', 'name', 'fullname', 'town', 'email', 'http', 'info', 'contacted')}),
             ('Date information', {'classes': 'collapse', 'fields': ('createuser', 'modifyuser', 'createdate', 'modifydate')}),
         )
-        list_display = ('code','alias','fullname','email','town')
-        search_fields = ['code','alias','name','fullname','email','info']
+        list_display = ('code', 'name', 'get_phones', 'email', 'createuser', 'modifyuser')
+        search_fields = ['code', 'alias', 'name', 'fullname', 'email', 'info']
 
 
     def __unicode__(self):

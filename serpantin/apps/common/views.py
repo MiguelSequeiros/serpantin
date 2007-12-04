@@ -2,7 +2,8 @@ from django.db.models.query import Q,QOr
 
 from django.core.paginator import ObjectPaginator
 from django.shortcuts import render_to_response, get_object_or_404
-from django.template import RequestContext, Context, Template
+from django.template import RequestContext, Context, Template, TemplateDoesNotExist
+from django.template.loader import get_template
 from django.forms import FormWrapper
 from django.http import HttpResponse, HttpResponseRedirect
 
@@ -11,7 +12,7 @@ from django.newforms import form_for_model
 from django.newforms import form_for_instance
 
 from serpantin.dojoforms import *
-from serpantin.scaffold import template_for_model
+from serpantin.scaffold import template_for_model, list_template_for_model
 
 import simplejson
 import os
@@ -102,8 +103,14 @@ def async_list(request, app_name, model_name):
         'app': app_name,
         'model': model_name,
     }
-    template = '%s/%s_list.html' % (get_template_dir(app_name), model_name)
-    return render_to_response(template, params, context_instance=RequestContext(request))
+    template_name = '%s/%s_list.html' % (get_template_dir(app_name), model_name)
+    try:
+        template = get_template(template_name)
+    except TemplateDoesNotExist:
+        template = Template(list_template_for_model(model))
+    context = RequestContext(request, params)
+    return HttpResponse(template.render(context))
+    #return render_to_response(template_name, params, context_instance=RequestContext(request))
 
 def async_delete(request, app_name, model_name, object_id):
     model = get_model(app_name, model_name)
@@ -141,9 +148,12 @@ def async_form(request, app_name, model_name, object_id='', win_id=''):
             'win_id': win_id,
             'object_id': object_id,
         }
-        #template = '%s/%s_form.html' % (get_template_dir(app_name), model_name)
-        template = Template(template_for_model(model))
+        template_name = '%s/%s_form.html' % (get_template_dir(app_name), model_name)
+        try:
+            template = get_template(template_name)
+        except TemplateDoesNotExist:
+            template = Template(template_for_model(model))
         context = RequestContext(request, params)
         return HttpResponse(template.render(context))
-        #return render_to_response(template, params, context_instance=RequestContext(request))
+        #return render_to_response(template_name, params, context_instance=RequestContext(request))
         
