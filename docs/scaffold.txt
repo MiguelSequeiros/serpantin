@@ -29,3 +29,16 @@ The templates are saved in a ``templates`` subdirectory of an application's dir.
 
 Creates two templates for each model from an application ``common``. The
 templates are saved with the corresponding names as described above.
+
+Auto-generated forms
+====================
+
+``scaffold.py`` defines two functions, ``template_for_model`` and
+``list_template_for_model`` that return respective templates for a model class.
+The templates a returned as Python strings, not as Django's ``Template``
+objects. These functions are imported in async.common.views and used to
+auto-generate a form template when it is not present in the templates directory.
+For example, when rendering a ``Person`` form and a file ``Person_form.html` is
+missing, the function ``template_for_model`` is employed to create the template
+automatically. You can use this fact to override the auto-generated templates
+with your own.
