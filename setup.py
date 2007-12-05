@@ -14,8 +14,8 @@ setup(
     include_package_data = True,
 
     # metadata for upload to PyPI
-    author = "Dmitry Sorokin",
-    author_email = "ds@dial.com.ru",
+    author = "Serpantin Project",
+    author_email = "info@dial.com.ru",
     description = "Small ERP application built with django and dojo",
     license = "BSD",
     keywords = "python django dojo ERP application",
