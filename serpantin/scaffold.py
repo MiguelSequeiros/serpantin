@@ -129,7 +129,8 @@ $table_body
     head_field_templates = {
         'ForeignKey': lambda f: "\t\t<th> {%% trans '%s' %%} </th>" % f.rel.to._meta.verbose_name,
         '__default__': lambda f: "\t\t<th> {%% trans '%s' %%} </th>" % f.verbose_name,
-        '__non_field__': lambda field_name: "\t\t<th> {%% trans '%s' %%} </th>" % field_name.capitalize()
+        # TODO: try to process non-fields like in django.contrib.admin.templatetags.admin_list
+        '__non_field__': lambda field_name: "\t\t<th> {%% trans '%s' %%} </th>" % field_name.replace('_', ' ').capitalize()
     }
     
     head_field_specials = {
@@ -195,6 +196,8 @@ def main():
     sys.path.pop()
     os.environ['DJANGO_SETTINGS_MODULE'] = '%s.settings' % project_name
     
+    from django.db.models import get_app, get_models, get_model
+
     parser = OptionParser()
     
     parser.add_option("-a", "--app", dest="app", help="The app which contains the model")
@@ -202,23 +205,31 @@ def main():
     
     options, args = parser.parse_args()
     
-    if not (options.model and options.app):
+    if not options.app:
         parser.print_help()
         sys.exit()
+
+    app = get_app(options.app)
+    if options.model: models = [get_model(options.app, options.model)]
+    else: models = get_models(app)
     
-    models = getattr(__import__("%s.%s" % (project_name, options.app), {}, {}, ['models']), 'models')
-    model = getattr(models, options.model)
-    base_filename = os.path.join(os.path.dirname(models.__file__), 'templates', options.model)
+    #models = getattr(__import__("%s.%s" % (project_name, options.app), {}, {}, ['models']), 'models')
+    #model = getattr(models, options.model)
+    #base_filename = os.path.join(os.path.dirname(models.__file__), 'templates', options.model)
     
-    template = template_for_model(model)
-    template_filename = base_filename + '_form.gen.html'
-    print "Saving template file:\n", template_filename
-    save_template(template, template_filename)
-    
-    list_template = list_template_for_model(model)
-    list_template_filename = base_filename + '_list.gen.html'
-    print "Saving list_template file:\n", list_template_filename
-    save_template(list_template, list_template_filename)
+    template_path = os.path.join(os.path.dirname(app.__file__), 'templates')
+    for model in models:
+        base_filename = os.path.join(template_path, model._meta.object_name)
+        
+        template = template_for_model(model)
+        template_filename = base_filename + '_form.gen.html'
+        print "Saving template file:\n", template_filename
+        save_template(template, template_filename)
+        
+        list_template = list_template_for_model(model)
+        list_template_filename = base_filename + '_list.gen.html'
+        print "Saving list_template file:\n", list_template_filename
+        save_template(list_template, list_template_filename)
     
 if __name__ == '__main__':
     main()

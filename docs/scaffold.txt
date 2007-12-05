@@ -1,0 +1,31 @@
+===============
+Scaffold script
+===============
+
+``scaffold.py`` is a command-line utility that allows you to generate templates
+either for a single model or for each model from a given application. You can
+then change the generated templates as appropriate. The script should be put in
+your project's directory next to ``manage.py``.
+
+Usage
+=====
+
+``./scaffold.py -a APP -m MODEL``
+
+When launched without arguments, the script shows a simple help message.
+
+Examples
+========
+
+``./scaffold.py -a common -m person``
+
+Creates two templates for a model ``Person`` from an application ``common``.
+The templates are saved in a ``templates`` subdirectory of an application's dir.
+
+    * Person_form.gen.html - displays a set of form fields for a model
+    * Person_list.gen.html - displays all objects for a model as a table
+
+``./scaffold.py -a common``
+
+Creates two templates for each model from an application ``common``. The
+templates are saved with the corresponding names as described above.
