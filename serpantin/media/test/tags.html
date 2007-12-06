@@ -1,0 +1,86 @@
+<html>
+<head>
+	<title> Tags widget </title>
+</head>
+<body>
+</body>
+<script>
+	var values = ["Test1", "Test2", "Test3", "Test4", "Test5"];
+	const width = 2;
+
+	var table = document.createElement("TABLE");
+	var body = document.createElement("TBODY");
+	var row = document.createElement("TR");
+	var cell = document.createElement("TD");
+
+	var input = document.createElement("INPUT");
+	
+	var img_add = document.createElement("IMG");
+	img_add.src = "/site_media/images/add.gif"
+	var cell_img_add = document.createElement("TD");
+	cell_img_add.appendChild(img_add);
+	var img_remove = document.createElement("IMG");
+	img_remove.src = "/site_media/images/subtract.gif"
+	var cell_img_remove = document.createElement("TD");
+	cell_img_remove.appendChild(img_remove);
+	document.body.appendChild(table);
+
+	function addTag(e)
+	{
+		alert("Event: " + e.type + "\nAdding a new tag");
+	}
+	
+	function removeTag(e)
+	{
+		alert("Removing tag " + this.n);
+	}
+
+	function drawTable()
+	{
+		// Cleaning up
+		if (table.hasChildNodes())
+		{
+			children = table.childNodes;
+			for (i = 0; i < children.length; i++) if (children[i].nodeName == "TBODY") table.removeChild(children[i]);
+		}
+		// Building the table
+		height = Math.ceil(values.length / width);
+		new_body = body.cloneNode(false)
+		table.appendChild(new_body);
+		for (i = 0, n = 0; i < height; i++)
+		{
+			new_row = row.cloneNode(false);
+			new_body.appendChild(new_row);
+			for(j = 0; j < width; j++, n++)
+			{
+				if (n < values.length)
+				{
+					new_node = input.cloneNode(false);
+					new_node.value = values[n];
+					new_cell_img = cell_img_remove.cloneNode(true);
+					new_cell_img.onclick = removeTag;
+					new_cell_img.n = n;
+				}
+				else
+				{
+					new_node = document.createTextNode("");
+					new_cell_img = cell_img_add.cloneNode(true);
+					//new_cell_img.addEventListener("click", showEventType, false);
+					new_cell_img.onclick = addTag;
+				}
+				new_row.appendChild(new_cell_img);
+				new_cell = cell.cloneNode(false);
+				new_row.appendChild(new_cell);
+				new_cell.appendChild(new_node);
+			}
+		}
+	}
+	
+	// Draw the table several times to test whether displays correctly
+	drawTable();
+	drawTable();
+	drawTable();
+	drawTable();
+	drawTable();
+</script>
+</html>
