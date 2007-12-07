@@ -4,7 +4,7 @@ function loadListForm(app, model, page) {
 	var sbar = dojo.byId(model + "_sbar");
 	var q = "";
 	if (sbar) q = sbar.value;
-	var extraparam = new Array()
+	var extraparam = new Array();
 	if (page) extraparam.push("page=" + page);
 	if (q) extraparam.push("q=" + q);
 	server_url = "/async/" + app + "/" + model + "/";
