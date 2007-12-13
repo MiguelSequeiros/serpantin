@@ -1,5 +1,6 @@
 from django.utils.encoding import force_unicode
 from django.utils.functional import allow_lazy
+from django.utils.safestring import mark_safe
 
 # JSON srore classes
 def model_query(model, query = ""):
@@ -15,7 +16,7 @@ def model_id(model, id):
 # Misc functions
 def escape(html):
     "Return the given HTML with ampersands, double quotes and carets encoded."
-    return force_unicode(html).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+    return mark_safe(force_unicode(html).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;'))
 escape = allow_lazy(escape, unicode)
 
 def flatatt(attrs):

@@ -10,11 +10,13 @@
 	</div>
 	<script type="text/javascript" src="/site_media/js/tags.js"></script>
 	<script type="text/javascript">
-		var input = document.createElement("INPUT");
+		var div = document.createElement("DIV");
+		div.innerHTML = '<input name="tags">';
+		//var input = document.createElement("INPUT");
 		var values = ["Test1", "Test2", "Test3", "Test4", "Test5", "Test6", "Test7"];
 		// To create several tags widgets, addEvent like that can be called multiple times
 		addEvent(window, "load",
-			function() {createTagsWidget(document.getElementById("tags_widget"), input, "tags", values, 3);}
+			function() {createTagsWidget(document.getElementById("tags_widget"), div.firstChild, values, 3);}
 		);
 	</script>
 	<button type="submit">Submit</button>

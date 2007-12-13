@@ -1,6 +1,7 @@
 from django import newforms as forms
 from django.utils.safestring import mark_safe
 from django.utils.encoding import force_unicode
+from django.utils.html import escape
 from util import flatatt
 
 class DateTextBox(forms.TextInput):
@@ -42,3 +43,28 @@ class FilteringSelect(forms.Select):
         attrs.setdefault('searchAttr', "name")
         #attrs.setdefault('query', "{name:'*'}")
         return super(FilteringSelect, self).render(name, value, attrs, choices)
+
+class TagsWidget(forms.Widget):
+    def __init__(self, attrs=None, tag=forms.TextInput, width=1):
+        super(TagsWidget, self).__init__(attrs)
+        self.tag = isinstance(tag, type) and tag() or tag
+        self.width = width
+    
+    def render(self, name, value, attrs=None, *args, **kwargs):
+        if value is None: value = []
+        id = self.attrs.get('id', "tags_widget")
+        output = [
+            u'<div id="%s">' % id,
+            u'</div>',
+            u'<script type="text/javascript" src="/site_media/js/tags.js"></script>',
+            u'<script type="text/javascript">',
+            u'var div = document.createElement("DIV");'
+            u"div.innerHTML = '%s'" % self.tag.render(name, value, attrs, *args, **kwargs),
+            u'var values = [%s];' % ', '.join(['"' + escape(force_unicode(v)) + '"' for v in value]),
+            u'addEvent(window, "load",',
+            u'\tfunction() {createTagsWidget(document.getElementById("%s"), div.firstChild, values, %s);}' % (id, self.width),
+            u');',
+            u'</script>'
+        ]
+        
+        return mark_safe(u'\n'.join(output))

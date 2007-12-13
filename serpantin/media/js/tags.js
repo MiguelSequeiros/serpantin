@@ -6,7 +6,7 @@ function addEvent(element, event, handler)
 	else throw "addEvent: Unable to attach the event handler";
 }
 
-function createTagsWidget(container, tag, name, values, width)
+function createTagsWidget(container, tag, values, width)
 {
 	// TODO: add support for readonly tags
 	var table = document.createElement("TABLE");
@@ -55,7 +55,6 @@ function createTagsWidget(container, tag, name, values, width)
 				if (n < values.length)
 				{
 					new_node = tag.cloneNode(false);
-					new_node.name = name;
 					new_node.value = values[n];
 					new_node.onblur = new_node.onchange = changeTag;
 					new_node.n = n;
