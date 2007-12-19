@@ -20,38 +20,38 @@ def test(request):
     return HttpResponse(list_template_for_model(Org), mimetype="text/plain")
 
 def model_store(app_name, model_name, query = ""):
-    #FIXME: get rid of serpantin.apps in getattr
+    # FIXME: get rid of serpantin.apps in getattr
     model = getattr(__import__('serpantin.apps.%s.models' % app_name, '', '', [model_name]), model_name)
     if len(query) and query[-1] == '*': query = query[:-1]
     objects_filtered = model.objects.filter(name__istartswith=query)
     return [{'name':i.name, 'id':i.id} for i in objects_filtered]
     
-def _json(request):
-    content = [
-        {
-            'name':'Alabama',
-            'label':'Alabama',
-            'abbreviation':'AL',
-        },
-        {
-            'name':'Alaska',
-            'label':'Alaska',
-            'abbreviation':'AK',
-        },
-        {
-            'name':'American Samoa',
-            'label':'American Samoa',
-            'abbreviation':'AS',
-        },
-    ]
-    print "Subzero GET data:", request.GET
-    query = ""
-    if 'q' in request.GET: query = request.GET['q']
-    #if len(query) and query[-1] == '*': query = query[:-1]
-    #result = [i for i in content if not (query and i['name'].lower().find(query.lower()))]
-    result = model_store('common', 'Town', query)
-    
-    return JsonResponse({'identifier':'id', 'label':'name', 'items':result})
+# def json(request):
+#     content = [
+#         {
+#             'name':'Alabama',
+#             'label':'Alabama',
+#             'abbreviation':'AL',
+#         },
+#         {
+#             'name':'Alaska',
+#             'label':'Alaska',
+#             'abbreviation':'AK',
+#         },
+#         {
+#             'name':'American Samoa',
+#             'label':'American Samoa',
+#             'abbreviation':'AS',
+#         },
+#     ]
+#     print "Subzero GET data:", request.GET
+#     query = ""
+#     if 'q' in request.GET: query = request.GET['q']
+#     #if len(query) and query[-1] == '*': query = query[:-1]
+#     #result = [i for i in content if not (query and i['name'].lower().find(query.lower()))]
+#     result = model_store('common', 'Town', query)
+#     
+#     return JsonResponse({'identifier':'id', 'label':'name', 'items':result})
 
 def json(request):
     return render_to_response('test.json', {})

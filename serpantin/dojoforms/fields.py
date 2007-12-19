@@ -1,6 +1,6 @@
 from django import newforms as forms
 from django.db import models
-from widgets import DateTextBox, ComboBox, FilteringSelectStore, FilteringSelect
+from widgets import DateTextBox, ComboBox, FilteringSelectStore, FilteringSelect, TagsWidget
 
 class DateField(forms.DateField):
     widget = DateTextBox
@@ -35,6 +35,38 @@ class FilteringSelectField(forms.ModelChoiceField):
     def __init__(self, queryset, empty_label=u"---------", cache_choices=False,
                  required=True, widget=FilteringSelect, label=None, initial=None, help_text=None):
         super(FilteringSelectField, self).__init__(queryset, empty_label, cache_choices, required, widget, label, initial, help_text)
+
+class TagsField(forms.ModelMultipleChoiceField):
+#     def __init__(self, queryset, tag_field=forms.CharField, cache_choices=False, required=True,
+#                  widget=TagsWidget, label=None, initial=None,
+#                  help_text=None, *args, **kwargs):
+#         print "TagsField.__init__: ", initial
+#         super(TagsField, self).__init__(queryset, cache_choices, required,
+#               widget, label, initial, help_text, *args, **kwargs)
+#         self.tag_field = tag_field()
+#         self.widget.tag_widget = self.tag_field.widget
+
+    def __init__(self, queryset, cache_choices=False, required=True,
+                 widget=TagsWidget, label=None, initial=None,
+                 help_text=None, *args, **kwargs):
+        print "TagsField.__init__: ", initial
+        super(TagsField, self).__init__(queryset, cache_choices, required,
+              widget, label, initial, help_text, *args, **kwargs)
+
+    def clean(self, value):
+        print "TagsField.clean: ", value
+        if self.required and not value:
+            raise ValidationError(self.error_messages['required'])
+        elif not self.required and not value:
+            return []
+        if not isinstance(value, (list, tuple)):
+            raise ValidationError(self.error_messages['list'])
+        final_values = []
+        for val in value:
+            val = self.tag_field.clean(val)
+            obj, created = self.queryset.get_or_create(name=val)
+            final_values.append(obj)
+        return final_values
 
 def formfield_callback(field, **kwargs):
     if isinstance(field, models.DateField):

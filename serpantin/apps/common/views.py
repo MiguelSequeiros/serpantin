@@ -1,4 +1,4 @@
-from django.db.models.query import Q,QOr
+from django.db.models.query import Q, QOr
 
 from django.core.paginator import ObjectPaginator
 from django.shortcuts import render_to_response, get_object_or_404
@@ -8,8 +8,7 @@ from django.forms import FormWrapper
 from django.http import HttpResponse, HttpResponseRedirect
 
 from django.db import models
-from django.newforms import form_for_model
-from django.newforms import form_for_instance
+from django.newforms import form_for_model, form_for_instance
 
 from serpantin.dojoforms import *
 from serpantin.scaffold import template_for_model, list_template_for_model

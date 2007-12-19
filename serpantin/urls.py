@@ -39,6 +39,8 @@ urlpatterns = patterns('',
     (r'^json/(?P<app_name>[a-z]*)/(?P<model_name>[A-Za-z]*)/$', 'serpantin.apps.common.views.json'),
     # Test urls
     (r'^test/$', 'serpantin.apps.test.views.test'),
+    (r'^test/article/new/$', 'serpantin.apps.test.tags.article_form'),
+    (r'^test/article/(?P<object_id>.+)/$', 'serpantin.apps.test.tags.article_form'),
     #(r'^json/$', 'serpantin.apps.test.views.json'),
 )
 

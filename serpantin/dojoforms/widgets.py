@@ -45,15 +45,17 @@ class FilteringSelect(forms.Select):
         return super(FilteringSelect, self).render(name, value, attrs, choices)
 
 class TagsWidget(forms.Widget):
-    def __init__(self, attrs=None, tag=forms.TextInput, width=1, *args, **kwargs):
+    def __init__(self, attrs=None, choices=(), tag_widget=forms.TextInput, width=1):
         super(TagsWidget, self).__init__()
         # TODO: add here something like
         # if isinstance(tag, type) ... 
         # else ...
-        self.tag = tag(attrs, *args, **kwargs)
+        self.choices = choices
+        self.tag_widget = tag_widget(attrs)
         self.width = width
     
-    def render(self, name, value, attrs=None, *args, **kwargs):
+    def render(self, name, value, attrs=None):
+        print "TagsWidget.render: ", list(self.choices)
         if value is None: value = []
         id = attrs.pop('id', "tags_widget")
         output = [
@@ -62,8 +64,8 @@ class TagsWidget(forms.Widget):
             u'<script type="text/javascript" src="/site_media/js/tags.js"></script>',
             u'<script type="text/javascript">',
             u'var div = document.createElement("DIV");',
-            u"div.innerHTML = '%s'" % self.tag.render(name, None, attrs, *args, **kwargs),
-            u'var values = [%s];' % ', '.join(['"' + escape(force_unicode(v)) + '"' for v in value]),
+            u"div.innerHTML = '%s'" % self.tag_widget.render(name, None, attrs),
+            u'var values = [%s];' % ', '.join(['"' + escape(force_unicode(c[1])) + '"' for c in self.choices]),
             u'addEvent(window, "load",',
             u'\tfunction() {createTagsWidget(document.getElementById("%s"), div.firstChild, values, %s);}' % (id, self.width),
             u');',

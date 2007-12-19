@@ -1,3 +1,4 @@
+#from django import newforms as forms
 from django.db import models
 import fields
 
@@ -29,3 +30,16 @@ class FilteringSelectField(models.ForeignKey):
         defaults = {'form_class': fields.FilteringSelectField}
         defaults.update(kwargs)
         return super(FilteringSelectField, self).formfield(**defaults)
+
+class TagsField(models.ManyToManyField):
+    def __init__(self, to, **kwargs):
+        models.ManyToManyField.__init__(self, to, **kwargs)
+    
+    def get_internal_type(self):
+        return "TagsField"
+    
+    def formfield(self, **kwargs):
+        #defaults = {'form_class': forms.ModelMultipleChoiceField}
+        defaults = {'form_class': fields.TagsField}
+        defaults.update(kwargs)
+        return super(TagsField, self).formfield(**defaults)
