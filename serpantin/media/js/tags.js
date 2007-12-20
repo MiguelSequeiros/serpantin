@@ -8,7 +8,10 @@ function addEvent(element, event, handler)
 
 function createTagsWidget(container, tag, values, width)
 {
-	// TODO: add support for readonly tags
+	var initial_length = values.length;
+	// Add an empty tag
+	values.push("")
+	
 	var table = document.createElement("TABLE");
 	var body = document.createElement("TBODY");
 	var row = document.createElement("TR");
@@ -27,6 +30,10 @@ function createTagsWidget(container, tag, values, width)
 	img_remove.alt = "[-]";
 	var cell_img_remove = document.createElement("TD");
 	cell_img_remove.appendChild(img_remove);
+	
+	var hidden = document.createElement("INPUT");
+	hidden.type = "hidden";
+	hidden.name = tag.name;
 	
 	//document.body.appendChild(table);
 	container.appendChild(table);
@@ -52,12 +59,25 @@ function createTagsWidget(container, tag, values, width)
 			new_body.appendChild(new_row);
 			for(j = 0; j < width; j++, n++)
 			{
+				new_cell = cell.cloneNode(false);
 				if (n < values.length)
 				{
-					new_node = tag.cloneNode(false);
-					new_node.value = values[n];
-					new_node.onblur = new_node.onchange = changeTag;
-					new_node.n = n;
+					if (n < initial_length)
+					{
+						new_hidden = hidden.cloneNode(false);
+						new_hidden.value = values[n];
+						new_cell.appendChild(new_hidden);
+						// TODO: create URLs instead of text nodes
+						new_node = document.createTextNode(values[n]);
+						
+					}
+					else
+					{
+						new_node = tag.cloneNode(false);
+						new_node.value = values[n];
+						new_node.onblur = new_node.onchange = changeTag;
+						new_node.n = n;
+					}
 					new_cell_img = cell_img_remove.cloneNode(true);
 					new_cell_img.onclick = removeTag;
 					new_cell_img.n = n;
@@ -77,7 +97,6 @@ function createTagsWidget(container, tag, values, width)
 					}
 				}
 				new_row.appendChild(new_cell_img);
-				new_cell = cell.cloneNode(false);
 				new_row.appendChild(new_cell);
 				new_cell.appendChild(new_node);
 			}
@@ -95,12 +114,11 @@ function createTagsWidget(container, tag, values, width)
 	function removeTag(e)
 	{
 		//alert("Removing tag " + this.n);
-		// Keep the only tag
-		if (values.length > 1)
-		{
-			values.splice(this.n, 1);
-			drawTable();
-		}
+		if (this.n < initial_length) initial_length--
+		// Keep the only new tag
+		else if (values.length <= initial_length + 1) return;
+		values.splice(this.n, 1);
+		drawTable();
 	}
 	
 	function changeTag(e)

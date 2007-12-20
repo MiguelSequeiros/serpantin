@@ -38,8 +38,8 @@ class FilteringSelectField(forms.ModelChoiceField):
 
 class TagsField(forms.ModelMultipleChoiceField):
     def __init__(self, queryset, tag_field=forms.CharField, cache_choices=False, required=True,
-                widget=TagsWidget, label=None, initial=None,
-                help_text=None, *args, **kwargs):
+                 widget=TagsWidget, label=None, initial=None,
+                 help_text=None, *args, **kwargs):
         print "TagsField.__init__: ", initial
         super(TagsField, self).__init__(queryset, cache_choices, required,
             widget, label, initial, help_text, *args, **kwargs)
