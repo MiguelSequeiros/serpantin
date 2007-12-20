@@ -6,7 +6,7 @@ from django.shortcuts import render_to_response, get_object_or_404
 from serpantin.apps.test.models import Article
 
 def article_form(request, object_id=''):
-    print "article POST data:\n", request.POST
+    print "article_form POST data:\n", request.POST
     if object_id:
         object = get_object_or_404(Article, pk=object_id)
         Form = form_for_instance(object)
@@ -16,9 +16,9 @@ def article_form(request, object_id=''):
         if form.is_valid(): form.save()
         else:
             errors = form.errors
+            print "article_form errors:\n", errors
             return render_to_response('errors.html', {'errors': errors})
-        object_url = object_id and object_id or 'new'
-        return HttpResponseRedirect('/test/articles/%s/' % object_url)
+        return HttpResponseRedirect('/test/article/%s/' % (object_id and object_id or 'new'))
     else:
         form = Form()
         params = {

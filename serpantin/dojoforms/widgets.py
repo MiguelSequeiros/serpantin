@@ -2,6 +2,7 @@ from django import newforms as forms
 from django.utils.safestring import mark_safe
 from django.utils.encoding import force_unicode
 from django.utils.html import escape
+from django.utils.datastructures import MultiValueDict
 from util import flatatt
 
 class DateTextBox(forms.TextInput):
@@ -54,7 +55,7 @@ class TagsWidget(forms.Widget):
     def render(self, name, value, attrs=None):
         print "TagsWidget.render: ", list(self.choices)
         if value is None: value = []
-        id = attrs.pop('id', "tags_widget")
+        id = attrs.pop('id', "tags")
         output = [
             u'<div id="%s">' % id,
             u'</div>',
@@ -71,3 +72,9 @@ class TagsWidget(forms.Widget):
         ]
         
         return mark_safe(u'\n'.join(output))
+
+    def value_from_datadict(self, data, files, name):
+        "This function converts POST data into a widget's value"
+        if isinstance(data, MultiValueDict):
+            return data.getlist(name)
+        return data.get(name, None)

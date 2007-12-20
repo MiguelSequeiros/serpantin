@@ -38,24 +38,25 @@ class FilteringSelectField(forms.ModelChoiceField):
 
 class TagsField(forms.ModelMultipleChoiceField):
     def __init__(self, queryset, tag_field=forms.CharField, cache_choices=False, required=True,
-                 widget=TagsWidget, label=None, initial=None,
-                 help_text=None, *args, **kwargs):
+                widget=TagsWidget, label=None, initial=None,
+                help_text=None, *args, **kwargs):
         print "TagsField.__init__: ", initial
         super(TagsField, self).__init__(queryset, cache_choices, required,
-              widget, label, initial, help_text, *args, **kwargs)
+            widget, label, initial, help_text, *args, **kwargs)
         self.tag_field = isinstance(tag_field, type) and tag_field() or tag_field
         self.widget.tag_widget = self.tag_field.widget
 
     def clean(self, value):
         print "TagsField.clean: ", value
         if self.required and not value:
-            raise ValidationError(self.error_messages['required'])
+            raise forms.ValidationError(self.error_messages['required'])
         elif not self.required and not value:
             return []
         if not isinstance(value, (list, tuple)):
-            raise ValidationError(self.error_messages['list'])
+            raise forms.ValidationError(self.error_messages['list'])
         final_values = []
         for val in value:
+            if not val: continue
             val = self.tag_field.clean(val)
             obj, created = self.queryset.get_or_create(name=val)
             final_values.append(obj)
