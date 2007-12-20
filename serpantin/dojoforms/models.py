@@ -1,4 +1,3 @@
-#from django import newforms as forms
 from django.db import models
 import fields
 
@@ -39,7 +38,6 @@ class TagsField(models.ManyToManyField):
         return "TagsField"
     
     def formfield(self, **kwargs):
-        #defaults = {'form_class': forms.ModelMultipleChoiceField}
         defaults = {'form_class': fields.TagsField}
         defaults.update(kwargs)
         return super(TagsField, self).formfield(**defaults)

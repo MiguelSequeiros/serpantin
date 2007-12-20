@@ -37,21 +37,14 @@ class FilteringSelectField(forms.ModelChoiceField):
         super(FilteringSelectField, self).__init__(queryset, empty_label, cache_choices, required, widget, label, initial, help_text)
 
 class TagsField(forms.ModelMultipleChoiceField):
-#     def __init__(self, queryset, tag_field=forms.CharField, cache_choices=False, required=True,
-#                  widget=TagsWidget, label=None, initial=None,
-#                  help_text=None, *args, **kwargs):
-#         print "TagsField.__init__: ", initial
-#         super(TagsField, self).__init__(queryset, cache_choices, required,
-#               widget, label, initial, help_text, *args, **kwargs)
-#         self.tag_field = tag_field()
-#         self.widget.tag_widget = self.tag_field.widget
-
-    def __init__(self, queryset, cache_choices=False, required=True,
+    def __init__(self, queryset, tag_field=forms.CharField, cache_choices=False, required=True,
                  widget=TagsWidget, label=None, initial=None,
                  help_text=None, *args, **kwargs):
         print "TagsField.__init__: ", initial
         super(TagsField, self).__init__(queryset, cache_choices, required,
               widget, label, initial, help_text, *args, **kwargs)
+        self.tag_field = isinstance(tag_field, type) and tag_field() or tag_field
+        self.widget.tag_widget = self.tag_field.widget
 
     def clean(self, value):
         print "TagsField.clean: ", value
