@@ -19,6 +19,10 @@ def escape(html):
     return mark_safe(force_unicode(html).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;'))
 escape = allow_lazy(escape, unicode)
 
+def escape_string(string):
+    "Return the given string with backslashes and double quotes escaped"
+    return mark_safe(force_unicode(string).replace('\\', '\\\\').replace('"', '\\"'))
+    
 def flatatt(attrs):
     """
     Convert a dictionary of attributes to a single string.

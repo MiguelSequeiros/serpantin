@@ -1,9 +1,8 @@
 from django import newforms as forms
 from django.utils.safestring import mark_safe
 from django.utils.encoding import force_unicode
-from django.utils.html import escape
 from django.utils.datastructures import MultiValueDict
-from util import flatatt
+from util import flatatt, escape_string
 
 class DateTextBox(forms.TextInput):
     def render(self, name, value, attrs=None):
@@ -63,8 +62,7 @@ class TagsWidget(forms.Widget):
             u'<script type="text/javascript">',
             u'var div = document.createElement("DIV");',
             u"div.innerHTML = '%s'" % self.tag_widget.render(name, None, attrs),
-            # FIXME: need another kind of escaping here, suitable for JS strings
-            u'var values = [%s];' % ', '.join(['"' + escape(force_unicode(c[1])) + '"' for c in self.choices if c[0] in value]),
+            u'var values = [%s];' % ', '.join(['"' + escape_string(c[1]) + '"' for c in self.choices if c[0] in value]),
             u'addEvent(window, "load",',
             u'\tfunction() {createTagsWidget(document.getElementById("%s"), div.firstChild, values, %s);}' % (id, self.width),
             u');',
