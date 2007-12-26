@@ -1,19 +1,19 @@
-from django.db.models.query import Q, QOr
-
 from django.core.paginator import ObjectPaginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, Context, Template, TemplateDoesNotExist
 from django.template.loader import get_template
 from django.forms import FormWrapper
 from django.http import HttpResponse, HttpResponseRedirect
-
+from django.contrib.auth.decorators import login_required
 from django.db import models
+from django.db.models.query import Q, QOr
 from django.newforms import form_for_model, form_for_instance
+from django.views.generic.simple import direct_to_template
+from django.utils import simplejson
 
 from serpantin.dojoforms import *
 from serpantin.scaffold import template_for_model, list_template_for_model
 
-import simplejson
 import os
 
 # Helpers
@@ -58,6 +58,12 @@ def json(request, app_name, model_name):
     
     return JsonResponse(result)
 
+# Views
+@login_required
+def direct_to_template_auth(*args, **kwargs):
+    return direct_to_template(*args, **kwargs)
+    
+@login_required
 def async_list(request, app_name, model_name):
     # FIXME: commented checking on anonymous
     # if not request.user.is_anonymous():
@@ -111,12 +117,14 @@ def async_list(request, app_name, model_name):
     return HttpResponse(template.render(context))
     #return render_to_response(template_name, params, context_instance=RequestContext(request))
 
+@login_required
 def async_delete(request, app_name, model_name, object_id):
     model = get_model(app_name, model_name)
     object = get_object_or_404(model, pk=object_id)
     object.delete()
     return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/new/' % vars())
 
+@login_required
 def async_form(request, app_name, model_name, object_id='', win_id=''):
     print "async_form POST data:\n", request.POST
     model = get_model(app_name, model_name)
