@@ -1,5 +1,6 @@
 from django.db import models
 import fields
+from tagging.fields import TagField as _TagField
 
 class ComboField(models.ForeignKey):
     def __init__(self, to, to_field=None, **kwargs):
@@ -41,3 +42,9 @@ class TagsField(models.ManyToManyField):
         defaults = {'form_class': fields.TagsField}
         defaults.update(kwargs)
         return super(TagsField, self).formfield(**defaults)
+
+class TagField(_TagField):
+    def formfield(self, **kwargs):
+        defaults = {'form_class': fields.TagField}
+        defaults.update(kwargs)
+        return super(TagField, self).formfield(**defaults)

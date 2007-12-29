@@ -1,5 +1,9 @@
 from django import newforms as forms
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
+from django.utils.encoding import smart_unicode
+
+import tagging
 from widgets import DateTextBox, ComboBox, FilteringSelectStore, FilteringSelect, TagsWidget
 
 class DateField(forms.DateField):
@@ -61,6 +65,38 @@ class TagsField(forms.ModelMultipleChoiceField):
             obj, created = self.queryset.get_or_create(name=val)
             final_values.append(obj)
         return final_values
+
+class TagField(forms.Field):
+    default_error_messages = {
+        'list': _(u'Enter a list of values.'),
+        'invalid': _(u'Tag names must contain only unicode alphanumeric characters, numbers, underscores or hyphens.'),
+        'length': _(u'Tag names must be no longer than 50 characters.'),
+    }
+
+    def __init__(self, tag_field=forms.CharField, required=True, widget=TagsWidget, label=None,
+                 initial=None, help_text=None, error_messages=None):
+        print "TagField.__init__: ", initial
+        super(TagField, self).__init__(required, widget, label,
+                 initial, help_text, error_messages)
+        self.tag_field = isinstance(tag_field, type) and tag_field() or tag_field
+        self.widget.tag_widget = self.tag_field.widget
+
+    def clean(self, value):
+        print "TagField.clean: ", value
+        if self.required and not value:
+            raise forms.ValidationError(self.error_messages['required'])
+        elif not self.required and not value:
+            return []
+        if not isinstance(value, (list, tuple)):
+            raise forms.ValidationError(self.error_messages['list'])
+        final_values = []
+        for val in value:
+            if not val: continue
+            val = smart_unicode(self.tag_field.clean(val))
+            if len(val) > 50: raise forms.ValidationError(self.error_messages['length'])
+            if not tagging.validators.tag_re.match(val): raise forms.ValidationError(self.error_messages['invalid'])
+            final_values.append(val)
+        return ' '.join(final_values)
 
 def formfield_callback(field, **kwargs):
     if isinstance(field, models.DateField):

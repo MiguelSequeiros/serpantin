@@ -72,7 +72,7 @@ class TagsWidget(forms.Widget):
         return mark_safe(u'\n'.join(output))
 
     def value_from_datadict(self, data, files, name):
-        "This function converts POST data into a widget's value"
+        "This function converts POST data into a field's value"
         if isinstance(data, MultiValueDict):
             return data.getlist(name)
         return data.get(name, None)

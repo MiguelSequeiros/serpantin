@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.databrowse',
+    'tagging',
     'serpantin.apps.common',
     'serpantin.apps.test',
 )
