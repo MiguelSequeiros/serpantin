@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.contenttypes import generic
 
-from serpantin.dojoforms.models import TagsField #, TagField
-from tagging.fields import TagField
+from serpantin.dojoforms.models import TagsField, TagField, TagsRelation
+#from tagging.fields import TagField
+from tagging.models import TaggedItem
 
 class Tag(models.Model):
     name = models.CharField(max_length=30)
@@ -15,7 +17,8 @@ class Tag(models.Model):
 class Article(models.Model):
     name = models.CharField(max_length=100)
     #tags = TagsField(Tag)
-    tags = TagField()
+    #tags = TagField()
+    tags = TagsRelation(TaggedItem)
     
     def __unicode__(self):
         return self.name
