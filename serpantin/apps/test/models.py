@@ -16,9 +16,9 @@ class Tag(models.Model):
         
 class Article(models.Model):
     name = models.CharField(max_length=100)
-    #tags = TagsField(Tag)
+    tags = TagsField(Tag)
     #tags = TagField()
-    tags = TagsRelation(TaggedItem)
+    #tags = TagsRelation(TaggedItem)
     
     def __unicode__(self):
         return self.name
