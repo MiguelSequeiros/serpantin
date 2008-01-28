@@ -29,18 +29,50 @@ def create_generic_many_related_manager(superclass):
                 # Add the newly created or already existing objects to the join table.
                 # First find out which items are already added, to avoid adding them twice
                 cursor = connection.cursor()
-                cursor.execute("SELECT %s FROM %s WHERE %s = %%s AND %s IN (%s)" % \
-                    (target_col_name, self.join_table, source_col_name,
-                    target_col_name, ",".join(['%s'] * len(new_ids))),
-                    [self._pk_val] + list(new_ids))
+                cursor.execute("SELECT %s FROM %s WHERE %s = %%s AND %s = %%s AND %s IN (%s)" % \
+                    (target_col_name, self.join_table, self.content_type_field_name,
+                    source_col_name, target_col_name, ",".join(['%s'] * len(new_ids))),
+                    [content_type.id, self._pk_val] + list(new_ids))
                 existing_ids = set([row[0] for row in cursor.fetchall()])
 
                 # Add the ones that aren't there already
                 for obj_id in (new_ids - existing_ids):
-                    cursor.execute("INSERT INTO %s (%s, %s) VALUES (%%s, %%s)" % \
+                    cursor.execute("INSERT INTO %s (%s, %s, %s) VALUES (%%s, %%s)" % \
                         (self.join_table, source_col_name, target_col_name),
-                        [self._pk_val, obj_id])
+                        [content_type.id, self._pk_val, obj_id])
                 transaction.commit_unless_managed()
+
+        def _remove_items(self, source_col_name, target_col_name, *objs):
+            # source_col_name: the PK colname in join_table for the source object
+            # target_col_name: the PK colname in join_table for the target object
+            # *objs - objects to remove
+
+            # If there aren't any objects, there is nothing to do.
+            if objs:
+                # Check that all the objects are of the right type
+                old_ids = set()
+                for obj in objs:
+                    if isinstance(obj, self.model):
+                        old_ids.add(obj._get_pk_val())
+                    else:
+                        old_ids.add(obj)
+                # Remove the specified objects from the join table
+                cursor = connection.cursor()
+                cursor.execute("DELETE FROM %s WHERE %s = %%s AND %s = %%s AND %s IN (%s)" % \
+                    (self.join_table, self.content_type_field_name,
+                    source_col_name, target_col_name, ",".join(['%s'] * len(old_ids))),
+                    [content_type.id, self._pk_val] + list(old_ids))
+                transaction.commit_unless_managed()
+
+        def _clear_items(self, source_col_name):
+            # source_col_name: the PK colname in join_table for the source object
+            cursor = connection.cursor()
+            cursor.execute("DELETE FROM %s WHERE %s = %%s AND %s = %%s" % \
+                (self.join_table, self.content_type_field_name, source_col_name),
+                [content_type.id, self._pk_val])
+            transaction.commit_unless_managed()
+
+       return GenericManyRelatedManager
 
 class GenericManyRelatedObjectsDescriptor(ManyRelatedObjectsDescriptor):
     # This class provides the functionality that makes the related-object
