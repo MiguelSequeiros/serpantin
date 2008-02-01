@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.contenttypes import generic
 
 import fields
+from generic import GenericManyToManyField
 from tagging.fields import TagField as _TagField
 from tagging.models import Tag
 
@@ -90,3 +91,9 @@ class TagsRelation(generic.GenericRelation):
 #         defaults = {'form_class': fields.TagsField}
 #         defaults.update(kwargs)
 #         return super(TagsRelation, self).formfield(**defaults)
+
+class GenericTagsField(GenericManyToManyField):
+    def formfield(self, **kwargs):
+        defaults = {'form_class': fields.TagsField}
+        defaults.update(kwargs)
+        return super(GenericTagsField, self).formfield(**defaults)

@@ -1,4 +1,6 @@
+from django.db import connection, transaction
 from django.db.models.fields.related import create_many_related_manager, ManyRelatedObjectsDescriptor, ReverseManyRelatedObjectsDescriptor, ManyToManyField
+from django.utils.functional import curry
 from django.contrib.contenttypes.models import ContentType
 
 def create_generic_many_related_manager(superclass):
@@ -6,7 +8,8 @@ def create_generic_many_related_manager(superclass):
         def __init__(self, model=None, core_filters=None, instance=None, symmetrical=None,
                      join_table=None, source_col_name=None, target_col_name=None, content_type=None,
                      content_type_field_name=None, object_id_field_name=None):
-            super(GenericManyRelatedManager, self).__init__()
+            super(GenericManyRelatedManager, self).__init__(model, core_filters, instance, symmetrical,
+                  join_table, source_col_name, target_col_name)
             self.content_type = content_type
             self.content_type_field_name = content_type_field_name
             self.object_id_field_name = object_id_field_name
@@ -72,7 +75,7 @@ def create_generic_many_related_manager(superclass):
                 [content_type.id, self._pk_val])
             transaction.commit_unless_managed()
 
-       return GenericManyRelatedManager
+    return GenericManyRelatedManager
 
 class GenericManyRelatedObjectsDescriptor(ManyRelatedObjectsDescriptor):
     # This class provides the functionality that makes the related-object
