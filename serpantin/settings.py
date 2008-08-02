@@ -45,9 +45,9 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.databrowse',
-    'tagging',
+#    'tagging',
     'serpantin.apps.common',
-    'serpantin.apps.test',
+#    'serpantin.apps.test',
 )
 
 #AUTH_PROFILE_MODULE = 'common.UserProfile'
