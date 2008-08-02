@@ -6,7 +6,7 @@ from django.template.loader import get_template
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db import models
-from django.db.models.query import Q, QOr
+from django.db.models import Q
 from django.newforms import form_for_model, form_for_instance
 from django.views.generic.simple import direct_to_template
 from django.utils import simplejson
@@ -82,29 +82,34 @@ def async_list(request, app_name, model_name):
             else:
                 for rel_field_name in field.rel.to._meta.admin.search_fields:
                     q_list.append(Q(**{'%s__%s__icontains' % (field_name, rel_field_name): query}))
-    q = QOr(*q_list)
+    #Fixme: next line would not work with trunk. Fix asap.
+    #q = QOr(*q_list)
     try:
         order_field = model._meta.ordering[0]
     except IndexError:
         order_field = '-modifydate'
-    queryset = model.objects.filter(q).order_by(order_field)
+    #FIXME: filter does not work 
+    #queryset = model.objects.filter(q).order_by(order_field)
+    queryset = model.objects.all().order_by(order_field)
     paginate_by = int(request.GET.get('count', 10))
     paginator = Paginator(queryset, paginate_by)
-    page = int(request.GET.get('page', 0))
-    obj_list = paginator.page(page)
+    #TODO: check second parameter for get() on the next line
+    page_num = int(request.GET.get('page', 1))
+    page = paginator.page(page_num)
     
     params = {
-        'is_paginated': paginator.pages > 1,
+        'is_paginated': paginator.num_pages > 1,
         'results_per_page': paginate_by,
-        'has_next': paginator.has_next_page(page),
-        'has_previous': paginator.has_previous_page(page),
-        'page': page + 1,
-        'next': page + 1,
-        'previous': page - 1,
-        'pages': paginator.pages,
-        'hits' : paginator.hits,
+        'has_next': page.has_next(),
+        'has_previous': page.has_previous(),
+	#TODO: next three lines do not look good
+        'page': page_num + 1,
+        'next': page_num + 1,
+        'previous': page_num - 1,
+        'pages': paginator.num_pages,
+        'hits' : paginator.count,
         'is_owner': True,
-        'obj_list': obj_list,
+        'obj_list': page.object_list,
         'app': app_name,
         'model': model_name,
     }
