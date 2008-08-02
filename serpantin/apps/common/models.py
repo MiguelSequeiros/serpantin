@@ -230,9 +230,9 @@ class Phone(models.Model):
         search_fields = ['number',]
 
 
-
     def __unicode__(self):
         return u"%s %s" % (self.type, self.number)
+
 
 
 class PhoneList(models.Model):
