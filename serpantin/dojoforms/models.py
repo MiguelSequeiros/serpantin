@@ -3,8 +3,8 @@ from django.contrib.contenttypes import generic
 
 import fields
 from generic import GenericManyToManyField
-from tagging.fields import TagField as _TagField
-from tagging.models import Tag
+#from tagging.fields import TagField as _TagField
+#from tagging.models import Tag
 
 class ComboField(models.ForeignKey):
     def __init__(self, to, to_field=None, **kwargs):

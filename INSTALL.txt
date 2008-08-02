@@ -25,6 +25,10 @@ Installation
 
 	DOJO_DIR = 'The directory where you installed Dojo here'
 
+4.a Prepare your database 
+    #FIXME: Add explanation or a link to documentation
+    #FIXME: You'd need driver package for your database (psycopg as one for postgresql)
+
 5. Populate the database with Serpantin tables and load fixtures::
 	python manage.py syncdb
 
