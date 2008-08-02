@@ -1,4 +1,4 @@
-from django import newforms as forms
+from django import forms
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.utils.encoding import smart_unicode
