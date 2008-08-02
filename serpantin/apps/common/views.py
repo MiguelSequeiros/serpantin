@@ -1,4 +1,4 @@
-from django.core.paginator import ObjectPaginator
+from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, Context, Template, TemplateDoesNotExist
 from django.template.loader import get_template
@@ -89,9 +89,9 @@ def async_list(request, app_name, model_name):
         order_field = '-modifydate'
     queryset = model.objects.filter(q).order_by(order_field)
     paginate_by = int(request.GET.get('count', 10))
-    paginator = ObjectPaginator(queryset, paginate_by)
+    paginator = Paginator(queryset, paginate_by)
     page = int(request.GET.get('page', 0))
-    obj_list = paginator.get_page(page)
+    obj_list = paginator.page(page)
     
     params = {
         'is_paginated': paginator.pages > 1,
