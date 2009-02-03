@@ -7,7 +7,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db import models
 from django.db.models import Q
-from django.newforms import form_for_model, form_for_instance
+#FIXME: correct for django 1.0
+#from django.newforms import form_for_model, form_for_instance
+#from django.forms import form_for_model, form_for_instance
 from django.views.generic.simple import direct_to_template
 from django.utils import simplejson
 
