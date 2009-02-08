@@ -1,17 +1,18 @@
+#
+# $Id:$
+#
+
 from django.core.paginator import Paginator
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext, Context, Template, TemplateDoesNotExist
 from django.template.loader import get_template
-#from django.forms import FormWrapper
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.db import models
 from django.db.models import Q
-#FIXME: correct for django 1.0
-#from django.newforms import form_for_model, form_for_instance
-#from django.forms import form_for_model, form_for_instance
 from django.views.generic.simple import direct_to_template
 from django.utils import simplejson
+from django.views.generic.create_update import get_model_and_form_class
 
 from serpantin.dojoforms import *
 from serpantin.scaffold import template_for_model, list_template_for_model
@@ -135,10 +136,7 @@ def async_delete(request, app_name, model_name, object_id):
 def async_form(request, app_name, model_name, object_id='', win_id=''):
     print "async_form POST data:\n", request.POST
     model = get_model(app_name, model_name)
-    if object_id:
-        object = get_object_or_404(model, pk=object_id)
-        Form = form_for_instance(object, formfield_callback=formfield_callback)
-    else: Form = form_for_model(model, formfield_callback=formfield_callback)
+    model, form_class = get_model_and_form_class(model, None)
     auto_id = "id_%s"
     if win_id: auto_id += "_" + win_id
     if request.method == 'POST':
@@ -150,8 +148,11 @@ def async_form(request, app_name, model_name, object_id='', win_id=''):
         #return HttpResponseRedirect('/async/%(app_name)s/%(model_name)s/%(object_id)s/%(win_id)s/' % vars())
         return JsonResponse({'result': 'OK'})
     else:
-        form = Form(auto_id=auto_id)
-        #print form['town']
+        if object_id:
+            object = get_object_or_404(model, pk=object_id)
+            form = form_class(instance=object, auto_id=auto_id)
+        else:
+            form = form_class(auto_id=auto_id)
         params = {
             'debug': False,
             'form': form,
