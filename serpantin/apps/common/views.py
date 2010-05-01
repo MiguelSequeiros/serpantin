@@ -140,7 +140,8 @@ def async_form(request, app_name, model_name, object_id='', win_id=''):
     auto_id = "id_%s"
     if win_id: auto_id += "_" + win_id
     if request.method == 'POST':
-        form = Form(request.POST, auto_id=auto_id)
+        #form = Form(request.POST, auto_id=auto_id)
+        form = form_class(request.POST, auto_id=auto_id)
         if form.is_valid(): form.save()
         else:
             errors = form.errors
