@@ -5,8 +5,8 @@
 from string import find
 
 from django.db import models
-from django.core import validators
-from django.core.validators import isValidEmail
+#from django.core import validators
+#from django.core.validators import isValidEmail
 from django.utils.translation import gettext_lazy as _
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
@@ -357,7 +357,7 @@ class Address(models.Model):
 class Client(models.Model):
     content_type = models.ForeignKey(ContentType, verbose_name=_('Content'))
     object_id = models.PositiveIntegerField()
-    is_facture_required = models.BooleanField(_('Is Facture Required?'), blank=True, null=True)
+    is_facture_required = models.BooleanField(_('Is Facture Required?')) #FIXME:, blank=True, null=True)
 
     createuser = models.ForeignKey(User, related_name='created_clients', blank=True, null=True)
     createdate = models.DateTimeField(blank=True, auto_now_add=True)
@@ -412,11 +412,11 @@ class Client(models.Model):
 
 
 class Person(models.Model):
-    firstname = models.CharField(_('First Name'), max_length=35, core=True)
+    firstname = models.CharField(_('First Name'), max_length=35) #, core=True)
     middlename = models.CharField(_('Middle Name'), max_length=35, blank=True)
     lastname = models.CharField(_('Last Name'), max_length=35)
     town = models.ForeignKey(Town, blank=True, null=True, verbose_name=_('Town'))
-    email = models.EmailField(_('Email'), blank=True, validator_list=[isValidEmail])
+    email = models.EmailField(_('Email'), blank=True) #FIXME:, validator_list=[isValidEmail])
     web = models.CharField(_('Web Site'), max_length=40, blank=True, null=True)
     im = models.CharField(_('Instant Messenger'), max_length=40, blank=True, null=True)
     info = models.TextField(_('Info'), blank=True)
@@ -542,7 +542,7 @@ class Org(models.Model):
     #org_parentref = models.ForeignKey('self', null=True, blank=True)
     town = models.ForeignKey(Town, blank=True, null=True, verbose_name=_('Town'))
     #phones = PhonesField(Phone, blank=True)
-    email = models.EmailField(_('Email'), blank=True, validator_list=[isValidEmail])
+    email = models.EmailField(_('Email'), blank=True) #FIXME:, validator_list=[isValidEmail])
     http = models.CharField(_('Web Site'), max_length=40,blank=True)
     info = models.TextField(_('Info'), max_length=256, blank=True, help_text='Rich Text Editing.')
     contacted = models.DateField(blank=True, null=True)
