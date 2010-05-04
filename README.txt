@@ -10,5 +10,3 @@ Before first public release we'd like to do the following changes:
 - make a lot of cleansiness
 - missed something?
 
-Current trunk is almost empty but we expect to fill it "real soon"  as we have fully
-functional prototype to start with...
